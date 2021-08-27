@@ -36,9 +36,9 @@ export const config = {
     sass({
       injectGlobalPaths: [
         'src/global/functions.scss',
-        'src/global/variables.scss',
         'src/global/mediaqueries.scss',
-        'src/global/mixins.scss'
+        'src/global/mixins.scss',
+        'src/global/variables.scss'
       ]
     })
   ],

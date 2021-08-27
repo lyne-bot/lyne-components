@@ -14,7 +14,7 @@ $mq-breakpoints: (
 $mq-media-type: all !default;
 
 @function mq-px2rem($px) {
-  @return calc(calc(#{$px} * 1rem) / #{$typo-base-font-size});
+  @return calc(calc(#{$px} * 1rem) / #{$typo-scale-default});
 }
 
 @function mq-get-breakpoint-width($name, $breakpoints: $mq-breakpoints) {

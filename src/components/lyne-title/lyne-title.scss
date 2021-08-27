@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+// TODO re-factor to a more generic class later
+.title--hidden {
+  @include screenreaderOnly();
+}
+
+.title[id] {
+  @include scrollMarginBlockStart();
+}
+
+.title {
+  @include fontSmoothing();
+}
+
+.title-1 {
+  @include title-1();
+}
+
+.title-2 {
+  @include title-2();
+}
+
+.title-3 {
+  @include title-3();
+}
+
+.title-4 {
+  @include title-4();
+}
+
+.title-5 {
+  @include title-5();
+}
+
+.title-6 {
+  @include title-6();
+}

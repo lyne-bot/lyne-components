@@ -1,2 +1,41 @@
 //@import './node_modules/lyne-design-tokens/dist/scss/variables.scss';
 @import './node_modules/lyne-design-tokens/dist/scss/css_variables.scss';
+
+:host {
+
+  --lyne-font-size-title-1: var(--typo-scale-2-5x);
+  --lyne-font-size-title-2: var(--typo-scale-2x);
+  --lyne-font-size-title-3: var(--typo-scale-1-5x);
+  --lyne-font-size-title-4: var(--typo-scale-1-25x);
+  --lyne-font-size-title-5: var(--typo-scale-default);
+  --lyne-font-size-title-6: var(--typo-scale-0-875x);
+  --lyne-font-size-text-xl: var(--typo-scale-1-25x);
+  --lyne-font-size-text-m: var(--typo-scale-default);
+  --lyne-font-size-text-s: var(--typo-scale-0-875x);
+  --lyne-font-size-text-xs: var(--typo-scale-0-75x);
+
+  @include mq($from: small) {
+    --lyne-font-size-title-1: var(--typo-scale-3x);
+  }
+
+  @include mq($from: medium) {
+    --lyne-font-size-title-2: var(--typo-scale-2-5x);
+    --lyne-font-size-title-3: var(--typo-scale-2x);
+    --lyne-font-size-title-4: var(--typo-scale-1-5x);
+    --lyne-font-size-title-5: var(--typo-scale-1-25x);
+    --lyne-font-size-title-6: var(--typo-scale-default);
+    --lyne-font-size-text-xl: var(--typo-scale-1-5x);
+    --lyne-font-size-text-m: var(--typo-scale-1-125x);
+    --lyne-font-size-text-s: var(--typo-scale-default);
+    --lyne-font-size-text-xs: var(--typo-scale-0-875x);
+  }
+
+  @include mq($from: large) {
+    --lyne-font-size-title-1: var(--typo-scale-3-5x);
+  }
+
+  @include mq($from: ultra) {
+    --lyne-font-size-title-1: var(--typo-scale-4x);
+  }
+
+}

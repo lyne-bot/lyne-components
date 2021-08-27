@@ -1,3 +1,135 @@
+// ----------------------------------------------------------------------------------------------------
+// Typo: Title Style Mixins
+// ----------------------------------------------------------------------------------------------------
+
+@mixin title {
+  margin: 0;
+  font-family: var(--typo-type-face-sbb-bold);
+  font-weight: normal;
+  line-height: var(--typo-line-height-titles);
+  letter-spacing: var(--typo-letter-spacing-titles);
+}
+
+@mixin title-1 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-1));
+}
+
+@mixin title-2 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-2));
+}
+
+@mixin title-3 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-3));
+}
+
+@mixin title-4 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-4));
+}
+
+@mixin title-5 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-5));
+  line-height: var(--typo-line-height-body-text);
+}
+
+@mixin title-6 {
+  @include title();
+  font-size: pxToRem(var(--lyne-font-size-title-6));
+  line-height: var(--typo-line-height-body-text);
+}
+
+// ----------------------------------------------------------------------------------------------------
+// Typo: Text Style Mixins
+// ----------------------------------------------------------------------------------------------------
+@mixin text {
+  font-family: var(--typo-type-face-sbb-roman);
+  line-height: var(--typo-line-height-body-text);
+  letter-spacing: var(--typo-letter-spacing-body-text);
+}
+
+@mixin text--bold {
+  font-family: var(--typo-type-face-sbb-bold);
+}
+
+@mixin text-xl--regular {
+  @include text();
+  font-size: pxToRem(var(--lyne-font-size-text-xl));
+}
+
+@mixin text-xl--bold {
+  @include text-xl--reqular();
+  @include text--bold();
+}
+
+@mixin text-m--regular {
+  @include text();
+  font-size: pxToRem(var(--lyne-font-size-text-m));
+}
+
+@mixin text-m--bold {
+  @include text-m--reqular();
+  @include text--bold();
+}
+
+@mixin text-s--regular {
+  @include text();
+  font-size: pxToRem(var(--lyne-font-size-text-s));
+}
+
+@mixin text-s--bold {
+  @include text-s--reqular();
+  @include text--bold();
+}
+
+
+@mixin text-xs--regular {
+  @include text();
+  font-size: pxToRem(var(--lyne-font-size-text-xs));
+}
+
+@mixin text-xs--bold {
+  @include text-s-reqular();
+  @include text--bold();
+}
+
+// ----------------------------------------------------------------------------------------------------
+// Typo: Font Smoothing Mixins
+// ----------------------------------------------------------------------------------------------------
+/**
+ * Better font rendering (on OS X)
+ * http://maximilianhoffmann.com/posts/better-font-rendering-on-osx
+ *
+ * Usage:
+ *
+ * .var_dark_on_light {
+ * 	@include fontSmoothing;
+ * }
+ * .var_light_on_dark {
+ * 	@include fontSmoothingReset;
+ * }
+ */
+
+@mixin fontSmoothing() {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin fontSmoothingReset() {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+}
+
+@mixin scrollMarginBlockStart() {
+  scroll-margin-block-start: pxToRem(var(--spacing-fixed-10x));
+}
+
+// ----------------------------------------------------------------------------------------------------
+// A11y: MediaQueries & Other things
+// ----------------------------------------------------------------------------------------------------
 @mixin ifForcedColors {
   @media (forced-colors: active) {
     @content
@@ -26,3 +158,4 @@
   white-space: nowrap;
   width: 1px;
 }
+
