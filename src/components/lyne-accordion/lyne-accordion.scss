@@ -1,0 +1,44 @@
+:host {
+  display: block;
+
+  --item-margin-block: 0;
+
+  // used in accordion-item
+  --body-padding-inline: 0;
+  --header-padding-inline: 0;
+  --border-width: var(--border-width-1x);
+  --border-radius-start-start: 0;
+  --border-radius-start-end: 0;
+  --border-radius-end-start: 0;
+  --border-radius-end-end: 0;
+  --color-background-hover: var(--color-white-default); 
+}
+
+.accordion--non-white {
+  --item-margin-block: var(--spacing-fixed-1x);
+
+  // used in accordion-item
+  --body-padding-inline: var(--spacing-fixed-6x);
+  --header-padding-inline: var(--spacing-fixed-6x);
+  --border-width: 0;
+  --border-radius-start-start: var(--border-radius-1x);
+  --border-radius-start-end: var(--border-radius-1x);
+  --border-radius-end-start: var(--border-radius-1x);
+  --border-radius-end-end: var(--border-radius-1x);
+  --color-background-hover: var(--color-white-alpha-60);
+}
+
+::slotted(lyne-accordion-item:not(:first-child)) {
+  margin-block-start: pxToRem(var(--item-margin-block));
+}
+
+::slotted(lyne-accordion-item:first-child) {
+  --border-radius-start-start: var(--border-radius-8x);
+  --border-radius-start-end: var(--border-radius-8x);
+}
+
+::slotted(lyne-accordion-item:last-child) {
+  --border-radius-end-start: var(--border-radius-8x);
+  --border-radius-end-end: var(--border-radius-8x);
+  --border-width: 0;
+}

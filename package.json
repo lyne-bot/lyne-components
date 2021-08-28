@@ -95,5 +95,6 @@
   },
   "bugs": {
     "url": "https://github.com/lyne-design-system/lyne-components/issues"
-  }
+  },
+  "dependencies": {}
 }

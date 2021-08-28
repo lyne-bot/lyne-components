@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { InterfaceAccordionItemAttributes } from "./components/lyne-accordion-item/lyne-accordion-item.custom.d";
 import { InterfaceButtonAttributes } from "./components/lyne-button/lyne-button.custom.d";
 import { Time } from "./components/lyne-clock/lyne-clock.custom.d";
 import { InterfaceHeadingAttributes } from "./components/lyne-heading/lyne-heading.custom.d";
@@ -12,6 +13,38 @@ import { InterfacePanelAttributes } from "./components/lyne-panel/lyne-panel.cus
 import { InterfacePearlChainAttributes } from "./components/lyne-pearl-chain/lyne-pearl-chain.custom.d";
 import { InterfaceLogoAttributes } from "./components/lyne-sbb-logo/lyne-sbb-logo.custom.d";
 export namespace Components {
+    interface LyneAccordion {
+        /**
+          * Set this if you want to use the accordion on a non-white background.
+         */
+        "nonWhiteBackground"?: boolean;
+        /**
+          * Set this if you want the accordion to always have open only one item.
+         */
+        "onlyOneOpen"?: boolean;
+    }
+    interface LyneAccordionItem {
+        /**
+          * If set, an accordion can not be toggled
+         */
+        "disabled"?: boolean;
+        /**
+          * Id which is sent in the event after opening/closing accordion
+         */
+        "eventId"?: string;
+        /**
+          * Text to show as title for the accordion.
+         */
+        "heading": string;
+        /**
+          * Heading level.
+         */
+        "headingLevel"?: InterfaceAccordionItemAttributes['level'];
+        /**
+          * Set to true to open the accordion item. Set to false to close it.
+         */
+        "open"?: boolean;
+    }
     interface LyneButton {
         /**
           * If you use the button to trigger another widget which itself is covering the page, you must provide an according attribute for aria-haspopup.
@@ -144,6 +177,18 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLLyneAccordionElement extends Components.LyneAccordion, HTMLStencilElement {
+    }
+    var HTMLLyneAccordionElement: {
+        prototype: HTMLLyneAccordionElement;
+        new (): HTMLLyneAccordionElement;
+    };
+    interface HTMLLyneAccordionItemElement extends Components.LyneAccordionItem, HTMLStencilElement {
+    }
+    var HTMLLyneAccordionItemElement: {
+        prototype: HTMLLyneAccordionItemElement;
+        new (): HTMLLyneAccordionItemElement;
+    };
     interface HTMLLyneButtonElement extends Components.LyneButton, HTMLStencilElement {
     }
     var HTMLLyneButtonElement: {
@@ -187,6 +232,8 @@ declare global {
         new (): HTMLLyneSbbLogoElement;
     };
     interface HTMLElementTagNameMap {
+        "lyne-accordion": HTMLLyneAccordionElement;
+        "lyne-accordion-item": HTMLLyneAccordionItemElement;
         "lyne-button": HTMLLyneButtonElement;
         "lyne-clock": HTMLLyneClockElement;
         "lyne-heading": HTMLLyneHeadingElement;
@@ -197,6 +244,38 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface LyneAccordion {
+        /**
+          * Set this if you want to use the accordion on a non-white background.
+         */
+        "nonWhiteBackground"?: boolean;
+        /**
+          * Set this if you want the accordion to always have open only one item.
+         */
+        "onlyOneOpen"?: boolean;
+    }
+    interface LyneAccordionItem {
+        /**
+          * If set, an accordion can not be toggled
+         */
+        "disabled"?: boolean;
+        /**
+          * Id which is sent in the event after opening/closing accordion
+         */
+        "eventId"?: string;
+        /**
+          * Text to show as title for the accordion.
+         */
+        "heading": string;
+        /**
+          * Heading level.
+         */
+        "headingLevel"?: InterfaceAccordionItemAttributes['level'];
+        /**
+          * Set to true to open the accordion item. Set to false to close it.
+         */
+        "open"?: boolean;
+    }
     interface LyneButton {
         /**
           * If you use the button to trigger another widget which itself is covering the page, you must provide an according attribute for aria-haspopup.
@@ -328,6 +407,8 @@ declare namespace LocalJSX {
         "variant"?: InterfaceLogoAttributes['variant'];
     }
     interface IntrinsicElements {
+        "lyne-accordion": LyneAccordion;
+        "lyne-accordion-item": LyneAccordionItem;
         "lyne-button": LyneButton;
         "lyne-clock": LyneClock;
         "lyne-heading": LyneHeading;
@@ -341,6 +422,8 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "lyne-accordion": LocalJSX.LyneAccordion & JSXBase.HTMLAttributes<HTMLLyneAccordionElement>;
+            "lyne-accordion-item": LocalJSX.LyneAccordionItem & JSXBase.HTMLAttributes<HTMLLyneAccordionItemElement>;
             "lyne-button": LocalJSX.LyneButton & JSXBase.HTMLAttributes<HTMLLyneButtonElement>;
             "lyne-clock": LocalJSX.LyneClock & JSXBase.HTMLAttributes<HTMLLyneClockElement>;
             "lyne-heading": LocalJSX.LyneHeading & JSXBase.HTMLAttributes<HTMLLyneHeadingElement>;

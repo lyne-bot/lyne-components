@@ -221,22 +221,18 @@
 }
 
 .button {
+  @include buttonReset;
+
   position: relative;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   transition-duration: var(--transition-duration);
   transition-timing-function: var(--transition-easing-function);
   transition-property: background-color, color, border-color, box-shadow;
   min-height: pxToRem(var(--min-height));
-  margin: 0;
-  outline: none;
   border: pxToRem(var(--border-width)) solid var(--color-default-border);
   border-radius: pxToRem(var(--border-radius));
   background-color: var(--color-default-background);
-  padding: 0;
 
   // when using short hand padding-block and padding-inline, safari will not
   // evaluate the expression...
@@ -251,7 +247,6 @@
   letter-spacing: var(--letter-spacing);
   line-height: var(--line-height);
   -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
 
   &:before {
     position: absolute;

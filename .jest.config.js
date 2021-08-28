@@ -17,6 +17,10 @@ const jestConfig = {
   testMatch: '**/?(*.)+(spec|e2e).ts?(x)',
   moduleNameMapper: {
     '\\.svg$': '<rootDir>/jestAssetsTransformer.js'
+  },
+  roots: ['<rootDir>/src'],
+  transform: {
+    '^.+\\.(ts|tsx|js|jsx|css)$': "@stencil/core/testing/jest-preprocessor"
   }
 
 };
