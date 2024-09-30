@@ -47,9 +47,7 @@ export const SbbButtonCommonElementMixin = <T extends AbstractConstructor<SbbAct
     protected override renderTemplate(): TemplateResult {
       return html`
         ${super.renderIconSlot()}
-        <span class="sbb-button__label">
-          <slot></slot>
-        </span>
+        <slot></slot>
       `;
     }
   }

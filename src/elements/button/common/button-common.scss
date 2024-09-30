@@ -39,13 +39,18 @@ $active: ':active, [data-active]';
   --sbb-button-padding-inline: var(--sbb-spacing-fixed-8x);
   --sbb-button-gap: var(--sbb-spacing-fixed-2x);
   --sbb-button-inset: 0;
-  --sbb-button-box-shadow: transparent;
+  --sbb-button-box-shadow: transparent 0 0;
   --sbb-button-box-shadow-definition: var(--sbb-shadow-elevation-level-3-shadow-2-offset-x)
       var(--sbb-button-shadow-2-offset-y) var(--sbb-button-shadow-2-blur)
       var(--sbb-shadow-elevation-level-3-shadow-2-spread) var(--sbb-button-shadow-2-color),
     var(--sbb-shadow-elevation-level-3-shadow-1-offset-x) var(--sbb-button-shadow-1-offset-y)
       var(--sbb-button-shadow-1-blur) var(--sbb-shadow-elevation-level-3-shadow-1-spread)
       var(--sbb-button-shadow-1-color);
+  --_inner-border-width: var(--sbb-button-border-width);
+  --_outer-border-width: 0;
+  --_border-color: var(--sbb-button-color-default-border);
+  --_background-color: var(--sbb-button-color-default-background);
+  --_color: var(--sbb-button-color-default-text);
 
   @include sbb.mq($from: medium) {
     --sbb-button-padding-inline: var(--sbb-spacing-fixed-10x);
@@ -119,6 +124,14 @@ $active: ':active, [data-active]';
     );
     --sbb-button-shadow-1-blur: calc(0.5 * var(--sbb-shadow-elevation-level-3-shadow-1-blur));
     --sbb-button-shadow-2-blur: calc(0.5 * var(--sbb-shadow-elevation-level-3-shadow-2-blur));
+
+    // TODO: document
+    --sbb-focus-outline-offset: #{sbb.px-to-rem-build(5)};
+    --_inner-border-width: 0;
+    --_outer-border-width: var(--sbb-button-border-width);
+    --_border-color: var(--sbb-button-color-hover-border);
+    --_color: var(--sbb-button-color-hover-text);
+    --_background-color: var(--sbb-button-color-hover-background);
   }
 
   @include sbb.if-forced-colors {
@@ -126,68 +139,65 @@ $active: ':active, [data-active]';
   }
 }
 
+:host(:is(#{$disabled})) {
+  --_color: var(--sbb-button-color-disabled-text);
+  --_background-color: var(--sbb-button-color-disabled-background);
+  --_border-color: var(--sbb-button-color-disabled-border);
+}
+
+:host(:not(#{$disabled}):is(#{$active})) {
+  --_color: var(--sbb-button-color-active-text);
+  --_background-color: var(--sbb-button-color-active-background);
+  --_border-color: var(--sbb-button-color-active-border);
+}
+
 .sbb-action-base {
   @include sbb.text-xs--bold;
+  @include sbb.ellipsis;
 
-  // Reset for link variant
-  text-decoration: none;
-  width: 100%;
-  position: relative;
-  display: flex;
-  gap: var(--sbb-button-gap);
-  align-items: center;
-  justify-content: center;
-  text-align: left;
+  display: inline-block;
+  text-align: center;
   transition-duration: var(--sbb-button-transition-duration);
   transition-timing-function: var(--sbb-button-transition-easing-function);
-  transition-property: color;
+  transition-property: color, box-shadow, padding, outline-offset;
   min-height: var(--sbb-button-min-height);
   border-radius: var(--sbb-button-border-radius);
 
   // The padding block value is only a minimal padding to preserve a padding if the content becomes larger than intended.
   // Positioning of the content is made by flexbox vertical centering.
   // The real padding displayed is larger than the defined value below.
-  padding-block: var(--sbb-button-padding-block-min);
+  padding-block: calc(
+      0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)) +
+        var(--sbb-button-translate-y-content-hover, 0rem)
+    )
+    calc(0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)));
   padding-inline: var(--sbb-button-padding-inline);
-  color: var(--sbb-button-color-default-text);
+  color: var(--_color);
   cursor: pointer;
   user-select: none;
   outline: none;
+  background-color: var(--_background-color);
+  box-shadow:
+    inset var(--_border-color) 0 0 0 var(--_inner-border-width),
+    var(--_border-color) 0 0 0 var(--_outer-border-width),
+    var(--sbb-button-box-shadow);
 
-  // Renders background and border in the background absolute to enable the hover animation
-  &::before {
-    position: absolute;
-    content: '';
-    inset: var(--sbb-button-inset);
-    border: var(--sbb-button-border-width) var(--sbb-button-border-style)
-      var(--sbb-button-color-default-border);
-    border-radius: var(--sbb-button-border-radius);
-    background-color: var(--sbb-button-color-default-background);
-    transition-duration: var(--sbb-button-transition-duration);
-    transition-timing-function: var(--sbb-button-transition-easing-function);
-    transition-property: inset, background-color, border-color, box-shadow;
-    box-shadow: var(--sbb-button-box-shadow);
+  // Setting the outline-offset is needed to avoid animation glitch
+  outline-offset: var(--sbb-focus-outline-offset);
 
-    :host(:is(#{$disabled})) & {
-      background-color: var(--sbb-button-color-disabled-background);
-      border-width: var(--sbb-button-border-disabled-width);
-      border-color: var(--sbb-button-color-disabled-border);
-      border-style: var(--sbb-button-border-disabled-style);
-    }
-
-    :host(:not(#{$disabled}, #{$active}):hover) & {
-      @include sbb.hover-mq($hover: true) {
-        inset: calc(var(--sbb-button-border-width) * -1);
-        background-color: var(--sbb-button-color-hover-background);
-        border-color: var(--sbb-button-color-hover-border);
-      }
-    }
-
-    :host(:not(#{$disabled}):is(#{$active})) & {
-      color: var(--sbb-button-color-active-text);
-      background-color: var(--sbb-button-color-active-background);
-      border-color: var(--sbb-button-color-active-border);
-    }
+  :host(:is(#{$disabled})) & {
+    box-shadow: none;
+    border: var(--sbb-button-border-disabled-width) var(--sbb-button-border-disabled-style)
+      var(--_border-color);
+    padding-inline: calc(
+      var(--sbb-button-padding-inline) - var(--sbb-button-border-disabled-width)
+    );
+    padding-block: calc(
+      0.5 *
+        (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)) - var(
+          --sbb-button-border-disabled-width
+        )
+    );
   }
 
   :host(#{$icon-only}) & {
@@ -196,15 +206,8 @@ $active: ':active, [data-active]';
   }
 
   :host(:is(#{$disabled})) & {
-    color: var(--sbb-button-color-disabled-text);
     cursor: default;
     pointer-events: none;
-  }
-
-  :host(:not(#{$disabled}, #{$active}):hover) & {
-    @include sbb.hover-mq($hover: true) {
-      color: var(--sbb-button-color-hover-text);
-    }
   }
 
   // stylelint-disable no-descending-specificity
@@ -214,27 +217,39 @@ $active: ':active, [data-active]';
   :host(:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) &,
   // Handle focus on the action (link variant)
   :host(:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) &:focus-visible {
-    &::before {
-      @include sbb.focus-outline;
-    }
+    @include sbb.focus-outline;
   }
   // stylelint-enable no-descending-specificity
 }
 
-.sbb-button__label,
-::slotted([slot='icon']),
-sbb-icon {
-  transition: transform var(--sbb-button-transition-duration)
-    var(--sbb-button-transition-easing-function);
-  transform: translateY(var(--sbb-button-translate-y-content-hover, #{sbb.px-to-rem-build(0)}));
+// TODO: keep here instead of extracting to mixin
+.sbb-action-base {
+  // Reset for link variant
+  text-decoration: none;
+  width: 100%;
+  display: block;
 }
 
-.sbb-button__label {
-  @include sbb.ellipsis;
+::slotted([slot='icon']),
+sbb-icon {
+  // Positioning done by trial and error
+  margin-block: #{sbb.px-to-rem-build(-4)} #{sbb.px-to-rem-build(-2)};
+  vertical-align: middle;
 
-  display: block;
-
-  :host(#{$icon-only}) & {
-    display: none;
+  // TODO: document
+  @supports (-moz-appearance: none) {
+    @include sbb.mq($from: medium) {
+      margin-block-end: #{sbb.px-to-rem-build(-1)};
+    }
   }
+
+  :host(:not(#{$icon-only})) & {
+    // We have to subtract --sbb-spacing-fixed-1x as there is a natural gap which corresponds to this value
+    margin-inline-end: calc(var(--sbb-button-gap) - var(--sbb-spacing-fixed-1x));
+  }
+}
+
+::slotted(sbb-icon),
+sbb-icon {
+  height: var(--sbb-button-icon-size);
 }
