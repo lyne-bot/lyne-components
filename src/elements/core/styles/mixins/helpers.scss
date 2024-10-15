@@ -23,7 +23,7 @@
   transform: translateY(-50%);
 }
 
-/** This mixin can be used to avoid spacing problems by inserting an invisible space as pseudo element. */
+// This mixin can be used to avoid spacing problems by inserting an invisible space as pseudo element.
 @mixin zero-width-space {
   &::before {
     content: '\200B';

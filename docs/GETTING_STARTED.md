@@ -245,7 +245,7 @@ Some design tokens are responsive: they change their value depending on the curr
 ### SASS Mixins
 
 Lyne Components provides various SASS mixins which can be used by consumers.
-For available SASS mixins, check [SASS Mixins](https://github.com/sbb-design-systems/lyne-components/tree/main/src/components/core/styles/mixins).
+For available SASS mixins, check [SASS Mixins](https://github.com/sbb-design-systems/lyne-components/tree/main/src/elements/core/styles/mixins).
 
 ```scss
 @use '@sbb-esta/lyne-elements' as sbb;

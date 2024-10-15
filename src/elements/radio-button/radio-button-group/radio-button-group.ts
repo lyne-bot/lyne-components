@@ -241,9 +241,9 @@ export class SbbRadioButtonGroupElement extends SbbDisabledMixin(LitElement) {
   }
 
   private _getRadioTabIndex(radio: SbbRadioButtonElement | SbbRadioButtonPanelElement): number {
-    const isSelected: boolean = radio.checked && !radio.disabled && !this.disabled;
+    const isEnabled = !radio.disabled && !this.disabled;
 
-    return isSelected || this._hasSelectionExpansionPanelElement ? 0 : -1;
+    return (radio.checked || this._hasSelectionExpansionPanelElement) && isEnabled ? 0 : -1;
   }
 
   private _handleKeyDown(evt: KeyboardEvent): void {

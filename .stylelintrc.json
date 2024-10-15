@@ -15,6 +15,7 @@
     "no-descending-specificity": null,
     "scss/comment-no-empty": null,
     "scss/load-partial-extension": "never",
+    "scss/comment-no-loud": true,
     "property-no-vendor-prefix": [
       true,
       {

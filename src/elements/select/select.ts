@@ -12,9 +12,13 @@ import { hostAttributes } from '../core/decorators.js';
 import { isNextjs, isSafari } from '../core/dom.js';
 import { EventEmitter } from '../core/eventing.js';
 import {
+  type FormRestoreReason,
+  type FormRestoreState,
   SbbDisabledMixin,
+  SbbFormAssociatedMixin,
   SbbHydrationMixin,
   SbbNegativeMixin,
+  SbbRequiredMixin,
   SbbUpdateSchedulerMixin,
 } from '../core/mixins.js';
 import { isEventOnElement, overlayGapFixCorners, setOverlayPosition } from '../core/overlay.js';
@@ -55,7 +59,17 @@ export interface SelectChange {
   role: ariaRoleOnHost ? 'listbox' : null,
 })
 export class SbbSelectElement extends SbbUpdateSchedulerMixin(
-  SbbDisabledMixin(SbbNegativeMixin(SbbHydrationMixin(SbbOpenCloseBaseElement))),
+  SbbDisabledMixin(
+    SbbNegativeMixin(
+      SbbHydrationMixin(
+        SbbRequiredMixin(
+          SbbFormAssociatedMixin<typeof SbbOpenCloseBaseElement, string | string[]>(
+            SbbOpenCloseBaseElement,
+          ),
+        ),
+      ),
+    ),
+  ),
 ) {
   public static override styles: CSSResultGroup = style;
 
@@ -71,17 +85,11 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     didClose: 'didClose',
   } as const;
 
-  /** The value of the select component. If `multiple` is true, it's an array. */
-  @property() public value?: string | string[];
-
   /** The placeholder used if no value has been selected. */
   @property() public placeholder?: string;
 
   /** Whether the select allows for multiple selection. */
-  @property({ type: Boolean, reflect: true }) public multiple = false;
-
-  /** Whether the select is required. */
-  @property({ reflect: true, type: Boolean }) public required = false;
+  @property({ reflect: true, type: Boolean }) public multiple = false;
 
   /** Whether the select is readonly. */
   @property({ type: Boolean }) public readonly = false;
@@ -167,7 +175,13 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
   /** Opens the selection panel. */
   public open(): void {
-    if (this.state !== 'closed' || !this._overlay || this._options.length === 0) {
+    if (
+      this.state !== 'closed' ||
+      !this._overlay ||
+      this._options.length === 0 ||
+      this.disabled ||
+      this.formDisabled
+    ) {
       return;
     }
 
@@ -316,7 +330,8 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
 
-    if (changedProperties.has('value')) {
+    // On initialization, the '_onValueChanged' is called by the connectedCallback
+    if (changedProperties.has('value') && this._didLoad) {
       this._onValueChanged(this.value!);
     }
     if (changedProperties.has('negative') || changedProperties.has('multiple')) {
@@ -328,6 +343,44 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     super.disconnectedCallback();
     this.prepend(this._triggerElement); // Take back the trigger element previously moved to the light DOM
     this._openPanelEventsController?.abort();
+  }
+
+  protected override updateFormValue(): void {
+    if (this.multiple && this.value instanceof Array) {
+      const data = new FormData();
+      (this.value as string[]).forEach((el) => data.append(this.name, el));
+      this.internals.setFormValue(data);
+    } else {
+      this.internals.setFormValue(this.value as string | null);
+    }
+  }
+
+  /**
+   * The reset value is the attribute value (the setup value), null otherwise.
+   * @internal
+   */
+  public formResetCallback(): void {
+    this.value = this.hasAttribute('value') ? this.getAttribute('value') : null;
+  }
+
+  /**
+   * @internal
+   */
+  public formStateRestoreCallback(
+    state: FormRestoreState | null,
+    _reason: FormRestoreReason,
+  ): void {
+    if (!state) {
+      this.value = null;
+      return;
+    }
+
+    if (this.multiple) {
+      // if multiple, the state format is ['field-name', 'value'][]
+      this.value = (state as [string, string][]).map((entries) => entries[1]);
+    } else {
+      this.value = state as string;
+    }
   }
 
   private _syncProperties(): void {
@@ -468,7 +521,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   }
 
   private _onKeyDown(event: KeyboardEvent): void {
-    if (this.disabled || this.readonly) {
+    if (this.readonly) {
       return;
     }
 
@@ -497,7 +550,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   }
 
   private _openedPanelKeyboardInteraction(event: KeyboardEvent): void {
-    if (this.disabled || this.readonly || this.state !== 'opened') {
+    if (this.readonly || this.state !== 'opened') {
       return;
     }
 
@@ -690,7 +743,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   }
 
   private _toggleOpening(): void {
-    if (this.disabled || this.readonly) {
+    if (this.disabled || this.formDisabled || this.readonly) {
       return;
     }
     this._triggerElement?.focus();
@@ -728,7 +781,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
       readers to work properly -->
       <div
         class="sbb-screen-reader-only"
-        tabindex=${this.disabled ? nothing : '0'}
+        tabindex=${this.disabled || this.formDisabled ? nothing : '0'}
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded="false"

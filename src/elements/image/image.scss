@@ -10,6 +10,7 @@
     --sbb-disable-animation-zero-time,
     var(--sbb-animation-duration-4x)
   );
+  --sbb-image-object-fit: cover;
 
   display: block;
 }
@@ -84,12 +85,15 @@
 }
 
 .sbb-image__img {
-  position: absolute;
-  inset: 0;
   opacity: 0.000001;
 
   :host([data-loaded]) & {
     opacity: 0.999999;
+  }
+
+  :host(:not([skip-lqip])) & {
+    position: absolute;
+    inset: 0;
   }
 }
 
@@ -99,13 +103,18 @@
   }
 }
 
+// Avoids unwanted space or small cropping
+picture {
+  display: contents;
+}
+
 // After successful loading an image, the loaded image is faded in over the blurred lqip image with a short transition.
 // To support transparent images, we need also to fade out the blurred lqip image.
 // This is not perfect in the case of a non transparent image, but does not look that bad.
 :is(.sbb-image__img, .sbb-image__blurred) {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: var(--sbb-image-object-fit);
   object-position: var(--sbb-image-object-position);
   transition: opacity var(--sbb-image-animation-duration) var(--sbb-animation-easing);
 }

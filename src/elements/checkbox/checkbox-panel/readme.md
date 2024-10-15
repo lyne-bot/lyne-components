@@ -71,23 +71,26 @@ The component provides the same accessibility features as the native checkbox.
 Always provide an accessible label via `aria-label` for checkboxes without descriptive text content.
 If you don't want the label to appear next to the checkbox, you can use `aria-label` to specify an appropriate label.
 
+<!-- Override
+  @type value => string \| null
+-->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name            | Attribute       | Privacy | Type                              | Default   | Description                                                 |
-| --------------- | --------------- | ------- | --------------------------------- | --------- | ----------------------------------------------------------- |
-| `borderless`    | `borderless`    | public  | `boolean`                         | `false`   | Whether the unselected panel has a border.                  |
-| `checked`       | `checked`       | public  | `boolean`                         | `false`   | Whether the checkbox is checked.                            |
-| `color`         | `color`         | public  | `'white' \| 'milk'`               | `'white'` | The background color of the panel.                          |
-| `disabled`      | `disabled`      | public  | `boolean`                         | `false`   | Whether the component is disabled.                          |
-| `form`          | -               | public  | `HTMLFormElement \| null`         |           | Returns the form owner of internals target element.         |
-| `group`         | -               | public  | `SbbCheckboxGroupElement \| null` | `null`    | Reference to the connected checkbox group.                  |
-| `indeterminate` | `indeterminate` | public  | `boolean`                         | `false`   | Whether the checkbox is indeterminate.                      |
-| `name`          | `name`          | public  | `string`                          |           | Name of the form element. Will be read from name attribute. |
-| `required`      | `required`      | public  | `boolean`                         | `false`   | Whether the component is required.                          |
-| `size`          | `size`          | public  | `SbbPanelSize`                    | `'m'`     | Size variant.                                               |
-| `value`         | `value`         | public  | `string \| null`                  | `null`    | Value of the form element.                                  |
+| Name            | Attribute       | Privacy | Type                              | Default   | Description                                                    |
+| --------------- | --------------- | ------- | --------------------------------- | --------- | -------------------------------------------------------------- |
+| `borderless`    | `borderless`    | public  | `boolean`                         | `false`   | Whether the unselected panel has a border.                     |
+| `checked`       | `checked`       | public  | `boolean`                         | `false`   | Whether the checkbox is checked.                               |
+| `color`         | `color`         | public  | `'white' \| 'milk'`               | `'white'` | The background color of the panel.                             |
+| `disabled`      | `disabled`      | public  | `boolean`                         | `false`   | Whether the component is disabled.                             |
+| `form`          | -               | public  | `HTMLFormElement \| null`         |           | Returns the form owner of the internals of the target element. |
+| `group`         | -               | public  | `SbbCheckboxGroupElement \| null` | `null`    | Reference to the connected checkbox group.                     |
+| `indeterminate` | `indeterminate` | public  | `boolean`                         | `false`   | Whether the checkbox is indeterminate.                         |
+| `name`          | `name`          | public  | `string`                          |           | Name of the form element. Will be read from name attribute.    |
+| `required`      | `required`      | public  | `boolean`                         | `false`   | Whether the component is required.                             |
+| `size`          | `size`          | public  | `SbbPanelSize`                    | `'m'`     | Size variant.                                                  |
+| `value`         | `value`         | public  | `string \| null`                  | `null`    | Value of the form element.                                     |
 
 ## Events
 

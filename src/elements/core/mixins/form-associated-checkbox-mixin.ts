@@ -35,6 +35,7 @@ export declare abstract class SbbFormAssociatedCheckboxMixinType
   protected isDisabledExternally(): boolean;
   protected isRequiredExternally(): boolean;
   protected withUserInteraction?(): void;
+  protected updateFormValue(): void;
 }
 
 /**

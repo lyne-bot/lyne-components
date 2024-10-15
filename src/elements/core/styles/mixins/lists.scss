@@ -22,7 +22,6 @@
       margin: 0;
       padding: 0;
       padding-inline-start: var(--sbb-list-padding-inline-start);
-      color: var(--sbb-color-iron);
 
       > li {
         + li {
@@ -89,7 +88,6 @@
     // Ensure that description is always attached to the label
     grid-template-columns: auto minmax(20%, 1fr);
     gap: var(--sbb-spacing-fixed-1x) var(--sbb-spacing-fixed-2x);
-    color: var(--sbb-color-iron);
 
     :is(dt, dd) {
       margin: 0;
@@ -127,7 +125,7 @@
     }
   }
 
-  /* stylelint-disable-next-line no-descending-specificity */
+  // stylelint-disable-next-line no-descending-specificity
   > li {
     position: relative;
     padding-inline: calc(var(#{$padding-inline}) + var(#{$dimensions}) + var(#{$to-text-gap}))
@@ -202,6 +200,7 @@
     --sbb-step-list-border-radius: var(--sbb-border-radius-4x);
 
     counter-reset: steps;
+    color: var(--sbb-color-iron);
   }
 
   &:where(.sbb-text-s) {

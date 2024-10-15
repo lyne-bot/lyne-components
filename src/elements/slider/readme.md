@@ -66,6 +66,9 @@ The `sbb-slider` has the following behaviour on keypress when focused:
 | End         | Set the value to the maximum.                     |
 | Home        | Set the value to the minimum.                     |
 
+<!-- Override
+  @type value => string \| null
+-->
 <!-- Auto Generated Below -->
 
 ## Properties
@@ -74,7 +77,7 @@ The `sbb-slider` has the following behaviour on keypress when focused:
 | --------------- | ----------------- | ------- | ------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `disabled`      | `disabled`        | public  | `boolean`                 | `false` | Whether the component is disabled.                                                                                                             |
 | `endIcon`       | `end-icon`        | public  | `string \| undefined`     |         | Name of the icon at component's end, which will be forward to the nested `sbb-icon`.                                                           |
-| `form`          | -                 | public  | `HTMLFormElement \| null` |         | Returns the form owner of internals target element.                                                                                            |
+| `form`          | -                 | public  | `HTMLFormElement \| null` |         | Returns the form owner of the internals of the target element.                                                                                 |
 | `max`           | `max`             | public  | `string`                  | `'100'` | Maximum acceptable value for the inner HTMLInputElement.                                                                                       |
 | `min`           | `min`             | public  | `string`                  | `'0'`   | Minimum acceptable value for the inner HTMLInputElement.                                                                                       |
 | `name`          | `name`            | public  | `string`                  |         | Name of the form element. Will be read from name attribute.                                                                                    |

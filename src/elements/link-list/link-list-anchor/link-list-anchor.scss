@@ -1,4 +1,4 @@
-@use '../../core/styles/index' as sbb;
+@use '../../core/styles' as sbb;
 
 :host {
   --sbb-link-list-anchor-border-color: var(--sbb-color-cloud);

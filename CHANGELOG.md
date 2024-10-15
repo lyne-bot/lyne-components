@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.1](https://github.com/sbb-design-systems/lyne-components/compare/v1.12.0...v1.12.1) (2024-10-03)
+
+
+### Bug Fixes
+
+* fix list colors ([#3126](https://github.com/sbb-design-systems/lyne-components/issues/3126)) ([44c2810](https://github.com/sbb-design-systems/lyne-components/commit/44c2810268e29760dbfb5e6cf8b0676ac501a3e3)), closes [#3123](https://github.com/sbb-design-systems/lyne-components/issues/3123)
+* **sbb-image:** fix skipLqip mode ([#3131](https://github.com/sbb-design-systems/lyne-components/issues/3131)) ([4519006](https://github.com/sbb-design-systems/lyne-components/commit/4519006b6513d4c5963675c4a1e0028ae2d27b84))
+* **sbb-image:** introduce css property to configure object-fit ([#3134](https://github.com/sbb-design-systems/lyne-components/issues/3134)) ([5a4ae41](https://github.com/sbb-design-systems/lyne-components/commit/5a4ae416e02b42d47ff35a0887d036b2b6900f0e)), closes [#3133](https://github.com/sbb-design-systems/lyne-components/issues/3133)
+* **sbb-radio-group:** avoid focusing disabled radios ([#3125](https://github.com/sbb-design-systems/lyne-components/issues/3125)) ([e4745c4](https://github.com/sbb-design-systems/lyne-components/commit/e4745c4cf50a2ab2c8c6e3e0090971c0e0626834))
+* **sbb-teaser:** allow teaser usage in flexible layouts ([#3140](https://github.com/sbb-design-systems/lyne-components/issues/3140)) ([a51507b](https://github.com/sbb-design-systems/lyne-components/commit/a51507bf2af94a5cb8b91e9028fcc333da28cbf2)), closes [#3136](https://github.com/sbb-design-systems/lyne-components/issues/3136)
+
 ## [1.12.0](https://github.com/sbb-design-systems/lyne-components/compare/v1.11.3...v1.12.0) (2024-09-26)
 
 

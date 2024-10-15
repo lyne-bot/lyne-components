@@ -73,11 +73,9 @@
 .sbb-select__trigger--placeholder {
   color: var(--sbb-select-placeholder-color, var(--sbb-color-metal));
 
-  /**
-   * Note: when the sbb-select is used within a sbb-form-field, some style are applied from it
-   * (see selector `.sbb-form-field__input ::slotted(:where(input, select, sbb-select))` in the sbb-form-field.scss);
-   * so, next line is mandatory because we need to override the rule from the parent.
-   */
+  // Note: when the sbb-select is used within a sbb-form-field, some style are applied from it
+  // (see selector `.sbb-form-field__input ::slotted(:where(input, select, sbb-select))` in the sbb-form-field.scss);
+  // so, next line is mandatory because we need to override the rule from the parent.
   -webkit-text-fill-color: var(--sbb-select-placeholder-color, var(--sbb-color-metal));
 }
 
@@ -118,7 +116,7 @@
     }
   }
 
-  /* stylelint-disable-next-line no-descending-specificity */
+  // stylelint-disable-next-line no-descending-specificity
   &::before,
   &::after {
     :host(:is([data-state='opened'], [data-state='opening'])[data-option-panel-origin-borderless])

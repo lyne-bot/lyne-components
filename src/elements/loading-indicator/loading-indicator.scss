@@ -19,8 +19,6 @@
 }
 
 :host([variant='circle']) {
-  --sbb-loading-indicator-height: var(--sbb-size-icon-ui-small);
-  --sbb-loading-indicator-width: var(--sbb-size-icon-ui-small);
   --sbb-loading-indicator-padding: var(--sbb-border-width-2x);
   --sbb-loading-indicator-duration: var(--sbb-disable-animation-zero-time, 1.5s);
   --sbb-loading-indicator-background-color: var(--sbb-color-white);
@@ -58,7 +56,7 @@
   overflow: hidden;
   border-radius: 50%;
   background: var(--sbb-loading-indicator-circle-background);
-  /* stylelint-disable-next-line property-no-vendor-prefix */
+  // stylelint-disable-next-line property-no-vendor-prefix
   -webkit-mask: radial-gradient(
     circle 0.4375em,
     #0000 98%,
@@ -99,8 +97,6 @@
 }
 
 :host([variant='window']) {
-  --sbb-loading-indicator-height: sbb.px-to-rem-build(32);
-  --sbb-loading-indicator-width: sbb.px-to-rem-build(55);
   --sbb-loading-indicator-padding: 0;
   --sbb-loading-indicator-duration: var(
     --sbb-disable-animation-zero-time,
@@ -150,7 +146,7 @@
 :host([variant='window']) .sbb-loading-indicator__animated-element {
   margin: 0 auto;
   transform-origin: center;
-  transform: translate3d(-3em, 0, 0);
+  transform: translate3d(-2em, 0, 0);
   backface-visibility: hidden;
   transform-style: preserve-3d;
   width: var(--sbb-loading-indicator-window-element-width);

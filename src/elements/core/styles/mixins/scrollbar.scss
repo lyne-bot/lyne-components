@@ -14,7 +14,7 @@
     background-color: var(--sbb-scrollbar-track-color, transparent);
   }
 
-  /* Scrollbar itself */
+  // Scrollbar itself
   &::-webkit-scrollbar-thumb {
     background-color: var(--sbb-scrollbar-color, currentcolor);
     border: calc(0.5 * (var(--sbb-scrollbar-width) - var(--sbb-scrollbar-thumb-width))) solid
@@ -30,7 +30,7 @@
     }
   }
 
-  /* Hide button (top and bottom of the scrollbar) */
+  // Hide button (top and bottom of the scrollbar)
   &::-webkit-scrollbar-button,
   &::-webkit-scrollbar-corner {
     display: none;

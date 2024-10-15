@@ -34,11 +34,30 @@ Using the `alignment` property, it is possible to change the text position respe
 Possible values are `after-centered` (default), `after` and `below`.
 
 ```html
-<sbb-teaser href="https://www.sbb.ch" aligment="below"> ... </sbb-teaser>
+<sbb-teaser href="https://www.sbb.ch" alignment="below"> ... </sbb-teaser>
 ```
 
 By default, the image dimensions are set using the width and the aspect ratio.
 Default values are `300px` and `4/3`. Consumers can change these values on their slotted image element.
+
+### Flexible Layouts
+
+If using the teaser in a flexible layout like CSS grid or flex together with `alignment=below`,
+the CSS variable `--sbb-teaser-align-items` with `stretch` as value can be used
+to achieve the image width taking the full available space. On the image itself, the width must be set to `100%`.
+
+```html
+<div style="display: grid; gap: 1rem; grid-template-rows: repeat(2, 1fr)">
+  <sbb-teaser style="--sbb-teaser-align-items: stretch" href="https://www.sbb.ch" alignment="below">
+    <sbb-image style="width: 100%;" slot="image" image-src="..." alt="description"></sbb-image>
+    ...
+  </sbb-teaser>
+  <sbb-teaser style="--sbb-teaser-align-items: stretch" href="https://www.sbb.ch" alignment="below">
+    <sbb-image style="width: 100%;" slot="image" image-src="..." alt="description"></sbb-image>
+    ...
+  </sbb-teaser>
+</div>
+```
 
 ## Accessibility
 

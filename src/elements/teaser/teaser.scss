@@ -65,6 +65,7 @@
   align-items: var(--sbb-teaser-align-items);
   gap: var(--sbb-teaser-gap);
   max-width: 100%;
+  width: 100%;
 }
 
 .sbb-teaser__text {
@@ -73,13 +74,11 @@
 }
 
 ::slotted([slot='image']) {
+  width: #{sbb.px-to-rem-build(300)};
   will-change: transform;
   display: block;
-  object-fit: cover;
-  width: sbb.px-to-rem-build(300);
   filter: brightness(var(--sbb-teaser-brightness, 1));
   transition: var(--sbb-teaser-animation-duration) var(--sbb-animation-easing);
-  aspect-ratio: 4/3;
 
   @include sbb.hover-mq($hover: true) {
     .sbb-teaser:hover & {
@@ -88,6 +87,15 @@
       --sbb-teaser-brightness: var(--sbb-teaser-brightness-hover);
     }
   }
+}
+
+::slotted(sbb-image[slot='image']) {
+  --sbb-image-aspect-ratio: 4 / 3;
+}
+
+::slotted(img[slot='image']) {
+  aspect-ratio: 4/3;
+  object-fit: cover;
 }
 
 .sbb-teaser__image-wrapper {

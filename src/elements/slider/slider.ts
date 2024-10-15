@@ -171,6 +171,10 @@ export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(Li
     this.value = state as string | null;
   }
 
+  protected override updateFormValue(): void {
+    this.internals.setFormValue(this.value);
+  }
+
   /**
    *  If no value is provided, default is the middle point between min and max
    *  (see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range#value)

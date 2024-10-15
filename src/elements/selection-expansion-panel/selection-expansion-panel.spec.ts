@@ -4,16 +4,17 @@ import type { TemplateResult } from 'lit';
 import { html, unsafeStatic } from 'lit/static-html.js';
 
 import {
-  SbbCheckboxPanelElement,
   type SbbCheckboxElement,
   type SbbCheckboxGroupElement,
+  SbbCheckboxPanelElement,
 } from '../checkbox.js';
+import { tabKey } from '../core/testing/private/keys.js';
 import { fixture } from '../core/testing/private.js';
 import { EventSpy, waitForCondition, waitForLitRender } from '../core/testing.js';
 import {
-  SbbRadioButtonPanelElement,
   type SbbRadioButtonElement,
   type SbbRadioButtonGroupElement,
+  SbbRadioButtonPanelElement,
 } from '../radio-button.js';
 
 import { SbbSelectionExpansionPanelElement } from './selection-expansion-panel.js';
@@ -221,6 +222,61 @@ describe(`sbb-selection-expansion-panel`, () => {
       await waitForLitRender(wrapper);
       expect(disabledInput.checked).to.be.false;
       expect(firstInput.checked).to.be.true;
+    });
+
+    it('does not focus disabled', async () => {
+      await sendKeys({ press: tabKey });
+      expect(document.activeElement).to.be.equal(firstInput);
+
+      await sendKeys({ press: tabKey });
+      expect(document.activeElement).to.be.equal(secondInput);
+      await sendKeys({ press: tabKey });
+
+      expect(document.activeElement!.id).to.be.equal('sbb-input-4');
+
+      // Assert disabled state
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-3')).to.have.attribute(
+        'data-disabled',
+      );
+      expect(disabledInput.tabIndex).to.be.equal(-1);
+    });
+
+    it('does update on disabled change', async () => {
+      disabledInput.disabled = false;
+      await waitForLitRender(wrapper);
+
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-3')).not.to.have.attribute(
+        'data-disabled',
+      );
+      expect(disabledInput.tabIndex).to.be.equal(0);
+    });
+
+    it('does update on disabled change on group', async () => {
+      wrapper.disabled = true;
+      await waitForLitRender(wrapper);
+
+      expect(firstInput.tabIndex).to.be.equal(-1);
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-1')).to.have.attribute(
+        'data-disabled',
+      );
+
+      expect(disabledInput.tabIndex).to.be.equal(-1);
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-3')).to.have.attribute(
+        'data-disabled',
+      );
+
+      wrapper.disabled = false;
+      await waitForLitRender(wrapper);
+
+      expect(firstInput.tabIndex).to.be.equal(0);
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-1')).not.to.have.attribute(
+        'data-disabled',
+      );
+
+      expect(disabledInput.tabIndex).to.be.equal(-1);
+      expect(wrapper.querySelector('#sbb-selection-expansion-panel-3')).to.have.attribute(
+        'data-disabled',
+      );
     });
 
     it('preserves input button disabled state after being disabled from group', async () => {

@@ -158,6 +158,7 @@ const breakpointMap: Record<string, number> = {
  * @cssprop [--sbb-image-border-radius=var(--sbb-border-radius-4x)] - Can be used to override the
  * `borderRadius` property in case of different values for different viewports.
  * @cssprop [--sbb-image-object-position] - Can be used to set the object-position css property of the image itself if the image itself is cropped.
+ * @cssprop [--sbb-image-object-fit=cover] - Can be used to set the object-fit css property of the image itself if the image itself is cropped.
  */
 @customElement('sbb-image')
 export class SbbImageElement extends LitElement {
@@ -190,7 +191,7 @@ export class SbbImageElement extends LitElement {
    * the idea of lqip here:
    * https://medium.com/@imgix/lqip-your-images-for-fast-loading-2523d9ee4a62
    */
-  @property({ attribute: 'skip-lqip', type: Boolean }) public skipLqip = false;
+  @property({ attribute: 'skip-lqip', type: Boolean, reflect: true }) public skipLqip = false;
 
   /**
    * A caption can provide additional context to the image (e.g.

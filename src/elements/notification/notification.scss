@@ -57,7 +57,7 @@ $open-anim-height-to: calc(
   @include sbb.disable-animation;
 }
 
-/* Types */
+// Types
 
 :host([type='info']) {
   --sbb-notification-type-color: var(--sbb-color-smoke);

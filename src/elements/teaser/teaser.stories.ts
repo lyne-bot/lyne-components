@@ -1,14 +1,16 @@
 import { withActions } from '@storybook/addon-actions/decorator';
 import type { InputType } from '@storybook/types';
-import type { Meta, StoryObj, ArgTypes, Args, Decorator } from '@storybook/web-components';
+import type { Args, ArgTypes, Decorator, Meta, StoryObj } from '@storybook/web-components';
 import type { TemplateResult } from 'lit';
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
 import { sbbSpread } from '../../storybook/helpers/spread.js';
+import images from '../core/images.js';
 
 import placeholderImage from './assets/placeholder.png';
 import readme from './readme.md?raw';
+import '../image.js';
 import './teaser.js';
 
 const loremIpsum: string = `Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
@@ -141,6 +143,25 @@ const TemplateList = (args: Args): TemplateResult => html`
   </ul>
 `;
 
+const TemplateGrid = ({ description, ...remainingArgs }: Args): TemplateResult => html`
+  <div style="display:grid; gap: 2rem; grid-template-columns: repeat(4, 1fr);">
+    ${repeat(
+      new Array(4),
+      () => html`
+        <sbb-teaser ${sbbSpread(remainingArgs)} style="--sbb-teaser-align-items: stretch;">
+          <sbb-image
+            slot="image"
+            image-src=${images[10]}
+            alt="400x300"
+            style="width: 100%;"
+          ></sbb-image>
+          ${description}
+        </sbb-teaser>
+      `,
+    )}
+  </div>
+`;
+
 export const AfterCentered: StoryObj = {
   render: TemplateDefault,
   argTypes: defaultArgTypes,
@@ -241,6 +262,12 @@ export const WithSlots: StoryObj = {
   render: TemplateSlots,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, 'chip-content': 'Chip content' },
+};
+
+export const Grid: StoryObj = {
+  render: TemplateGrid,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs, alignment: 'below' },
 };
 
 const meta: Meta = {

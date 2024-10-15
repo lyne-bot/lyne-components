@@ -103,7 +103,7 @@
     }
   }
 
-  /* stylelint-disable-next-line no-descending-specificity */
+  // stylelint-disable-next-line no-descending-specificity
   &::before,
   &::after {
     :host(:is([data-state='opened'], [data-state='opening'])[data-option-panel-origin-borderless])

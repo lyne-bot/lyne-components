@@ -12,10 +12,10 @@ import {
 import { waitForImageReady } from '../core/testing.js';
 
 import './teaser.js';
+import '../image.js';
 
-const imageBase64 = await loadAssetAsBase64(
-  import.meta.resolve('../core/testing/assets/placeholder-image.png'),
-);
+const imageUrl = import.meta.resolve('../core/testing/assets/placeholder-image.png');
+const imageBase64 = await loadAssetAsBase64(imageUrl);
 
 describe(`sbb-teaser`, () => {
   const loremIpsum: string = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer enim elit, ultricies in tincidunt
@@ -140,6 +140,31 @@ describe(`sbb-teaser`, () => {
           );
         });
       }
+
+      it(
+        'grid with sbb-image',
+        visualDiffDefault.with(async (setup) => {
+          await setup.withFixture(html`
+            <div style="display:grid; gap: 2rem; grid-template-columns: repeat(2, 1fr);">
+              ${repeat(
+                new Array(2),
+                () => html`
+                  <sbb-teaser
+                    title-content="This is a title"
+                    href="#"
+                    alignment="below"
+                    style="--sbb-teaser-align-items: stretch;"
+                  >
+                    <sbb-image slot="image" image-src=${imageUrl} style="width: 100%"></sbb-image>
+                    This is a paragraph
+                  </sbb-teaser>
+                `,
+              )}
+            </div>
+          `);
+          await waitForImageReady(setup.snapshotElement.querySelector('sbb-image')!);
+        }),
+      );
     });
   }
 });

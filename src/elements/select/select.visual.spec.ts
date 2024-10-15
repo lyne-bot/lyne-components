@@ -147,6 +147,18 @@ describe('sbb-select', () => {
       );
 
       it(
+        `state=fieldset-disabled negative=${negative}`,
+        visualDiffDefault.with(async (setup) => {
+          await setup.withFixture(
+            html` <fieldset disabled>${template({ ...defaultArgs, negative })}</fieldset> `,
+            {
+              backgroundColor: negative ? 'var(--sbb-color-black)' : undefined,
+            },
+          );
+        }),
+      );
+
+      it(
         `state=readonly negative=${negative}`,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(template({ ...defaultArgs, negative, readonly: true }), {

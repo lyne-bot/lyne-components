@@ -165,11 +165,10 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
   // Positioning of the content is made by flexbox vertical centering.
   // The real padding displayed is larger than the defined value below.
   padding-block: calc(
-    0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)) +
-      var(--sbb-button-translate-y-content-hover, 0rem)
-  ) calc(
-    0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text))
-  );
+      0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)) +
+        var(--sbb-button-translate-y-content-hover, 0rem)
+    )
+    calc(0.5 * (var(--sbb-button-min-height) - 1em * var(--sbb-typo-line-height-body-text)));
   padding-inline: var(--sbb-button-padding-inline);
   color: var(--_color);
   cursor: pointer;
@@ -208,7 +207,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
     pointer-events: none;
   }
 
-  /* stylelint-disable no-descending-specificity */
+  // stylelint-disable no-descending-specificity
   :host([data-focus-visible]) &,
   // Hide focus outline when focus origin is mouse or touch. This is being used as a workaround in various components.
   // Handle focus on the host (button variant)
@@ -217,7 +216,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
   :host(:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) &:focus-visible {
     @include sbb.focus-outline;
   }
-  /* stylelint-enable no-descending-specificity */
+  // stylelint-enable no-descending-specificity
 }
 
 // TODO: keep here instead of extracting to mixin

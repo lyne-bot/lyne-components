@@ -6,6 +6,7 @@
 
 The list styling can be applied to any ordered or unordered list.
 Nesting lists is also supported without redefining the css class.
+The list styling doesn't define any color itself but inherits it.
 
 ### Sass usage
 
@@ -99,6 +100,7 @@ than the text, the CSS variable `--sbb-icon-list-marker-icon-color` can be used.
 | `sbb-list` | `description-list` |
 
 The description list is meant to be used with the native `<dl>`.
+The description list doesn't define any color itself but inherits it.
 
 ### Sass usage
 

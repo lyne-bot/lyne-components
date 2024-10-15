@@ -111,20 +111,25 @@ Opened panel:
 | <kbd>Shift</kbd><kbd>Up Arrow</kbd>     | If `multiple`, moves to the next non-disabled option and toggle its selection.                                                                    |
 | Any char or number                      | If exists, select the first non-disabled matching option after the selected value.                                                                |
 
+<!-- Override
+  @type value => string \| string[] \| null
+-->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name          | Attribute     | Privacy | Type                              | Default | Description                                                              |
-| ------------- | ------------- | ------- | --------------------------------- | ------- | ------------------------------------------------------------------------ |
-| `disabled`    | `disabled`    | public  | `boolean`                         | `false` | Whether the component is disabled.                                       |
-| `isOpen`      | -             | public  | `boolean`                         |         | Whether the element is open.                                             |
-| `multiple`    | `multiple`    | public  | `boolean`                         | `false` | Whether the select allows for multiple selection.                        |
-| `negative`    | `negative`    | public  | `boolean`                         | `false` | Negative coloring variant flag.                                          |
-| `placeholder` | `placeholder` | public  | `string \| undefined`             |         | The placeholder used if no value has been selected.                      |
-| `readonly`    | `readonly`    | public  | `boolean`                         | `false` | Whether the select is readonly.                                          |
-| `required`    | `required`    | public  | `boolean`                         | `false` | Whether the select is required.                                          |
-| `value`       | `value`       | public  | `string \| string[] \| undefined` |         | The value of the select component. If `multiple` is true, it's an array. |
+| Name          | Attribute     | Privacy | Type                         | Default | Description                                                    |
+| ------------- | ------------- | ------- | ---------------------------- | ------- | -------------------------------------------------------------- |
+| `disabled`    | `disabled`    | public  | `boolean`                    | `false` | Whether the component is disabled.                             |
+| `form`        | -             | public  | `HTMLFormElement \| null`    |         | Returns the form owner of the internals of the target element. |
+| `isOpen`      | -             | public  | `boolean`                    |         | Whether the element is open.                                   |
+| `multiple`    | `multiple`    | public  | `boolean`                    | `false` | Whether the select allows for multiple selection.              |
+| `name`        | `name`        | public  | `string`                     |         | Name of the form element. Will be read from name attribute.    |
+| `negative`    | `negative`    | public  | `boolean`                    | `false` | Negative coloring variant flag.                                |
+| `placeholder` | `placeholder` | public  | `string \| undefined`        |         | The placeholder used if no value has been selected.            |
+| `readonly`    | `readonly`    | public  | `boolean`                    | `false` | Whether the select is readonly.                                |
+| `required`    | `required`    | public  | `boolean`                    | `false` | Whether the component is required.                             |
+| `value`       | `value`       | public  | `string \| string[] \| null` | `null`  | Value of the form element.                                     |
 
 ## Methods
 

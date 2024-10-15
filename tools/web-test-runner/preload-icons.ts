@@ -135,7 +135,7 @@ export interface PreloadedIcon {
 }
 
 async function downloadIcon(iconUrl: string): Promise<string> {
-  // Performing too many HTTP requestsin parallel or sequence causes fetch to fail.
+  // Performing too many HTTP requests in parallel or sequence causes fetch to fail.
   // We add a delay for each request to prevent the request failure.
   await new Promise((r) => setTimeout(r, 20));
   const r = await fetch(iconUrl);

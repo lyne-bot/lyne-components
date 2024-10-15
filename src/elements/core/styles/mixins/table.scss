@@ -1,11 +1,9 @@
 @use './typo';
 
-/*
- * SBB table mixin
- * Notes:
- * We cannot use `border-collapse` because it is not compatible with the `border-radius` property.
- * Therefore, we have to build the grid avoiding double borders.
- */
+// SBB table mixin
+// Notes:
+// We cannot use `border-collapse` because it is not compatible with the `border-radius` property.
+// Therefore, we have to build the grid avoiding double borders.
 @mixin table {
   @include table--m;
   @include table--striped;

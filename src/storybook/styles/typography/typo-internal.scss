@@ -1,4 +1,4 @@
-@use '../../../elements/core/styles/index' as sbb;
+@use '../../../elements/core/styles' as sbb;
 
 .sbb-link {
   @include sbb.link;
