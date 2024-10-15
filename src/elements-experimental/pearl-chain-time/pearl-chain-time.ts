@@ -117,10 +117,10 @@ class SbbPearlChainTimeElement extends LitElement {
               ${rideLegs?.length - 1} ${i18nTransferProcedures[this._language.current]}
             </span>`
           : nothing}
+        <!-- TODO: Refactor next pearl-chain to use slotted legs -->
         <sbb-pearl-chain
           class="sbb-pearl-chain__time-chain"
-          .legs=${this.legs}
-          .disableAnimation=${this.disableAnimation}
+          .marker=${this.disableAnimation ? 'static' : 'pulsing'}
           .now=${this.now}
         ></sbb-pearl-chain>
         ${arrival

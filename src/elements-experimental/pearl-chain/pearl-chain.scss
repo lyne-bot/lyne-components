@@ -30,6 +30,15 @@
   @include sbb.pearl-chain-bullet-variables;
 }
 
+.sbb-pearl-chain__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--sbb-pearl-chain-time-height);
+  flex-direction: row;
+  gap: var(--sbb-spacing-fixed-3x);
+}
+
 .sbb-pearl-chain {
   position: relative;
   display: flex;
@@ -105,12 +114,6 @@
   @include sbb.pearl-chain-bullet;
 }
 
-.sbb-pearl-chain__leg--past,
-.sbb-pearl-chain--past,
-.sbb-pearl-chain__leg--past::after,
-.sbb-pearl-chain__leg--progress::after,
-.sbb-pearl-chain__leg--progress .sbb-pearl-chain__stop,
-.sbb-pearl-chain--progress,
 .sbb-pearl-chain__bullet--past {
   color: var(--sbb-pearl-chain-color-past);
 
@@ -127,30 +130,14 @@
   @include sbb.pearl-chain-bullet-past;
 }
 
-.sbb-pearl-chain__bullet--departure-disruption,
 .sbb-pearl-chain--arrival-disruption,
-.sbb-pearl-chain--departure-disruption,
-.sbb-pearl-chain__leg--disruption {
+.sbb-pearl-chain--departure-disruption {
   color: var(--sbb-pearl-chain-color-disruption);
-
-  @include sbb.pearl-chain-bullet-disruption;
 
   @include sbb.if-forced-colors {
     color: Highlight;
     background: Highlight;
   }
-}
-
-.sbb-pearl-chain__leg--disruption .sbb-pearl-chain__stop {
-  @include sbb.pearl-chain-bullet-disruption;
-}
-
-.sbb-pearl-chain__leg--past .sbb-pearl-chain__stop {
-  @include sbb.pearl-chain-bullet-past;
-}
-
-.sbb-pearl-chain__leg--disruption::after {
-  @include sbb-pearl-chain-dotted;
 }
 
 .sbb-pearl-chain__leg--skipped {
@@ -159,11 +146,6 @@
   &::after {
     @include sbb-pearl-chain-dotted;
   }
-}
-
-.sbb-pearl-chain__stop--departure-skipped {
-  @include sbb.pearl-chain-bullet-stop;
-  @include sbb.pearl-chain-bullet-skipped;
 }
 
 .sbb-pearl-chain--arrival-skipped,
@@ -191,34 +173,16 @@
   }
 }
 
-.sbb-pearl-chain__leg:last-of-type::after {
-  inset-inline-end: calc(-1 * var(--sbb-pearl-chain-height));
-}
-
-.sbb-pearl-chain__leg--progress::after {
-  background-color: var(--sbb-pearl-chain-color-past);
-
-  // --sbb-pearl-chain-leg-status: defined in .ts file
-  width: var(--sbb-pearl-chain-leg-status);
-}
-
-.sbb-pearl-chain__position {
-  @include sbb.pearl-chain-bullet-position;
-
-  & {
-    position: absolute;
-    inset-block-start: -200%;
-    z-index: 4;
-
-    // --sbb-pearl-chain-status-position: defined in .ts file
-    inset-inline-start: var(--sbb-pearl-chain-status-position);
-  }
-}
-
 .sbb-pearl-chain__position--no-animation {
   animation: unset;
 }
 
 .sbb-screen-reader-only {
   @include sbb.screen-reader-only;
+}
+
+.sbb-pearl-chain__time {
+  @include sbb.text-s--bold;
+
+  color: var(--sbb-color-charcoal);
 }
