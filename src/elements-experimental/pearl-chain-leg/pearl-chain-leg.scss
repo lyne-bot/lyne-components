@@ -1,0 +1,164 @@
+@use '@sbb-esta/lyne-elements/core/styles' as sbb;
+
+@mixin sbb-pearl-chain-dotted {
+  background-color: unset;
+  background-image: linear-gradient(to right, currentcolor 0%, currentcolor 50%, Canvas 50%);
+  background-repeat: repeat-x;
+  background-size: calc(2 * var(--sbb-pearl-chain-spacing-small)) var(--sbb-pearl-chain-height);
+  inset-inline-end: var(--sbb-pearl-chain-height);
+
+  @include sbb.if-forced-colors {
+    background: unset;
+    border-block-start: #{sbb.px-to-rem-build(1)} dashed Highlight;
+    transform: translateY(#{sbb.px-to-rem-build(1)});
+  }
+}
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-pearl-chain-height: var(--sbb-border-width-2x);
+  --sbb-pearl-chain-spacing-small: #{sbb.px-to-rem-build(2)};
+  --sbb-pearl-chain-color: var(--sbb-pearl-chain-bullet-color);
+  --sbb-pearl-chain-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
+  --sbb-pearl-chain-color-past: var(--sbb-pearl-chain-bullet-color-past);
+  --sbb-pearl-chain-leg-width: 100%;
+
+  display: contents;
+
+  @include sbb.pearl-chain-bullet-variables;
+}
+
+.sbb-pearl-chain__leg {
+  flex: var(--sbb-pearl-chain-leg-weight, 1) var(--sbb-pearl-chain-leg-weight, 1);
+  position: relative;
+  height: var(--sbb-pearl-chain-height);
+  border-inline-end: var(--sbb-pearl-chain-last-leg-margin, var(--sbb-pearl-chain-spacing-small))
+    solid Canvas;
+  background-color: currentcolor;
+  width: var(--sbb-pearl-chain-leg-width);
+  display: flex;
+  align-items: center;
+
+  @include sbb.if-forced-colors {
+    background-color: CanvasText;
+
+    :host([past='']) & {
+      background-color: GrayText;
+    }
+  }
+
+  :host([data-last-leg]) & {
+    --sbb-pearl-chain-last-leg-margin: none;
+
+    &::after {
+      inset-inline-end: calc(-1 * var(--sbb-pearl-chain-height));
+    }
+  }
+
+  :host([past]) & {
+    color: var(--sbb-pearl-chain-color-past);
+
+    @include sbb.pearl-chain-bullet-past;
+
+    @include sbb.if-forced-colors {
+      background-color: GrayText !important;
+    }
+  }
+
+  :host([disruption='']) & {
+    color: var(--sbb-pearl-chain-color-disruption);
+
+    @include sbb.pearl-chain-bullet-disruption;
+
+    @include sbb.if-forced-colors {
+      color: Highlight;
+      background: Highlight;
+    }
+
+    &::after {
+      @include sbb-pearl-chain-dotted;
+    }
+  }
+
+  :host(:is([arrival-skipped=''], [departure-skipped=''])) & {
+    color: var(--sbb-pearl-chain-color-disruption);
+
+    &::after {
+      @include sbb-pearl-chain-dotted;
+    }
+  }
+
+  :host([data-progress='']:not([arrival-skipped=''], [departure-skipped=''], [disruption=''])) & {
+    &::before {
+      @include sbb.pearl-chain-bullet-position;
+
+      & {
+        display: block;
+        content: '';
+        position: absolute;
+        inset-block-start: -200%;
+        z-index: 4;
+
+        // --sbb-pearl-chain-status-position: defined in .ts file
+        inset-inline-start: var(--sbb-pearl-chain-status-position);
+      }
+    }
+
+    &::after {
+      @include sbb.if-forced-colors {
+        background-color: GrayText !important;
+      }
+
+      & {
+        background-color: var(--sbb-pearl-chain-color-past);
+
+        // --sbb-pearl-chain-leg-status: defined in .ts file
+        width: var(--sbb-pearl-chain-status-position);
+      }
+    }
+  }
+}
+
+// line on leg
+.sbb-pearl-chain__leg::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background-color: currentcolor;
+  border-radius: var(--sbb-pearl-chain-height);
+  z-index: 1;
+
+  @include sbb.if-forced-colors {
+    background-color: CanvasText;
+
+    .sbb-pearl-chain--past & {
+      background-color: GrayText;
+    }
+  }
+}
+
+.sbb-pearl-chain__stop {
+  position: relative;
+  z-index: 2;
+
+  @include sbb.pearl-chain-bullet;
+
+  & {
+    @include sbb.pearl-chain-bullet-stop;
+  }
+
+  :host(:is([past=''], [data-progress=''])) & {
+    @include sbb.pearl-chain-bullet-past;
+  }
+
+  :host(:is([departure-skipped], [data-skip-departure=''])) & {
+    @include sbb.pearl-chain-bullet-skipped;
+  }
+
+  :host([disruption='']) & {
+    @include sbb.pearl-chain-bullet-disruption;
+  }
+}
