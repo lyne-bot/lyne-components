@@ -36,13 +36,22 @@ const serviceAlteration: InputType = {
   options: ['departure-skipped', 'arrival-skipped', 'disruption'],
 };
 
+const marker: InputType = {
+  control: {
+    type: 'inline-radio',
+  },
+  options: ['pulsing', 'static'],
+};
+
 const defaultArgTypes: ArgTypes = {
   'disable-animation': disableAnimation,
+  marker: marker,
   now,
 };
 
 const defaultArgs: Args = {
   'disable-animation': false,
+  marker: marker.options![0],
   now: new Date('2024-12-05T12:11:00').valueOf(),
 };
 

@@ -6,6 +6,7 @@ import { addMinutes, differenceInMinutes, format, isAfter, isBefore } from 'date
 import type { CSSResultGroup, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 import { removeTimezoneFromISOTimeString } from '../core/datetime.js';
 import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
@@ -104,14 +105,7 @@ class SbbPearlChainElement extends LitElement {
       defaultDateAdapter.deserialize(leg.departure)?.toISOString(),
     );
     if (arrivalNoTz && departureNoTz) {
-      const duration = differenceInMinutes(
-        removeTimezoneFromISOTimeString(
-          defaultDateAdapter.deserialize(leg.arrival)?.toISOString(),
-        )!,
-        removeTimezoneFromISOTimeString(
-          defaultDateAdapter.deserialize(leg.departure)?.toISOString(),
-        )!,
-      );
+      const duration = differenceInMinutes(arrivalNoTz, departureNoTz);
       const allDurations = this._getAllDuration(legs);
 
       if (allDurations === 0) {
@@ -187,9 +181,6 @@ class SbbPearlChainElement extends LitElement {
       return;
     }
 
-    const animation = this.marker === 'static' ? 'sbb-pearl-chain__position--no-animation' : '';
-
-    progressLeg?.classList.add(animation);
     progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}%`);
     if (currentPosition >= 50) {
       progressLeg?.style.setProperty('transform', `translateX(-100%)`);
@@ -206,42 +197,9 @@ class SbbPearlChainElement extends LitElement {
       return html``;
     }
 
-    const departureWithDelay = this._addMinutes(rideLegs[0].departure!, rideLegs[0].departureDelay);
+    const statusDeparture = this._getLegStatus(now, rideLegs[0]);
 
-    const arrivalTimeDelay = this._addMinutes(
-      rideLegs[rideLegs.length - 1].arrival!,
-      rideLegs[rideLegs.length - 1].arrivalDelay,
-    );
-
-    const departureNotServiced = ((): string => {
-      return rideLegs && rideLegs[0]?.departureSkipped ? 'sbb-pearl-chain--departure-skipped' : '';
-    })();
-
-    const arrivalNotServiced = ((): string => {
-      return rideLegs && rideLegs[rideLegs.length - 1]?.arrivalSkipped
-        ? 'sbb-pearl-chain--arrival-skipped'
-        : '';
-    })();
-
-    const departureCancelClass = ((): string => {
-      return rideLegs && rideLegs[0]?.disruption ? 'sbb-pearl-chain--departure-disruption' : '';
-    })();
-
-    const arrivalCancelClass = ((): string => {
-      return rideLegs && rideLegs[rideLegs.length - 1]?.disruption
-        ? 'sbb-pearl-chain--arrival-disruption'
-        : '';
-    })();
-
-    const status = departureWithDelay && arrivalTimeDelay && this._getLegStatus(now, rideLegs[0]);
-
-    const statusClassDeparture =
-      rideLegs && status && !departureCancelClass ? 'sbb-pearl-chain__bullet--' + status : '';
-
-    const statusClassArrival =
-      rideLegs && status && !arrivalCancelClass
-        ? 'sbb-pearl-chain__bullet--' + this._getStatus(now, undefined, arrivalTimeDelay)
-        : '';
+    const statusArrival = this._getLegStatus(now, rideLegs[rideLegs.length - 1]);
 
     rideLegs[0]?.toggleAttribute('data-first-leg', true);
     rideLegs[rideLegs.length - 1].toggleAttribute('data-last-leg', true);
@@ -269,9 +227,9 @@ class SbbPearlChainElement extends LitElement {
     if (this._isAllCancelled(rideLegs)) {
       return this._renderContent(html`
         <div class="sbb-pearl-chain">
-          <span class="sbb-pearl-chain__bullet sbb-pearl-chain--departure-disruption"></span>
+          <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet-disruption"></span>
           <sbb-pearl-chain-leg disruption data-first-leg data-last-leg></sbb-pearl-chain-leg>
-          <span class="sbb-pearl-chain__bullet sbb-pearl-chain--departure-disruption"></span>
+          <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet-disruption"></span>
         </div>
       `);
     }
@@ -279,11 +237,22 @@ class SbbPearlChainElement extends LitElement {
     return this._renderContent(html`
       <div class="sbb-pearl-chain">
         <span
-          class="sbb-pearl-chain__bullet ${statusClassDeparture} ${departureNotServiced} ${departureCancelClass}"
+          class=${classMap({
+            'sbb-pearl-chain__bullet': true,
+            'sbb-pearl-chain__bullet-disruption': rideLegs[0].disruption,
+            'sbb-pearl-chain__bullet-skipped': rideLegs[0].departureSkipped,
+            'sbb-pearl-chain__bullet-past':
+              statusDeparture === 'past' || statusDeparture === 'progress',
+          })}
         ></span>
         <slot></slot>
         <span
-          class="sbb-pearl-chain__bullet ${statusClassArrival} ${arrivalNotServiced} ${arrivalCancelClass}"
+          class=${classMap({
+            'sbb-pearl-chain__bullet': true,
+            'sbb-pearl-chain__bullet-disruption': rideLegs[rideLegs.length - 1].disruption,
+            'sbb-pearl-chain__bullet-skipped': rideLegs[rideLegs.length - 1].arrivalSkipped,
+            'sbb-pearl-chain__bullet-past': statusArrival === 'past',
+          })}
         ></span>
       </div>
     `);
