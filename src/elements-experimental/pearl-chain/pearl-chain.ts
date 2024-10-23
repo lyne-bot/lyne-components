@@ -13,6 +13,7 @@ import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
 import style from './pearl-chain.scss?lit&inline';
 
+import '@sbb-esta/lyne-elements/screen-reader-only.js';
 import '../pearl-chain-leg.js';
 import { i18nArrival, i18nDeparture } from '@sbb-esta/lyne-elements/core/i18n.js';
 
@@ -152,18 +153,18 @@ class SbbPearlChainElement extends LitElement {
       <div class="sbb-pearl-chain__wrapper">
         ${this.departure && this.arrival
           ? html`<time class="sbb-pearl-chain__time" datetime=${this.departure!}>
-              <span class="sbb-screen-reader-only"
-                >${i18nDeparture[this._language.current]}:&nbsp;</span
-              >
+              <sbb-screen-reader-only>
+                ${i18nDeparture[this._language.current]}:&nbsp;
+              </sbb-screen-reader-only>
               ${format(this.departure, 'HH:mm')}
             </time>`
           : nothing}
         ${content}
         ${this.arrival && this.departure
           ? html`<time class="sbb-pearl-chain__time" datetime=${this.arrival!}>
-              <span class="sbb-screen-reader-only"
-                >${i18nArrival[this._language.current]}:&nbsp;</span
-              >
+              <sbb-screen-reader-only>
+                ${i18nArrival[this._language.current]}:&nbsp;
+              </sbb-screen-reader-only>
               ${format(this.arrival, 'HH:mm')}
             </time>`
           : nothing}
@@ -182,6 +183,12 @@ class SbbPearlChainElement extends LitElement {
     }
 
     progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}%`);
+    if (this.marker === 'pulsing') {
+      progressLeg?.style.setProperty(
+        '--sbb-pearl-chain-leg-animation',
+        'pearl-chain-bullet-position-pulse',
+      );
+    }
     if (currentPosition >= 50) {
       progressLeg?.style.setProperty('transform', `translateX(-100%)`);
     }
