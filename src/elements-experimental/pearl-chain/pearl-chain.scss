@@ -1,19 +1,5 @@
 @use '@sbb-esta/lyne-elements/core/styles' as sbb;
 
-@mixin sbb-pearl-chain-dotted {
-  background-color: unset;
-  background-image: linear-gradient(to right, currentcolor 0%, currentcolor 50%, Canvas 50%);
-  background-repeat: repeat-x;
-  background-size: calc(2 * var(--sbb-pearl-chain-spacing-small)) var(--sbb-pearl-chain-height);
-  inset-inline-end: var(--sbb-pearl-chain-height);
-
-  @include sbb.if-forced-colors {
-    background: unset;
-    border-block-start: #{sbb.px-to-rem-build(1)} dashed Highlight;
-    transform: translateY(#{sbb.px-to-rem-build(1)});
-  }
-}
-
 // Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
 @include sbb.box-sizing;
 
@@ -64,57 +50,17 @@
     inset-block-start: 0;
     z-index: 3;
   }
-}
 
-.sbb-pearl-chain__bullet:first-of-type {
-  inset-inline-start: 0;
-}
+  &:first-of-type {
+    inset-inline-start: 0;
+  }
 
-.sbb-pearl-chain__bullet:last-of-type {
-  inset-inline-end: 0;
-}
-
-.sbb-pearl-chain__leg {
-  flex-shrink: 0;
-  flex-grow: 0;
-  position: relative;
-  height: var(--sbb-pearl-chain-height);
-  border-inline-end: var(--sbb-pearl-chain-spacing-small) solid Canvas;
-  background-color: currentcolor;
-  width: var(--sbb-pearl-chain-leg-width);
-  display: flex;
-  align-items: center;
-
-  @include sbb.if-forced-colors {
-    background-color: CanvasText;
-
-    .sbb-pearl-chain--past & {
-      background-color: GrayText;
-    }
+  &:last-of-type {
+    inset-inline-end: 0;
   }
 }
 
-.sbb-pearl-chain__leg:last-of-type {
-  border: none;
-}
-
-// dot on leg
-.sbb-pearl-chain__stop {
-  position: relative;
-  z-index: 2;
-
-  @include sbb.pearl-chain-bullet;
-
-  & {
-    @include sbb.pearl-chain-bullet-stop;
-  }
-}
-
-.sbb-pearl-chain__bullet--future {
-  @include sbb.pearl-chain-bullet;
-}
-
-.sbb-pearl-chain__bullet--past {
+.sbb-pearl-chain__bullet-past {
   color: var(--sbb-pearl-chain-color-past);
 
   @include sbb.pearl-chain-bullet-past;
@@ -124,14 +70,7 @@
   }
 }
 
-.sbb-pearl-chain__bullet--progress {
-  background: var(--sbb-pearl-chain-bullet-color);
-
-  @include sbb.pearl-chain-bullet-past;
-}
-
-.sbb-pearl-chain--arrival-disruption,
-.sbb-pearl-chain--departure-disruption {
+.sbb-pearl-chain__bullet-disruption {
   color: var(--sbb-pearl-chain-color-disruption);
 
   @include sbb.if-forced-colors {
@@ -140,41 +79,9 @@
   }
 }
 
-.sbb-pearl-chain__leg--skipped {
-  color: var(--sbb-pearl-chain-color-disruption);
-
-  &::after {
-    @include sbb-pearl-chain-dotted;
-  }
-}
-
-.sbb-pearl-chain--arrival-skipped,
-.sbb-pearl-chain--departure-skipped {
+.sbb-pearl-chain__bullet-skipped {
   @include sbb.pearl-chain-bullet-start-end;
   @include sbb.pearl-chain-bullet-skipped;
-}
-
-// line on leg
-.sbb-pearl-chain__leg::after {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  background-color: currentcolor;
-  border-radius: var(--sbb-pearl-chain-height);
-  z-index: 1;
-
-  @include sbb.if-forced-colors {
-    background-color: CanvasText;
-
-    .sbb-pearl-chain--past & {
-      background-color: GrayText;
-    }
-  }
-}
-
-.sbb-pearl-chain__position--no-animation {
-  animation: unset;
 }
 
 .sbb-screen-reader-only {
