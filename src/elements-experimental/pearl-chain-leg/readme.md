@@ -13,25 +13,13 @@ The `past`, `arrival-skipped`, `departure-skipped`, and `disruption` properties 
 
 ## Properties
 
-| Name               | Attribute           | Privacy | Type                   | Default | Description                                  |
-| ------------------ | ------------------- | ------- | ---------------------- | ------- | -------------------------------------------- |
-| `arrival`          | `arrival`           | public  | `SbbDateLike \| null`  | `null`  | Arrival time of the leg.                     |
-| `arrivalDelay`     | `arrival-delay`     | public  | `number`               | `0`     | The number of minutes of delay on arrival.   |
-| `arrivalSkipped`   | `arrival-skipped`   | public  | `boolean \| undefined` |         | Whether the leg's arrival is skipped.        |
-| `departure`        | `departure`         | public  | `SbbDateLike \| null`  | `null`  | Departure time of the leg.                   |
-| `departureDelay`   | `departure-delay`   | public  | `number`               | `0`     | The number of minutes of delay on departure. |
-| `departureSkipped` | `departure-skipped` | public  | `boolean \| undefined` |         | Whether the leg's departure is skipped.      |
-| `disruption`       | `disruption`        | public  | `boolean \| undefined` |         | Whether the leg is disrupted.                |
-| `past`             | `past`              | public  | `boolean \| undefined` |         | Whether current time is past arrival time.   |
-
-## Events
-
-| Name          | Type               | Description               | Inherited From |
-| ------------- | ------------------ | ------------------------- | -------------- |
-| `myEventName` | `CustomEvent<any>` | TODO: Document this event |                |
-
-## Slots
-
-| Name | Description                                      |
-| ---- | ------------------------------------------------ |
-|      | Use the unnamed slot to add `sbb-TODO` elements. |
+| Name               | Attribute           | Privacy | Type                  | Default | Description                                  |
+| ------------------ | ------------------- | ------- | --------------------- | ------- | -------------------------------------------- |
+| `arrival`          | `arrival`           | public  | `SbbDateLike \| null` | `null`  | Arrival time of the leg.                     |
+| `arrivalDelay`     | `arrival-delay`     | public  | `number`              | `0`     | The number of minutes of delay on arrival.   |
+| `arrivalSkipped`   | `arrival-skipped`   | public  | `boolean`             | `false` | Whether the leg's arrival is skipped.        |
+| `departure`        | `departure`         | public  | `SbbDateLike \| null` | `null`  | Departure time of the leg.                   |
+| `departureDelay`   | `departure-delay`   | public  | `number`              | `0`     | The number of minutes of delay on departure. |
+| `departureSkipped` | `departure-skipped` | public  | `boolean`             | `false` | Whether the leg's departure is skipped.      |
+| `disruption`       | `disruption`        | public  | `boolean`             | `false` | Whether the leg is disrupted.                |
+| `past`             | `past`              | public  | `boolean`             | `false` | Whether current time is past arrival time.   |

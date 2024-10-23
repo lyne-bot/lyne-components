@@ -6,10 +6,7 @@ import { customElement, property } from 'lit/decorators.js';
 import style from './pearl-chain-leg.scss?lit&inline';
 
 /**
- * Describe the purpose of the component with a single short sentence.
- *
- * @slot - Use the unnamed slot to add `sbb-TODO` elements.
- * @event {CustomEvent<any>} myEventName - TODO: Document this event
+ * It displays a journey leg inside a `sbb-pearl-chain`.
  */
 @customElement('sbb-pearl-chain-leg')
 export class SbbPearlChainLegElement extends LitElement {
