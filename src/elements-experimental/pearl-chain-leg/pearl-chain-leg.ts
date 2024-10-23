@@ -36,18 +36,18 @@ export class SbbPearlChainLegElement extends LitElement {
   private _arrival: SbbDateLike | null = null;
 
   /** Whether the leg is disrupted. */
-  @property({ reflect: true, type: Boolean }) public disruption?: boolean;
+  @property({ reflect: true, type: Boolean }) public disruption: boolean = false;
 
   /** Whether current time is past arrival time. */
-  @property({ reflect: true, type: Boolean }) public past?: boolean;
+  @property({ reflect: true, type: Boolean }) public past: boolean = false;
 
   /** Whether the leg's departure is skipped. */
   @property({ reflect: true, type: Boolean, attribute: 'departure-skipped' })
-  public departureSkipped?: boolean;
+  public departureSkipped: boolean = false;
 
   /** Whether the leg's arrival is skipped. */
   @property({ reflect: true, type: Boolean, attribute: 'arrival-skipped' })
-  public arrivalSkipped?: boolean;
+  public arrivalSkipped: boolean = false;
 
   /** The number of minutes of delay on departure. */
   @property({ type: Number, attribute: 'departure-delay' }) public departureDelay: number = 0;

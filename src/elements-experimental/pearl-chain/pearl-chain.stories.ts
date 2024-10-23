@@ -40,7 +40,7 @@ const marker: InputType = {
   control: {
     type: 'inline-radio',
   },
-  options: ['pulsing', 'static'],
+  options: ['static', 'pulsing'],
 };
 
 const defaultArgTypes: ArgTypes = {
@@ -225,8 +225,8 @@ export const MixedWithTime: StoryObj = {
   args: {
     ...defaultArgs,
     serviceAlteration: serviceAlteration.options![2],
-    arrival: '2024-11-30T12:13:00',
     departure: '2024-12-18T12:13:00',
+    arrival: '2024-11-30T12:13:00',
   },
 };
 

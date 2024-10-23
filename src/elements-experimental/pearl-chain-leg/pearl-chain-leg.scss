@@ -24,6 +24,7 @@
   --sbb-pearl-chain-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
   --sbb-pearl-chain-color-past: var(--sbb-pearl-chain-bullet-color-past);
   --sbb-pearl-chain-leg-width: 100%;
+  --sbb-pearl-chain-leg-animation: none;
 
   display: contents;
 
@@ -92,6 +93,8 @@
 
   :host([data-progress='']:not([arrival-skipped=''], [departure-skipped=''], [disruption=''])) & {
     &::before {
+      --sbb-pearl-chain-bullet-animation-name: var(--sbb-pearl-chain-leg-animation);
+
       @include sbb.pearl-chain-bullet-position;
 
       & {

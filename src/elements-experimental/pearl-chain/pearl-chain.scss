@@ -84,10 +84,6 @@
   @include sbb.pearl-chain-bullet-skipped;
 }
 
-.sbb-screen-reader-only {
-  @include sbb.screen-reader-only;
-}
-
 .sbb-pearl-chain__time {
   @include sbb.text-s--bold;
 

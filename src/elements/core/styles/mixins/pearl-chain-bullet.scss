@@ -15,6 +15,7 @@
   --sbb-pearl-chain-bullet-border-width: var(--sbb-border-width-2x);
   --sbb-pearl-chain-bullet-animation-duration: 1920ms;
   --sbb-pearl-chain-bullet-animation-easing: ease-out;
+  --sbb-pearl-chain-bullet-animation-name: pearl-chain-bullet-position-pulse;
   --sbb-pearl-chain-bullet-crossed-width: #{functions.px-to-rem-build(14.14)};
   --sbb-pearl-chain-bullet-crossed-height: #{functions.px-to-rem-build(3.5)};
   --sbb-pearl-chain-bullet-crossed-border-width: #{functions.px-to-rem-build(1.5)};
@@ -128,7 +129,8 @@
   }
 
   & {
-    animation: pearl-chain-bullet-position-pulse var(--sbb-pearl-chain-bullet-animation-duration)
+    animation: var(--sbb-pearl-chain-bullet-animation-name)
+      var(--sbb-pearl-chain-bullet-animation-duration)
       var(--sbb-pearl-chain-bullet-animation-easing) infinite;
   }
 }
