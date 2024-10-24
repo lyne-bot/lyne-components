@@ -4,8 +4,8 @@ import { html } from 'lit';
 
 import type { SbbDialogElement } from '../../../elements/dialog.js';
 import {
-  futureLegTemplate,
-  pastLegTemplate,
+  futureLeg,
+  pastLeg,
 } from '../../../elements-experimental/pearl-chain/pearl-chain.sample-data.js';
 
 import {
@@ -108,10 +108,10 @@ export const homeLoggedInTemplate = (args: Args): TemplateResult => html`
                     <span class="sbb-text-s card-description">
                       2nd class, valid until 30.11.2022
                     </span>
-                    <!-- TODO: Check if this looks correct -->
-                    <sbb-pearl-chain .now=${new Date('2021-12-08T12:11:00+01:00')}>
-                      ${pastLegTemplate} ${futureLegTemplate}
-                    </sbb-pearl-chain>
+                    <sbb-pearl-chain
+                      .legs=${[pastLeg, futureLeg]}
+                      now="2021-12-08T12:11:00+01:00"
+                    ></sbb-pearl-chain>
                   </span>
                   <sbb-secondary-button-static icon-name="qrcode-small">
                     Ticket
@@ -155,10 +155,10 @@ export const homeLoggedInTemplate = (args: Args): TemplateResult => html`
                     <span class="sbb-text-s card-description">
                       Saturday, 21.02.2021, 1 h 26 min
                     </span>
-                    <!-- TODO: Check if this looks correct -->
-                    <sbb-pearl-chain .now=${new Date('2021-12-08T12:11:00+01:00')}>
-                      ${pastLegTemplate} ${futureLegTemplate}
-                    </sbb-pearl-chain>
+                    <sbb-pearl-chain
+                      .legs=${[pastLeg, futureLeg]}
+                      now="2021-12-08T12:11:00+01:00"
+                    ></sbb-pearl-chain>
                   </span>
                   <sbb-secondary-button-static> Details </sbb-secondary-button-static>
                 </span>
