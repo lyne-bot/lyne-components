@@ -58,7 +58,7 @@ export const longFutureLegTemplate: TemplateResult = html`
 export function removeTimezone(time: SbbDateLike | null): Date | undefined {
   const parsedDate = defaultDateAdapter.deserialize(time);
 
-  if (parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
+  if (!parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
     return undefined;
   }
 
