@@ -6,7 +6,6 @@ import { classMap } from 'lit/directives/class-map.js';
 
 import { SbbLanguageController } from '../../core/controllers.js';
 import { defaultDateAdapter } from '../../core/datetime.js';
-import { forceType } from '../../core/decorators.js';
 import { i18nArrival, i18nDeparture } from '../../core/i18n.js';
 import type { SbbDateLike } from '../../core/interfaces/types.js';
 import '../../screen-reader-only.js';
@@ -20,7 +19,7 @@ type Status = 'progress' | 'future' | 'past';
 type Marker = 'static' | 'pulsing';
 
 /**
- * It visually displays journey information.
+ * It visually displays journey information. New implementation.
  */
 export
 @customElement('sbb-pearl-chain')
@@ -28,7 +27,6 @@ class SbbPearlChainElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Whether the marker should be pulsing or static. */
-  @forceType()
   @property()
   public accessor marker: Marker = 'static';
 
@@ -57,7 +55,7 @@ class SbbPearlChainElement extends LitElement {
   public set now(value: SbbDateLike | undefined) {
     this._now = defaultDateAdapter.getValidDateOrNull(defaultDateAdapter.deserialize(value));
   }
-  public get now(): Date | null {
+  public get now(): SbbDateLike | null {
     return this._now;
   }
   private _now: Date | null = null;
@@ -181,12 +179,11 @@ class SbbPearlChainElement extends LitElement {
   }
 
   protected override render(): TemplateResult {
-    const now = this.now ?? new Date();
+    const now = (this.now as Date) ?? new Date();
 
     const rideLegs: SbbPearlChainLegElement[] = this._legs();
 
     if (!rideLegs.length) {
-      // TODO
       return html``;
     }
 

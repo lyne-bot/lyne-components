@@ -55,7 +55,7 @@ export const longFutureLegTemplate: TemplateResult = html`
   ></sbb-pearl-chain-leg>
 `;
 
-export function removeTimezone(time: SbbDateLike): Date | undefined {
+export function removeTimezone(time: SbbDateLike | null): Date | undefined {
   const parsedDate = defaultDateAdapter.deserialize(time);
 
   if (parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
