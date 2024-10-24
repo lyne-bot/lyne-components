@@ -2,7 +2,7 @@
 export const snapshots = {};
 
 snapshots["sbb-pearl-chain-leg renders DOM"] = 
-`<sbb-pearl-chain-leg my-prop="Label">
+`<sbb-pearl-chain-leg>
 </sbb-pearl-chain-leg>
 `;
 /* end snapshot sbb-pearl-chain-leg renders DOM */
@@ -24,4 +24,14 @@ snapshots["sbb-pearl-chain-leg renders A11y tree Chrome"] =
 </p>
 `;
 /* end snapshot sbb-pearl-chain-leg renders A11y tree Chrome */
+
+snapshots["sbb-pearl-chain-leg renders A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": ""
+}
+</p>
+`;
+/* end snapshot sbb-pearl-chain-leg renders A11y tree Firefox */
 
