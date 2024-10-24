@@ -2,7 +2,8 @@ import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import type { SbbDateLike } from '../../core/interfaces/index.js';
+import { forceType } from '../../core/decorators.js';
+import type { SbbDateLike } from '../../core/interfaces.js';
 
 import style from './pearl-chain-leg.scss?lit&inline';
 

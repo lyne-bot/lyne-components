@@ -58,7 +58,7 @@ describe(`sbb-pearl-chain`, () => {
           await setup.withFixture(html`
             <sbb-pearl-chain
               .legs=${c.legs}
-              now=${(c.now ?? new Date('2022-12-01T12:11:00').valueOf()) / 1000}
+              .now=${(c.now ?? new Date('2022-12-01T12:11:00').valueOf()) / 1000}
               disable-animation
             ></sbb-pearl-chain>
           `);

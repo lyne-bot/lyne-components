@@ -35,7 +35,9 @@ class SbbPearlChainElement extends LitElement {
    * to the total travel time. Example: departure 16:30, change at 16:40,
    * arrival at 17:00. So the change should have a duration of 33.33%.
    */
-  @property({ type: Array }) public accessor legs: (Leg | PtRideLeg)[] = [];
+  @forceType()
+  @property({ type: Array })
+  public accessor legs: (Leg | PtRideLeg)[] = [];
 
   /**
    * Per default, the current location has a pulsating animation. You can
@@ -50,7 +52,7 @@ class SbbPearlChainElement extends LitElement {
   public set now(value: SbbDateLike | undefined) {
     this._now = defaultDateAdapter.getValidDateOrNull(defaultDateAdapter.deserialize(value));
   }
-  public get now(): Date | null {
+  public get now(): SbbDateLike | null {
     return this._now;
   }
   private _now: Date | null = null;
@@ -145,7 +147,7 @@ class SbbPearlChainElement extends LitElement {
   }
 
   protected override render(): TemplateResult {
-    const now = this.now ?? new Date();
+    const now = (this.now as Date) ?? new Date();
 
     const rideLegs: PtRideLeg[] = this.legs?.filter((leg) => isRideLeg(leg)) as PtRideLeg[];
 
