@@ -45,13 +45,25 @@ describe('sbb-pearl-chain-leg', () => {
     );
 
     it(
+      `${visualDiffDefault.name} departureSkipped=true`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-pearl-chain-leg
+            departure-skipped
+            departure="2024-12-05T12:11:00"
+            arrival="2024-12-05T15:11:00"
+          ></sbb-pearl-chain-leg>`,
+        );
+      }),
+    );
+
+    it(
       `${visualDiffDefault.name} progress`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
           html`<sbb-pearl-chain-leg
             data-progress
             style="--sbb-pearl-chain-status-position: 28%"
-            disruption
             departure="2024-12-05T12:11:00"
             arrival="2024-12-05T15:11:00"
           ></sbb-pearl-chain-leg>`,

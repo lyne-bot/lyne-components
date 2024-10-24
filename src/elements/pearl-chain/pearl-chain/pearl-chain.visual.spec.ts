@@ -3,6 +3,7 @@ import { html } from 'lit';
 import { describeViewports, visualDiffDefault } from '../../core/testing/private.js';
 
 import './pearl-chain.js';
+import '../pearl-chain-leg.js';
 import {
   cancelledLegTemplate,
   disruptionTemplate,
