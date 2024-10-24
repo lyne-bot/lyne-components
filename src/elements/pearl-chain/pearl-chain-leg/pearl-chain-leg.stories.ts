@@ -4,7 +4,7 @@ import type { Args, ArgTypes, Decorator, Meta, StoryObj } from '@storybook/web-c
 import type { TemplateResult } from 'lit';
 import { html } from 'lit';
 
-import { sbbSpread } from '../../storybook/helpers/spread.js';
+import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import readme from './readme.md?raw';
 import './pearl-chain-leg.js';
@@ -114,7 +114,7 @@ const meta: Meta = {
       extractComponentDescription: () => readme,
     },
   },
-  title: 'experimental/sbb-pearl-chain-leg',
+  title: 'elements/pearl-chain/sbb-pearl-chain-leg',
 };
 
 export default meta;

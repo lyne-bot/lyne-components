@@ -1,8 +1,9 @@
+import { html } from 'lit';
+
 import {
   describeViewports,
   visualDiffStandardStates,
 } from '@sbb-esta/lyne-elements/core/testing/private.js';
-import { html } from 'lit';
 
 import './pearl-chain-leg.js';
 

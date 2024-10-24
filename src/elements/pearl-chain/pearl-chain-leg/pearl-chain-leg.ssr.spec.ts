@@ -1,6 +1,7 @@
 import { assert } from '@open-wc/testing';
-import { ssrHydratedFixture } from '@sbb-esta/lyne-elements/core/testing/private.js';
 import { html } from 'lit/static-html.js';
+
+import { ssrHydratedFixture } from '../../core/testing/private.js';
 
 import { SbbPearlChainLegElement } from './pearl-chain-leg.js';
 

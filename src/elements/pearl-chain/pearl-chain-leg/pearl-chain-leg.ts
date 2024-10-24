@@ -1,15 +1,17 @@
-import type { SbbDateLike } from '@sbb-esta/lyne-elements/core/interfaces';
 import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+
+import type { SbbDateLike } from '../../core/interfaces/index.js';
 
 import style from './pearl-chain-leg.scss?lit&inline';
 
 /**
  * It displays a journey leg inside a `sbb-pearl-chain`.
  */
+export
 @customElement('sbb-pearl-chain-leg')
-export class SbbPearlChainLegElement extends LitElement {
+class SbbPearlChainLegElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Departure time of the leg. */
@@ -33,24 +35,34 @@ export class SbbPearlChainLegElement extends LitElement {
   private _arrival: SbbDateLike | null = null;
 
   /** Whether the leg is disrupted. */
-  @property({ reflect: true, type: Boolean }) public disruption: boolean = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor disruption: boolean = false;
 
   /** Whether current time is past arrival time. */
-  @property({ reflect: true, type: Boolean }) public past: boolean = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor past: boolean = false;
 
   /** Whether the leg's departure is skipped. */
+  @forceType()
   @property({ reflect: true, type: Boolean, attribute: 'departure-skipped' })
-  public departureSkipped: boolean = false;
+  public accessor departureSkipped: boolean = false;
 
   /** Whether the leg's arrival is skipped. */
+  @forceType()
   @property({ reflect: true, type: Boolean, attribute: 'arrival-skipped' })
-  public arrivalSkipped: boolean = false;
+  public accessor arrivalSkipped: boolean = false;
 
   /** The number of minutes of delay on departure. */
-  @property({ type: Number, attribute: 'departure-delay' }) public departureDelay: number = 0;
+  @forceType()
+  @property({ type: Number, attribute: 'departure-delay' })
+  public accessor departureDelay: number = 0;
 
   /** The number of minutes of delay on arrival. */
-  @property({ type: Number, attribute: 'arrival-delay' }) public arrivalDelay: number = 0;
+  @forceType()
+  @property({ type: Number, attribute: 'arrival-delay' })
+  public accessor arrivalDelay: number = 0;
 
   private _displayStop(): boolean {
     return !this.hasAttribute('data-first-leg');
