@@ -1,0 +1,91 @@
+@use '@sbb-esta/lyne-elements/core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-pearl-chain-height: var(--sbb-border-width-2x);
+  --sbb-pearl-chain-spacing-small: #{sbb.px-to-rem-build(2)};
+  --sbb-pearl-chain-color: var(--sbb-pearl-chain-bullet-color);
+  --sbb-pearl-chain-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
+  --sbb-pearl-chain-color-past: var(--sbb-pearl-chain-bullet-color-past);
+  --sbb-pearl-chain-leg-width: 100%;
+
+  display: block;
+
+  @include sbb.pearl-chain-bullet-variables;
+}
+
+.sbb-pearl-chain__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--sbb-pearl-chain-time-height);
+  flex-direction: row;
+  gap: var(--sbb-spacing-fixed-3x);
+}
+
+.sbb-pearl-chain {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  color: var(--sbb-pearl-chain-color);
+  width: 100%;
+  padding-block: calc(
+    (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-height)) / 2
+  );
+  padding-inline-end: var(--sbb-pearl-chain-bullet-size-start-end);
+}
+
+// first and last bullet
+.sbb-pearl-chain__bullet {
+  @include sbb.pearl-chain-bullet-start-end;
+  @include sbb.pearl-chain-bullet;
+
+  & {
+    content: '';
+    position: absolute;
+    background-color: currentcolor;
+    inset-block-start: 0;
+    z-index: 3;
+  }
+
+  &:first-of-type {
+    inset-inline-start: 0;
+  }
+
+  &:last-of-type {
+    inset-inline-end: 0;
+  }
+}
+
+.sbb-pearl-chain__bullet-past {
+  color: var(--sbb-pearl-chain-color-past);
+
+  @include sbb.pearl-chain-bullet-past;
+
+  @include sbb.if-forced-colors {
+    background-color: GrayText !important;
+  }
+}
+
+.sbb-pearl-chain__bullet-disruption {
+  color: var(--sbb-pearl-chain-color-disruption);
+
+  @include sbb.if-forced-colors {
+    color: Highlight;
+    background: Highlight;
+  }
+}
+
+.sbb-pearl-chain__bullet-skipped {
+  @include sbb.pearl-chain-bullet-start-end;
+  @include sbb.pearl-chain-bullet-skipped;
+}
+
+.sbb-pearl-chain__time {
+  @include sbb.text-s--bold;
+
+  color: var(--sbb-color-charcoal);
+}

@@ -1,4 +1,4 @@
-@use '@sbb-esta/lyne-elements/core/styles' as sbb;
+@use '../../core/styles' as sbb;
 
 @mixin sbb-pearl-chain-dotted {
   background-color: unset;

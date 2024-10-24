@@ -5,17 +5,17 @@ import { html } from 'lit';
 
 import { sbbSpread } from '../../storybook/helpers/spread.js';
 
-import './pearl-chain.js';
-import '../pearl-chain-leg.js';
 import {
-  cancelledLegTemplate,
-  disruptionTemplate,
-  futureLegTemplate,
-  longFutureLegTemplate,
-  pastLegTemplate,
-  progressLegTemplate,
+  cancelledLeg,
+  progressLeg,
+  pastLeg,
+  futureLeg,
+  longFutureLeg,
+  redirectedOnDepartureLeg,
+  redirectedOnArrivalLeg,
 } from './pearl-chain.sample-data.js';
 import readme from './readme.md?raw';
+import './pearl-chain.js';
 
 const disableAnimation: InputType = {
   control: {
@@ -29,204 +29,127 @@ const now: InputType = {
   },
 };
 
-const serviceAlteration: InputType = {
-  control: {
-    type: 'inline-radio',
-  },
-  options: ['departure-skipped', 'arrival-skipped', 'disruption'],
-};
-
-const marker: InputType = {
-  control: {
-    type: 'inline-radio',
-  },
-  options: ['static', 'pulsing'],
-};
-
 const defaultArgTypes: ArgTypes = {
   'disable-animation': disableAnimation,
-  marker: marker,
   now,
 };
 
 const defaultArgs: Args = {
   'disable-animation': false,
-  marker: marker.options![0],
-  now: new Date('2024-12-05T12:11:00').valueOf(),
+  now: new Date('2022-12-01T12:11:00').valueOf(),
 };
 
-const TemplateSlotted = (legs: TemplateResult[], { now, ...args }: Args): TemplateResult => {
-  return html`<sbb-pearl-chain ${sbbSpread(args)} now=${now ? now / 1000 : nothing}>
-    ${legs.map((leg: TemplateResult) => {
-      return leg;
-    })}
-  </sbb-pearl-chain>`;
-};
-
-const TemplateAlteration = ({ serviceAlteration, ...args }: Args): TemplateResult => {
-  return TemplateSlotted(
-    [
-      pastLegTemplate,
-      progressLegTemplate,
-      futureLegTemplate,
-      cancelledLegTemplate(
-        serviceAlteration === 'departure-skipped',
-        serviceAlteration === 'arrival-skipped',
-        serviceAlteration === 'disruption',
-      ),
-      longFutureLegTemplate,
-    ],
-    args,
-  );
-};
-
-const TemplateFirstStopSkipped = (args: Args): TemplateResult => {
-  return TemplateSlotted(
-    [cancelledLegTemplate(true), futureLegTemplate, longFutureLegTemplate],
-    args,
-  );
-};
-
-const TemplateLastStopSkipped = (args: Args): TemplateResult => {
-  return TemplateSlotted(
-    [pastLegTemplate, pastLegTemplate, cancelledLegTemplate(false, true)],
-    args,
-  );
-};
-
-const TemplateManyStops = (args: Args): TemplateResult => {
-  return TemplateSlotted(
-    [pastLegTemplate, pastLegTemplate, pastLegTemplate, pastLegTemplate],
-    args,
-  );
-};
-
-const TemplateNoStop = (args: Args): TemplateResult => {
-  return TemplateSlotted([futureLegTemplate], args);
-};
-
-const TemplateCancelled = (args: Args): TemplateResult => {
-  return TemplateSlotted([disruptionTemplate], args);
-};
-
-const TemplateManyCancelled = (args: Args): TemplateResult => {
-  return TemplateSlotted(
-    [
-      futureLegTemplate,
-      cancelledLegTemplate(false, false, true),
-      futureLegTemplate,
-      cancelledLegTemplate(false, false, true),
-    ],
-    args,
-  );
-};
-
-const TemplateWithPosition = (args: Args): TemplateResult => {
-  return TemplateSlotted([progressLegTemplate], args);
-};
-
-const TemplatePast = (args: Args): TemplateResult => {
-  return TemplateSlotted([pastLegTemplate, pastLegTemplate], args);
+const Template = ({ legs, now, ...args }: Args): TemplateResult => {
+  return html`<sbb-pearl-chain
+    .legs=${legs}
+    ${sbbSpread(args)}
+    now=${now ? now / 1000 : nothing}
+  ></sbb-pearl-chain>`;
 };
 
 export const NoStops: StoryObj = {
-  render: TemplateNoStop,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    legs: [futureLeg],
   },
 };
 
 export const ManyStops: StoryObj = {
-  render: TemplateManyStops,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    now: new Date('2024-11-30T11:13:00').valueOf(),
+    legs: [futureLeg, longFutureLeg, futureLeg, futureLeg],
   },
 };
 
 export const Cancelled: StoryObj = {
-  render: TemplateCancelled,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    legs: [cancelledLeg],
   },
 };
 
 export const CancelledManyStops: StoryObj = {
-  render: TemplateManyCancelled,
-  argTypes: defaultArgTypes,
-};
-
-export const withPosition: StoryObj = {
-  render: TemplateWithPosition,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    legs: [futureLeg, cancelledLeg, futureLeg, cancelledLeg],
+  },
+};
+
+export const withPosition: StoryObj = {
+  render: Template,
+  argTypes: defaultArgTypes,
+  args: {
+    ...defaultArgs,
+    legs: [progressLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
 export const Past: StoryObj = {
-  render: TemplatePast,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    legs: [pastLeg, pastLeg],
+    now: new Date('2023-11-01T12:11:00').valueOf(),
   },
 };
 
 export const DepartureStopSkipped: StoryObj = {
-  render: TemplateAlteration,
-  argTypes: { ...defaultArgTypes, serviceAlteration },
+  render: Template,
+  argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    serviceAlteration: serviceAlteration.options![0],
+    legs: [pastLeg, progressLeg, longFutureLeg, redirectedOnDepartureLeg, futureLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
 export const ArrivalStopSkipped: StoryObj = {
-  render: TemplateAlteration,
-  argTypes: { ...defaultArgTypes, serviceAlteration },
+  render: Template,
+  argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    serviceAlteration: serviceAlteration.options![1],
+    legs: [pastLeg, progressLeg, longFutureLeg, redirectedOnArrivalLeg, futureLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
 export const FirstStopSkipped: StoryObj = {
-  render: TemplateFirstStopSkipped,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    legs: [redirectedOnDepartureLeg, futureLeg, longFutureLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
 export const LastStopSkipped: StoryObj = {
-  render: TemplateLastStopSkipped,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    now: new Date('2024-11-30T11:13:00').valueOf(),
+    legs: [futureLeg, longFutureLeg, redirectedOnArrivalLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
 export const Mixed: StoryObj = {
-  render: TemplateAlteration,
-  argTypes: { ...defaultArgTypes, serviceAlteration },
+  render: Template,
+  argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    serviceAlteration: serviceAlteration.options![2],
-  },
-};
-
-export const MixedWithTime: StoryObj = {
-  render: TemplateAlteration,
-  argTypes: { ...defaultArgTypes, serviceAlteration },
-  args: {
-    ...defaultArgs,
-    serviceAlteration: serviceAlteration.options![2],
-    departure: '2024-12-18T12:13:00',
-    arrival: '2024-11-30T12:13:00',
+    legs: [pastLeg, progressLeg, longFutureLeg, cancelledLeg, futureLeg],
+    now: new Date('2022-12-05T12:11:00').valueOf(),
   },
 };
 
