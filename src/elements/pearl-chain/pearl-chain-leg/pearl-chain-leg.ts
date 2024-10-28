@@ -74,7 +74,7 @@ class SbbPearlChainLegElement extends LitElement {
 
     //We need to update parent pearl-chain so that following leg can be styled properly.
     if (_changedProperties.has('arrivalSkipped')) {
-      const parentPearlChain = this.closest('sbb-pearl-chain');
+      const parentPearlChain = this.closest?.('sbb-pearl-chain');
       if (!parentPearlChain) {
         return;
       }
