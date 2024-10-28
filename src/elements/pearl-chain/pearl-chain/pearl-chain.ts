@@ -63,7 +63,7 @@ class SbbPearlChainElement extends LitElement {
   private _language = new SbbLanguageController(this);
 
   private _legs(): SbbPearlChainLegElement[] {
-    return Array.from(this.querySelectorAll('sbb-pearl-chain-leg'));
+    return Array.from(this.querySelectorAll?.('sbb-pearl-chain-leg') ?? []);
   }
 
   private _getAllDuration(legs: SbbPearlChainLegElement[]): number {
