@@ -68,7 +68,7 @@
     }
   }
 
-  :host([disruption='']) & {
+  :host([disruption]) & {
     color: var(--sbb-pearl-chain-color-disruption);
 
     @include sbb.pearl-chain-bullet-disruption;
@@ -83,7 +83,7 @@
     }
   }
 
-  :host(:is([arrival-skipped=''], [departure-skipped=''])) & {
+  :host(:is([arrival-skipped], [departure-skipped])) & {
     color: var(--sbb-pearl-chain-color-disruption);
 
     &::after {
@@ -91,7 +91,7 @@
     }
   }
 
-  :host([data-progress='']:not([arrival-skipped=''], [departure-skipped=''], [disruption=''])) & {
+  :host([data-progress]:not([arrival-skipped], [departure-skipped], [disruption])) & {
     &::before {
       --sbb-pearl-chain-bullet-animation-name: var(--sbb-pearl-chain-leg-animation);
 
@@ -153,15 +153,15 @@
     @include sbb.pearl-chain-bullet-stop;
   }
 
-  :host(:is([past=''], [data-progress=''])) & {
+  :host(:is([past], [data-progress])) & {
     @include sbb.pearl-chain-bullet-past;
   }
 
-  :host(:is([departure-skipped], [data-skip-departure=''])) & {
+  :host(:is([departure-skipped], [data-skip-departure])) & {
     @include sbb.pearl-chain-bullet-skipped;
   }
 
-  :host([disruption='']) & {
+  :host([disruption]) & {
     @include sbb.pearl-chain-bullet-disruption;
   }
 }

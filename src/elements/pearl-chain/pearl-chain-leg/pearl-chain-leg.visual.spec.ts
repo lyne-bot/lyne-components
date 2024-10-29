@@ -19,7 +19,7 @@ describe('sbb-pearl-chain-leg', () => {
     );
 
     it(
-      `${visualDiffDefault.name} past=true`,
+      `past=true`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
           html`<sbb-pearl-chain-leg
@@ -32,7 +32,7 @@ describe('sbb-pearl-chain-leg', () => {
     );
 
     it(
-      `${visualDiffDefault.name} disruption=true`,
+      `disruption=true`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
           html`<sbb-pearl-chain-leg
@@ -45,7 +45,7 @@ describe('sbb-pearl-chain-leg', () => {
     );
 
     it(
-      `${visualDiffDefault.name} departureSkipped=true`,
+      `departureSkipped=true`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
           html`<sbb-pearl-chain-leg
@@ -58,7 +58,7 @@ describe('sbb-pearl-chain-leg', () => {
     );
 
     it(
-      `${visualDiffDefault.name} progress`,
+      `progress`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
           html`<sbb-pearl-chain-leg

@@ -1,7 +1,7 @@
 The `sbb-pearl-chain` component displays all parts of a journey, including changes of trains or other kinds of transports.
 Also, it is possible to render the current position.
 
-The compoent's configuration is done through slotted [sbb-pearl-chain-leg](/docs/experimental-sbb-pearl-chain-leg--docs)s.
+The component's configuration is done through slotted [sbb-pearl-chain-leg](/docs/elements-pearl-chain-sbb-pearl-chain-leg--docs)s.
 
 ```html
 <sbb-pearl-chain>
@@ -22,8 +22,6 @@ The compoent's configuration is done through slotted [sbb-pearl-chain-leg](/docs
 ```
 
 Optionally the properties `departure` and `arrival` can be set in order to display the departure time and the arrival time at the sides of the component.
-
-With time displayed
 
 ```html
 <sbb-pearl-chain departure="2024-01-31T16:53:00.000Z" arrival="2024-01-31T19:58:00.000Z">
@@ -55,9 +53,9 @@ The components allows to slot any number of `sbb-pearl-chain-leg` in the `unname
 
 ## Properties
 
-| Name        | Attribute   | Privacy | Type                    | Default    | Description                                                                                                          |
-| ----------- | ----------- | ------- | ----------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------- |
-| `arrival`   | `arrival`   | public  | `SbbDateLike \| null`   | `null`     | Prop to render the arrival time - will be formatted as "H:mm"                                                        |
-| `departure` | `departure` | public  | `SbbDateLike \| null`   | `null`     | Prop to render the departure time - will be formatted as "H:mm"                                                      |
-| `marker`    | `marker`    | public  | `'static' \| 'pulsing'` | `'static'` | Whether the marker should be pulsing or static.                                                                      |
-| `now`       | `now`       | public  | `Date \| null`          | `null`     | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
+| Name        | Attribute   | Privacy | Type                  | Default    | Description                                                                                                          |
+| ----------- | ----------- | ------- | --------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------- |
+| `arrival`   | `arrival`   | public  | `SbbDateLike \| null` | `null`     | Prop to render the arrival time - will be formatted as "H:mm"                                                        |
+| `departure` | `departure` | public  | `SbbDateLike \| null` | `null`     | Prop to render the departure time - will be formatted as "H:mm"                                                      |
+| `marker`    | `marker`    | public  | `Marker`              | `'static'` | Whether the marker should be pulsing or static.                                                                      |
+| `now`       | `now`       | public  | `SbbDateLike \| null` | `null`     | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |

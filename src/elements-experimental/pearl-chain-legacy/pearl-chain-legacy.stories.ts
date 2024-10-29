@@ -13,9 +13,9 @@ import {
   longFutureLeg,
   redirectedOnDepartureLeg,
   redirectedOnArrivalLeg,
-} from './pearl-chain.sample-data.js';
+} from './pearl-chain-legacy.sample-data.js';
 import readme from './readme.md?raw';
-import './pearl-chain.js';
+import './pearl-chain-legacy.js';
 
 const disableAnimation: InputType = {
   control: {
@@ -40,11 +40,11 @@ const defaultArgs: Args = {
 };
 
 const Template = ({ legs, now, ...args }: Args): TemplateResult => {
-  return html`<sbb-pearl-chain
+  return html`<sbb-pearl-chain-legacy
     .legs=${legs}
     ${sbbSpread(args)}
     now=${now ? now / 1000 : nothing}
-  ></sbb-pearl-chain>`;
+  ></sbb-pearl-chain-legacy>`;
 };
 
 export const NoStops: StoryObj = {
