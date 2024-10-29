@@ -18,7 +18,7 @@ import { getDepartureArrivalTimeAttribute, isRideLeg } from '../core/timetable.j
 
 import style from './pearl-chain-time.scss?lit&inline';
 
-import '../pearl-chain.js';
+import '../pearl-chain-legacy.js';
 
 /**
  * Combined with `sbb-pearl-chain`, it displays walk time information.
@@ -117,12 +117,12 @@ class SbbPearlChainTimeElement extends LitElement {
               ${rideLegs?.length - 1} ${i18nTransferProcedures[this._language.current]}
             </span>`
           : nothing}
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           class="sbb-pearl-chain__time-chain"
           .legs=${this.legs}
           ?disable-animation=${this.disableAnimation}
           .now=${this.now}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
         ${arrival
           ? html`<time class="sbb-pearl-chain__time-time" datetime=${this.arrivalTime!}>
               <span class="sbb-screen-reader-only"

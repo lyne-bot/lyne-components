@@ -1,5 +1,5 @@
 The `sbb-pearl-chain-leg` is a component used inside the
-[sbb-pearl-chain](/docs/experimental-sbb-pearl-chain--docs) in order to render the journey's legs.
+[sbb-pearl-chain](/docs/elements-pearl-chain-sbb-pearl-chain--docs) in order to render the journey's legs.
 
 ```html
 <sbb-pearl-chain-leg departure="2022-08-18T05:00" arrival="2022-08-18T16:00"></sbb-pearl-chain-leg>

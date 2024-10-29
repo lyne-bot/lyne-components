@@ -215,7 +215,7 @@ class SbbTimetableRowElement extends LitElement {
   /** The price Prop, which consists of the data for the badge. */
   @property({ type: Object }) public accessor price: Price = null!;
 
-  /** This will be forwarded to the sbb-pearl-chain component - if true the position won't be animated. */
+  /** This will be forwarded to the sbb-pearl-chain-legacy component - if true the position won't be animated. */
   @forceType()
   @property({ attribute: 'disable-animation', reflect: true, type: Boolean })
   public accessor disableAnimation: boolean = false;

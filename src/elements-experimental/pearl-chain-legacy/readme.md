@@ -43,7 +43,7 @@ The `legs` property is mandatory.
 ```
 
 ```html
-<sbb-pearl-chain legs="{legs}"></sbb-pearl-chain>
+<sbb-pearl-chain-legacy legs="{legs}"></sbb-pearl-chain-legacy>
 ```
 
 To simulate the current datetime, you can use the `now` property,
