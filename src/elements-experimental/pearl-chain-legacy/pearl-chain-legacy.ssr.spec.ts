@@ -9,7 +9,7 @@ describe(`sbb-pearl-chain-legacy ssr`, () => {
 
   beforeEach(async () => {
     root = await ssrHydratedFixture(html`<sbb-pearl-chain-legacy></sbb-pearl-chain-legacy>`, {
-      modules: ['./pearl-chain.js'],
+      modules: ['./pearl-chain-legacy.js'],
     });
   });
 
