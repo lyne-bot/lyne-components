@@ -9,7 +9,12 @@ describe('sbb-pearl-chain-leg', () => {
   let element: SbbPearlChainLegElement;
 
   beforeEach(async () => {
-    element = await fixture(html`<sbb-pearl-chain-leg></sbb-pearl-chain-leg>`);
+    element = await fixture(
+      html`<sbb-pearl-chain-leg
+        departure="2022-08-18T04:00"
+        arrival="2022-08-18T05:00"
+      ></sbb-pearl-chain-leg>`,
+    );
   });
 
   it('renders', async () => {

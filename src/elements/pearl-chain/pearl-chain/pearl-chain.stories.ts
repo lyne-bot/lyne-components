@@ -57,9 +57,7 @@ const defaultArgs: Args = {
 
 const TemplateSlotted = (legs: TemplateResult[], { now, ...args }: Args): TemplateResult => {
   return html`<sbb-pearl-chain ${sbbSpread(args)} now=${now ? now / 1000 : nothing}>
-    ${legs.map((leg: TemplateResult) => {
-      return leg;
-    })}
+    ${legs.map((leg: TemplateResult) => leg)}
   </sbb-pearl-chain>`;
 };
 
