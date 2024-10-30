@@ -12,14 +12,13 @@ import '../../screen-reader-only.js';
 import '../pearl-chain-leg.js';
 import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
-import { removeTimezone } from './pearl-chain.sample-data.js';
 import style from './pearl-chain.scss?lit&inline';
 
 type Status = 'progress' | 'future' | 'past';
 type Marker = 'static' | 'pulsing';
 
 /**
- * It visually displays journey information. New implementation.
+ * It visually displays journey information.
  */
 export
 @customElement('sbb-pearl-chain')
@@ -66,13 +65,40 @@ class SbbPearlChainElement extends LitElement {
     return Array.from(this.querySelectorAll?.('sbb-pearl-chain-leg') ?? []);
   }
 
+  private _removeTimezone(time: SbbDateLike | null): Date | undefined {
+    const parsedDate = defaultDateAdapter.deserialize(time);
+
+    if (!parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
+      return undefined;
+    }
+
+    const isoTime = parsedDate!.toISOString();
+
+    if (isoTime.includes('Z')) {
+      return new Date(isoTime.replace('Z', ''));
+    }
+
+    if (isoTime.includes('T')) {
+      const dateTime = isoTime.split('T');
+
+      if (dateTime[1] && (dateTime[1].includes('+') || dateTime[1].includes('-'))) {
+        return new Date(`${dateTime[0]}T${dateTime[1].split(/[+-]/)[0]}`);
+      }
+    }
+    return new Date(isoTime);
+  }
+
   private _getAllDuration(legs: SbbPearlChainLegElement[]): number {
     return legs?.reduce((sum: number, leg) => {
-      const arrivalNoTz = removeTimezone(leg.arrival);
-      const departureNoTz = removeTimezone(leg.departure);
+      const arrivalNoTz = this._removeTimezone(leg.arrival);
+      const departureNoTz = this._removeTimezone(leg.departure);
       if (arrivalNoTz && departureNoTz) {
         return (
-          sum + differenceInMinutes(removeTimezone(leg.arrival)!, removeTimezone(leg.departure)!)
+          sum +
+          differenceInMinutes(
+            this._removeTimezone(leg.arrival)!,
+            this._removeTimezone(leg.departure)!,
+          )
         );
       }
       return sum;
@@ -87,8 +113,8 @@ class SbbPearlChainElement extends LitElement {
     legs: SbbPearlChainLegElement[],
     leg: SbbPearlChainLegElement,
   ): number {
-    const arrivalNoTz = removeTimezone(leg.arrival);
-    const departureNoTz = removeTimezone(leg.departure);
+    const arrivalNoTz = this._removeTimezone(leg.arrival);
+    const departureNoTz = this._removeTimezone(leg.departure);
     if (arrivalNoTz && departureNoTz) {
       const duration = differenceInMinutes(arrivalNoTz, departureNoTz);
       const allDurations = this._getAllDuration(legs);

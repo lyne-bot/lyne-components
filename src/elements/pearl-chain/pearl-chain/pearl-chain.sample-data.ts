@@ -1,9 +1,6 @@
 import { html, type TemplateResult } from 'lit';
 
 import '../pearl-chain-leg.js';
-import { defaultDateAdapter } from '../../core/datetime.js';
-
-import type { SbbDateLike } from '@sbb-esta/lyne-elements/core/interfaces.js';
 
 export const disruptionTemplate: TemplateResult = html`
   <sbb-pearl-chain-leg
@@ -54,26 +51,3 @@ export const longFutureLegTemplate: TemplateResult = html`
     arrival="2024-12-18T12:13:00"
   ></sbb-pearl-chain-leg>
 `;
-
-export function removeTimezone(time: SbbDateLike | null): Date | undefined {
-  const parsedDate = defaultDateAdapter.deserialize(time);
-
-  if (!parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
-    return undefined;
-  }
-
-  const isoTime = parsedDate!.toISOString();
-
-  if (isoTime.includes('Z')) {
-    return new Date(isoTime.replace('Z', ''));
-  }
-
-  if (isoTime.includes('T')) {
-    const dateTime = isoTime.split('T');
-
-    if (dateTime[1] && (dateTime[1].includes('+') || dateTime[1].includes('-'))) {
-      return new Date(`${dateTime[0]}T${dateTime[1].split(/[+-]/)[0]}`);
-    }
-  }
-  return new Date(isoTime);
-}
