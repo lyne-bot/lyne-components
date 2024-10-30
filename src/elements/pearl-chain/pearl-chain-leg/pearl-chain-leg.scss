@@ -116,6 +116,9 @@
 
       & {
         background-color: var(--sbb-pearl-chain-color-past);
+
+        // --sbb-pearl-chain-leg-status: defined in .ts file
+        width: var(--sbb-pearl-chain-status-position);
       }
     }
   }
