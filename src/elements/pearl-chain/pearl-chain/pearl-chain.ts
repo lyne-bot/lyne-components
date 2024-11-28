@@ -1,21 +1,16 @@
-import { addMinutes, differenceInMinutes, format, isAfter, isBefore } from 'date-fns';
-import type { CSSResultGroup, TemplateResult } from 'lit';
-import { html, LitElement, nothing } from 'lit';
+import { addMinutes, differenceInMinutes, isAfter, isBefore } from 'date-fns';
+import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 
-import { SbbLanguageController } from '../../core/controllers.js';
-import { defaultDateAdapter } from '../../core/datetime.js';
-import { i18nArrival, i18nDeparture } from '../../core/i18n.js';
+import { type DateAdapter, defaultDateAdapter } from '../../core/datetime.js';
 import type { SbbDateLike } from '../../core/interfaces/types.js';
-import '../../screen-reader-only.js';
 import '../pearl-chain-leg.js';
 import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
 import style from './pearl-chain.scss?lit&inline';
 
 type Status = 'progress' | 'future' | 'past';
-type Marker = 'static' | 'pulsing';
 
 /**
  * It visually displays journey information.
@@ -27,103 +22,49 @@ class SbbPearlChainElement extends LitElement {
 
   /** Whether the marker should be pulsing or static. */
   @property()
-  public accessor marker: Marker = 'static';
-
-  /** Prop to render the departure time - will be formatted as "H:mm" */
-  @property()
-  public set departure(value: SbbDateLike | null) {
-    this._departure = value;
-  }
-  public get departure(): SbbDateLike | null {
-    return this._departure;
-  }
-  private _departure: SbbDateLike | null = null;
-
-  /** Prop to render the arrival time - will be formatted as "H:mm" */
-  @property()
-  public set arrival(value: SbbDateLike | null) {
-    this._arrival = value;
-  }
-  public get arrival(): SbbDateLike | null {
-    return this._arrival;
-  }
-  private _arrival: SbbDateLike | null = null;
+  public accessor marker: 'static' | 'pulsing' = 'static';
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()
-  public set now(value: SbbDateLike | undefined) {
-    this._now = defaultDateAdapter.getValidDateOrNull(defaultDateAdapter.deserialize(value));
+  public set now(value: Date) {
+    this._now =
+      this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value)) ?? new Date();
   }
-  public get now(): SbbDateLike | null {
+
+  public get now(): Date {
     return this._now;
   }
-  private _now: Date | null = null;
 
-  private _language = new SbbLanguageController(this);
+  private _now: Date = new Date();
+
+  private _dateAdapter: DateAdapter<Date> = defaultDateAdapter;
 
   private _legs(): SbbPearlChainLegElement[] {
     return Array.from(this.querySelectorAll?.('sbb-pearl-chain-leg') ?? []);
   }
 
-  private _removeTimezone(time: SbbDateLike | null): Date | undefined {
-    const parsedDate = defaultDateAdapter.deserialize(time);
-
-    if (!parsedDate || !defaultDateAdapter.isValid(parsedDate)) {
-      return undefined;
-    }
-
-    const isoTime = parsedDate!.toISOString();
-
-    if (isoTime.includes('Z')) {
-      return new Date(isoTime.replace('Z', ''));
-    }
-
-    if (isoTime.includes('T')) {
-      const dateTime = isoTime.split('T');
-
-      if (dateTime[1] && (dateTime[1].includes('+') || dateTime[1].includes('-'))) {
-        return new Date(`${dateTime[0]}T${dateTime[1].split(/[+-]/)[0]}`);
-      }
-    }
-    return new Date(isoTime);
-  }
-
-  private _getAllDuration(legs: SbbPearlChainLegElement[]): number {
+  private _totalDuration(legs: SbbPearlChainLegElement[]): number {
     return legs?.reduce((sum: number, leg) => {
-      const arrivalNoTz = this._removeTimezone(leg.arrival);
-      const departureNoTz = this._removeTimezone(leg.departure);
+      const arrivalNoTz = this._dateAdapter.deserialize(leg.arrival);
+      const departureNoTz = this._dateAdapter.deserialize(leg.departure) as Date;
       if (arrivalNoTz && departureNoTz) {
-        return (
-          sum +
-          differenceInMinutes(
-            this._removeTimezone(leg.arrival)!,
-            this._removeTimezone(leg.departure)!,
-          )
-        );
+        return sum + differenceInMinutes(arrivalNoTz, departureNoTz);
       }
       return sum;
     }, 0);
   }
 
-  private _isAllCancelled(legs: SbbPearlChainLegElement[]): boolean {
-    return legs?.every((leg) => leg?.disruption);
-  }
-
-  private _getRelativeDuration(
-    legs: SbbPearlChainLegElement[],
-    leg: SbbPearlChainLegElement,
-  ): number {
-    const arrivalNoTz = this._removeTimezone(leg.arrival);
-    const departureNoTz = this._removeTimezone(leg.departure);
+  private _getRelativeDuration(totalDuration: number, leg: SbbPearlChainLegElement): number {
+    const arrivalNoTz = this._dateAdapter.deserialize(leg.arrival);
+    const departureNoTz = this._dateAdapter.deserialize(leg.departure);
     if (arrivalNoTz && departureNoTz) {
       const duration = differenceInMinutes(arrivalNoTz, departureNoTz);
-      const allDurations = this._getAllDuration(legs);
 
-      if (allDurations === 0) {
+      if (totalDuration === 0) {
         return 100;
       }
 
-      return (duration / allDurations) * 100;
+      return (duration / totalDuration) * 100;
     }
     return 0;
   }
@@ -139,13 +80,14 @@ class SbbPearlChainElement extends LitElement {
     return total && (progress / total) * 100;
   }
 
-  private _addMinutes(d: SbbDateLike, amount: number): Date {
-    return addMinutes(defaultDateAdapter.deserialize(d)!, amount);
+  private _addMinutes(d: SbbDateLike<Date> | null, amount: number): Date {
+    const date: Date | null = this._dateAdapter.deserialize(d);
+    return date ? addMinutes(date, amount) : this._dateAdapter.invalid();
   }
 
   private _getLegStatus(now: Date, leg: SbbPearlChainLegElement): Status {
-    const start = this._addMinutes(leg.departure!, leg.departureDelay);
-    const end = this._addMinutes(leg.arrival!, leg.arrivalDelay);
+    const start = this._addMinutes(leg.departure, leg.departureDelay);
+    const end = this._addMinutes(leg.arrival, leg.arrivalDelay);
     return this._getStatus(now, start, end);
   }
 
@@ -158,120 +100,83 @@ class SbbPearlChainElement extends LitElement {
     return 'future';
   }
 
-  private _renderContent(content: TemplateResult): TemplateResult {
-    return html`
-      <div class="sbb-pearl-chain__wrapper">
-        ${this.departure && this.arrival
-          ? html`<time class="sbb-pearl-chain__time" datetime=${this.departure!}>
-              <sbb-screen-reader-only>
-                ${i18nDeparture[this._language.current]}:&nbsp;
-              </sbb-screen-reader-only>
-              ${format(this.departure, 'HH:mm')}
-            </time>`
-          : nothing}
-        ${content}
-        ${this.arrival && this.departure
-          ? html`<time class="sbb-pearl-chain__time" datetime=${this.arrival!}>
-              <sbb-screen-reader-only>
-                ${i18nArrival[this._language.current]}:&nbsp;
-              </sbb-screen-reader-only>
-              ${format(this.arrival, 'HH:mm')}
-            </time>`
-          : nothing}
-      </div>
-    `;
-  }
-
   private _renderPosition(now: Date, progressLeg: SbbPearlChainLegElement): void {
     const currentPosition = this._getProgress(
       now,
-      this._addMinutes(progressLeg.departure!, progressLeg.departureDelay),
-      this._addMinutes(progressLeg.arrival!, progressLeg.arrivalDelay),
+      this._addMinutes(progressLeg.departure, progressLeg.departureDelay),
+      this._addMinutes(progressLeg.arrival, progressLeg.arrivalDelay),
     );
     if (currentPosition < 0 && currentPosition > 100) {
       return;
     }
 
-    progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}%`);
-    if (this.marker === 'pulsing') {
-      progressLeg?.style.setProperty(
-        '--sbb-pearl-chain-leg-animation',
-        'pearl-chain-bullet-position-pulse',
-      );
-    }
-    if (currentPosition >= 50) {
-      progressLeg?.style.setProperty('transform', `translateX(-100%)`);
-    }
+    progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition / 100}`);
   }
 
-  protected override render(): TemplateResult {
-    const now = (this.now as Date) ?? new Date();
+  private _getBullet(index: number): Element {
+    const a = Array.from(this.shadowRoot!.querySelectorAll('.sbb-pearl-chain__bullet'));
+    return a[index];
+  }
 
-    const rideLegs: SbbPearlChainLegElement[] = this._legs();
+  private _getFirstBullet(): Element {
+    return this._getBullet(0);
+  }
 
-    if (!rideLegs.length) {
-      return html``;
-    }
+  private _getLastBullet(): Element {
+    return this._getBullet(1);
+  }
 
-    const statusDeparture = this._getLegStatus(now, rideLegs[0]);
+  protected override updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-    const statusArrival = this._getLegStatus(now, rideLegs[rideLegs.length - 1]);
+    this._setUpComponent();
+  }
 
-    rideLegs[0]?.toggleAttribute('data-first-leg', true);
-    rideLegs[rideLegs.length - 1].toggleAttribute('data-last-leg', true);
+  private _configureBullet(bullet: Element, leg: SbbPearlChainLegElement, first: boolean): void {
+    const status = this._getLegStatus(this.now, leg);
 
-    rideLegs.map((leg, index) => {
-      const status = this._getLegStatus(now, leg);
+    bullet.toggleAttribute('data-disrupted', leg.disruption);
+    bullet.toggleAttribute('data-skipped', first ? leg.departureSkipped : leg.arrivalSkipped);
+    bullet.toggleAttribute('data-past', status === 'past' || (status === 'progress' && first));
+  }
+
+  private _setUpComponent(): void {
+    const legs: SbbPearlChainLegElement[] = this._legs();
+
+    this._configureBullet(this._getFirstBullet(), legs[0], true);
+    this._configureBullet(this._getLastBullet(), legs[legs.length - 1], false);
+
+    legs.map((leg, index) => {
+      const status = this._getLegStatus(this.now, leg);
 
       leg.style.setProperty(
         '--sbb-pearl-chain-leg-weight',
-        `${this._getRelativeDuration(rideLegs, leg) / 100}`,
+        `${this._getRelativeDuration(this._totalDuration(legs), leg) / 100}`,
       );
       leg.past = status === 'past';
       leg.toggleAttribute('data-progress', status === 'progress');
 
       if (status === 'progress') {
-        this._renderPosition(now, leg);
+        this._renderPosition(this.now, leg);
       }
 
-      //If previous leg has arrival-skipped an attribute is set to style the stop
-      if (index > 0 && rideLegs[index - 1]) {
-        leg.toggleAttribute('data-skip-departure', !!rideLegs[index - 1].arrivalSkipped);
+      // If previous leg has arrival-skipped an attribute is set to style the stop
+      if (index > 0 && legs[index - 1]) {
+        leg.toggleAttribute('data-skip-departure', legs[index - 1].arrivalSkipped);
       }
     });
+  }
 
-    if (this._isAllCancelled(rideLegs)) {
-      return this._renderContent(html`
+  protected override render(): TemplateResult {
+    return html`
+      <div class="sbb-pearl-chain__wrapper">
         <div class="sbb-pearl-chain">
-          <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet-disruption"></span>
-          <sbb-pearl-chain-leg disruption data-first-leg data-last-leg></sbb-pearl-chain-leg>
-          <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet-disruption"></span>
+          <span class="sbb-pearl-chain__bullet"></span>
+          <slot></slot>
+          <span class="sbb-pearl-chain__bullet"></span>
         </div>
-      `);
-    }
-
-    return this._renderContent(html`
-      <div class="sbb-pearl-chain">
-        <span
-          class=${classMap({
-            'sbb-pearl-chain__bullet': true,
-            'sbb-pearl-chain__bullet-disruption': rideLegs[0].disruption,
-            'sbb-pearl-chain__bullet-skipped': rideLegs[0].departureSkipped,
-            'sbb-pearl-chain__bullet-past':
-              statusDeparture === 'past' || statusDeparture === 'progress',
-          })}
-        ></span>
-        <slot></slot>
-        <span
-          class=${classMap({
-            'sbb-pearl-chain__bullet': true,
-            'sbb-pearl-chain__bullet-disruption': rideLegs[rideLegs.length - 1].disruption,
-            'sbb-pearl-chain__bullet-skipped': rideLegs[rideLegs.length - 1].arrivalSkipped,
-            'sbb-pearl-chain__bullet-past': statusArrival === 'past',
-          })}
-        ></span>
       </div>
-    `);
+    `;
   }
 }
 

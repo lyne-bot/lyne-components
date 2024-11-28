@@ -4,9 +4,9 @@ import { html } from 'lit';
 
 import type { SbbDialogElement } from '../../../elements/dialog.js';
 import {
-  futureLeg,
-  pastLeg,
-} from '../../../elements-experimental/pearl-chain-legacy/pearl-chain-legacy.sample-data.js';
+  futureLegTemplate,
+  pastLegTemplate,
+} from '../../../elements/pearl-chain/pearl-chain/pearl-chain.sample-data.js';
 
 import {
   bikeProduct,
@@ -20,7 +20,7 @@ import {
 } from './home.common.js';
 import '../../../elements/dialog.js';
 import '../../../elements/journey-header.js';
-import '../../../elements-experimental/pearl-chain-legacy.js';
+import '../../../elements/pearl-chain.js';
 import './home.scss';
 
 export const homeLoggedInTemplate = (args: Args): TemplateResult => html`
@@ -108,10 +108,9 @@ export const homeLoggedInTemplate = (args: Args): TemplateResult => html`
                     <span class="sbb-text-s card-description">
                       2nd class, valid until 30.11.2022
                     </span>
-                    <sbb-pearl-chain-legacy
-                      .legs=${[pastLeg, futureLeg]}
-                      now="2021-12-08T12:11:00+01:00"
-                    ></sbb-pearl-chain-legacy>
+                    <sbb-pearl-chain now="2021-12-08T12:11:00+01:00">
+                      ${pastLegTemplate} ${futureLegTemplate}</sbb-pearl-chain
+                    >
                   </span>
                   <sbb-secondary-button-static icon-name="qrcode-small">
                     Ticket
@@ -155,10 +154,9 @@ export const homeLoggedInTemplate = (args: Args): TemplateResult => html`
                     <span class="sbb-text-s card-description">
                       Saturday, 21.02.2021, 1 h 26 min
                     </span>
-                    <sbb-pearl-chain-legacy
-                      .legs=${[pastLeg, futureLeg]}
-                      now="2021-12-08T12:11:00+01:00"
-                    ></sbb-pearl-chain-legacy>
+                    <sbb-pearl-chain now="2021-12-08T12:11:00+01:00">
+                      ${pastLegTemplate} ${futureLegTemplate}
+                    </sbb-pearl-chain>
                   </span>
                   <sbb-secondary-button-static> Details </sbb-secondary-button-static>
                 </span>
