@@ -4,16 +4,29 @@
 @include sbb.box-sizing;
 
 :host {
-  --sbb-pearl-chain-height: var(--sbb-border-width-2x);
-  --sbb-pearl-chain-spacing-small: #{sbb.px-to-rem-build(2)};
+  --sbb-pearl-chain-leg-height: var(--sbb-border-width-2x);
+  --sbb-pearl-chain-leg-spacing-small: #{sbb.px-to-rem-build(2)};
   --sbb-pearl-chain-color: var(--sbb-pearl-chain-bullet-color);
-  --sbb-pearl-chain-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
-  --sbb-pearl-chain-color-past: var(--sbb-pearl-chain-bullet-color-past);
+  --sbb-pearl-chain-leg-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
+  --sbb-pearl-chain-leg-color-past: var(--sbb-pearl-chain-bullet-color-past);
   --sbb-pearl-chain-leg-width: 100%;
 
   display: block;
 
   @include sbb.pearl-chain-bullet-variables;
+}
+
+:host([marker='pulsing']) {
+  --sbb-pearl-chain-leg-animation: pearl-chain-bullet-position-pulse;
+}
+
+::slotted(sbb-pearl-chain-leg:first-of-type) {
+  --sbb-pearl-chain-leg-stop-display: none;
+}
+
+::slotted(sbb-pearl-chain-leg:last-of-type) {
+  --sbb-pearl-chain-last-leg-margin: none;
+  --sbb-pearl-chain-last-leg-inset-inline-end: calc(-1 * var(--sbb-pearl-chain-leg-height));
 }
 
 .sbb-pearl-chain__wrapper {
@@ -33,12 +46,12 @@
   color: var(--sbb-pearl-chain-color);
   width: 100%;
   padding-block: calc(
-    (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-height)) / 2
+    (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-leg-height)) / 2
   );
   padding-inline-end: var(--sbb-pearl-chain-bullet-size-start-end);
 }
 
-// first and last bullet
+// First and last bullet
 .sbb-pearl-chain__bullet {
   @include sbb.pearl-chain-bullet-start-end;
   @include sbb.pearl-chain-bullet;
@@ -60,8 +73,8 @@
   }
 }
 
-.sbb-pearl-chain__bullet-past {
-  color: var(--sbb-pearl-chain-color-past);
+.sbb-pearl-chain__bullet[data-past] {
+  color: var(--sbb-pearl-chain-leg-color-past);
 
   @include sbb.pearl-chain-bullet-past;
 
@@ -70,8 +83,8 @@
   }
 }
 
-.sbb-pearl-chain__bullet-disruption {
-  color: var(--sbb-pearl-chain-color-disruption);
+.sbb-pearl-chain__bullet[data-disrupted] {
+  color: var(--sbb-pearl-chain-leg-color-disruption);
 
   @include sbb.if-forced-colors {
     color: Highlight;
@@ -79,13 +92,7 @@
   }
 }
 
-.sbb-pearl-chain__bullet-skipped {
+.sbb-pearl-chain__bullet[data-skipped] {
   @include sbb.pearl-chain-bullet-start-end;
   @include sbb.pearl-chain-bullet-skipped;
-}
-
-.sbb-pearl-chain__time {
-  @include sbb.text-s--bold;
-
-  color: var(--sbb-color-charcoal);
 }

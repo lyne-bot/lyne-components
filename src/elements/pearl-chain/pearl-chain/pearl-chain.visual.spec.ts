@@ -95,8 +95,8 @@ describe(`sbb-pearl-chain`, () => {
               now=${(c.now ?? new Date('2024-12-01T12:11:00').valueOf()) / 1000}
               marker="static"
             >
-              ${c.legs.map((l) => l)}</sbb-pearl-chain
-            >
+              ${c.legs}
+            </sbb-pearl-chain>
           `);
         }),
       );

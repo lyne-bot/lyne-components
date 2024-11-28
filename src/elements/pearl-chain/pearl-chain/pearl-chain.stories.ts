@@ -17,12 +17,6 @@ import {
 } from './pearl-chain.sample-data.js';
 import readme from './readme.md?raw';
 
-const disableAnimation: InputType = {
-  control: {
-    type: 'boolean',
-  },
-};
-
 const now: InputType = {
   control: {
     type: 'date',
@@ -44,13 +38,11 @@ const marker: InputType = {
 };
 
 const defaultArgTypes: ArgTypes = {
-  'disable-animation': disableAnimation,
   marker: marker,
   now,
 };
 
 const defaultArgs: Args = {
-  'disable-animation': false,
   marker: marker.options![0],
   now: new Date('2024-12-05T12:11:00').valueOf(),
 };
@@ -157,7 +149,7 @@ export const CancelledManyStops: StoryObj = {
   argTypes: defaultArgTypes,
 };
 
-export const withPosition: StoryObj = {
+export const WithPosition: StoryObj = {
   render: TemplateWithPosition,
   argTypes: defaultArgTypes,
   args: {
@@ -214,17 +206,6 @@ export const Mixed: StoryObj = {
   args: {
     ...defaultArgs,
     serviceAlteration: serviceAlteration.options![2],
-  },
-};
-
-export const MixedWithTime: StoryObj = {
-  render: TemplateAlteration,
-  argTypes: { ...defaultArgTypes, serviceAlteration },
-  args: {
-    ...defaultArgs,
-    serviceAlteration: serviceAlteration.options![2],
-    departure: '2024-12-18T12:13:00',
-    arrival: '2024-11-30T12:13:00',
   },
 };
 
