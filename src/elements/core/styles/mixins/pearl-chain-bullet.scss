@@ -10,7 +10,7 @@
   --sbb-pearl-chain-bullet-size-stop: #{functions.px-to-rem-build(8)};
   --sbb-pearl-chain-bullet-color: var(--sbb-color-charcoal);
   --sbb-pearl-chain-bullet-color-past: var(--sbb-color-metal);
-  --sbb-pearl-chain-bullet-color-irrelevant: var(--sbb-color-metal);
+  --sbb-pearl-chain-bullet-color-irrelzevant: var(--sbb-color-metal);
   --sbb-pearl-chain-bullet-color-disruption: var(--sbb-color-red);
   --sbb-pearl-chain-bullet-border-width: var(--sbb-border-width-2x);
   --sbb-pearl-chain-bullet-animation-duration: 1920ms;
@@ -19,6 +19,7 @@
   --sbb-pearl-chain-bullet-crossed-width: #{functions.px-to-rem-build(14.14)};
   --sbb-pearl-chain-bullet-crossed-height: #{functions.px-to-rem-build(3.5)};
   --sbb-pearl-chain-bullet-crossed-border-width: #{functions.px-to-rem-build(1.5)};
+  --sbb-pearl-chain-bullet-background-color: Canvas;
 }
 
 @mixin pearl-chain-bullet {
@@ -44,8 +45,8 @@
   min-width: var(--sbb-pearl-chain-bullet-size-stop);
   height: var(--sbb-pearl-chain-bullet-size-stop);
   width: var(--sbb-pearl-chain-bullet-size-stop);
-  border: var(--sbb-pearl-chain-bullet-border-width) solid currentcolor;
-  background: Canvas;
+  border: var(--sbb-pearl-chain-bullet-border-width) solid var(--sbb-pearl-chain-bullet-color);
+  background: var(--sbb-pearl-chain-bullet-background-color);
 }
 
 @mixin pearl-chain-bullet-past {
@@ -68,8 +69,8 @@
 }
 
 @mixin pearl-chain-bullet-skipped {
-  border: var(--sbb-pearl-chain-bullet-border-width) solid currentcolor;
-  background: Canvas;
+  border: var(--sbb-pearl-chain-bullet-border-width) solid var(--sbb-pearl-chain-bullet-color);
+  background: var(--sbb-pearl-chain-bullet-background-color);
 
   &::before {
     content: '';
@@ -77,8 +78,9 @@
     inset-block-start: 50%;
     inset-inline-start: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
-    border-block-start: var(--sbb-pearl-chain-bullet-crossed-border-width) solid canvas;
-    background: var(--sbb-pearl-chain-bullet-color-disruption);
+    border-block-end: var(--sbb-pearl-chain-bullet-crossed-border-width) solid
+      var(--sbb-pearl-chain-bullet-color-disruption);
+    background: var(--sbb-pearl-chain-bullet-background-color);
     height: var(--sbb-pearl-chain-bullet-crossed-height);
     width: var(--sbb-pearl-chain-bullet-crossed-width);
 
@@ -86,6 +88,21 @@
       background: Highlight;
     }
   }
+}
+
+@mixin pearl-chain-bullet-skipped-transparent {
+  mask: linear-gradient(
+    45deg,
+    var(--sbb-color-black) 0%,
+    var(--sbb-color-black) 48%,
+    transparent 48%,
+    transparent 60%,
+    var(--sbb-color-black) 60%,
+    var(--sbb-color-black) 100%
+  );
+  mask-clip: no-clip;
+
+  @include pearl-chain-bullet-skipped;
 }
 
 @mixin pearl-chain-bullet-skipped-stop {

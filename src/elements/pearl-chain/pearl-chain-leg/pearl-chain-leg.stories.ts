@@ -114,7 +114,7 @@ const meta: Meta = {
       extractComponentDescription: () => readme,
     },
   },
-  title: 'elements/pearl-chain/sbb-pearl-chain-leg',
+  title: 'elements/sbb-pearl-chain/sbb-pearl-chain-leg',
 };
 
 export default meta;

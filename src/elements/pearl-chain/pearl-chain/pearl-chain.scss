@@ -14,6 +14,12 @@
   display: block;
 
   @include sbb.pearl-chain-bullet-variables;
+
+  --sbb-pearl-chain-bullet-background-color: transparent;
+
+  @include sbb.if-forced-colors {
+    --sbb-pearl-chain-bullet-color: Highlight !important;
+  }
 }
 
 :host([marker='pulsing']) {
@@ -43,12 +49,12 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: nowrap;
-  color: var(--sbb-pearl-chain-color);
   width: 100%;
+  gap: var(--sbb-pearl-chain-bullet-size-stop);
   padding-block: calc(
     (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-leg-height)) / 2
   );
-  padding-inline-end: var(--sbb-pearl-chain-bullet-size-start-end);
+  padding-inline: var(--sbb-pearl-chain-bullet-size-start-end);
 }
 
 // First and last bullet
@@ -59,7 +65,7 @@
   & {
     content: '';
     position: absolute;
-    background-color: currentcolor;
+    background-color: var(--sbb-pearl-chain-bullet-color);
     inset-block-start: 0;
     z-index: 3;
   }
@@ -74,25 +80,13 @@
 }
 
 .sbb-pearl-chain__bullet[data-past] {
-  color: var(--sbb-pearl-chain-leg-color-past);
-
   @include sbb.pearl-chain-bullet-past;
-
-  @include sbb.if-forced-colors {
-    background-color: GrayText !important;
-  }
 }
 
 .sbb-pearl-chain__bullet[data-disrupted] {
-  color: var(--sbb-pearl-chain-leg-color-disruption);
-
-  @include sbb.if-forced-colors {
-    color: Highlight;
-    background: Highlight;
-  }
+  --sbb-pearl-chain-bullet-color: var(--sbb-pearl-chain-leg-color-disruption);
 }
 
 .sbb-pearl-chain__bullet[data-skipped] {
-  @include sbb.pearl-chain-bullet-start-end;
-  @include sbb.pearl-chain-bullet-skipped;
+  @include sbb.pearl-chain-bullet-skipped-transparent;
 }

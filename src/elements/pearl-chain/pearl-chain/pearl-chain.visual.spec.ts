@@ -15,12 +15,13 @@ import {
 
 describe(`sbb-pearl-chain`, () => {
   const cases = [
-    { name: 'no stops', legs: [futureLegTemplate] },
+    { name: 'no stops', legs: [futureLegTemplate], now: new Date('2024-12-01T12:11:00') },
     {
       name: 'many stops',
       legs: [futureLegTemplate, longFutureLegTemplate, futureLegTemplate, futureLegTemplate],
+      now: new Date('2024-12-01T12:11:00'),
     },
-    { name: 'cancelled', legs: [disruptionTemplate] },
+    { name: 'cancelled', legs: [disruptionTemplate], now: new Date('2024-12-01T12:11:00') },
     {
       name: 'cancelled many stops',
       legs: [
@@ -29,16 +30,17 @@ describe(`sbb-pearl-chain`, () => {
         futureLegTemplate,
         cancelledLegTemplate(false, false, true),
       ],
+      now: new Date('2024-12-01T12:11:00'),
     },
     {
       name: 'with position',
       legs: [progressLegTemplate],
-      now: new Date('2024-12-05T12:11:00').valueOf(),
+      now: new Date('2024-12-05T12:11:00'),
     },
     {
       name: 'past',
       legs: [pastLegTemplate, pastLegTemplate],
-      now: new Date('2025-11-01T12:11:00').valueOf(),
+      now: new Date('2025-11-01T12:11:00'),
     },
     {
       name: 'departure stop skipped',
@@ -49,7 +51,7 @@ describe(`sbb-pearl-chain`, () => {
         cancelledLegTemplate(true),
         futureLegTemplate,
       ],
-      now: new Date('2024-12-05T12:11:00').valueOf(),
+      now: new Date('2024-12-05T12:11:00'),
     },
     {
       name: 'arrival stop skipped',
@@ -60,17 +62,17 @@ describe(`sbb-pearl-chain`, () => {
         cancelledLegTemplate(false, true),
         futureLegTemplate,
       ],
-      now: new Date('2024-12-05T12:11:00').valueOf(),
+      now: new Date('2024-12-05T12:11:00'),
     },
     {
       name: 'first stop skipped',
       legs: [cancelledLegTemplate(true), futureLegTemplate, longFutureLegTemplate],
-      now: new Date('2024-12-05T12:11:00').valueOf(),
+      now: new Date('2024-12-05T12:11:00'),
     },
     {
       name: 'last stop skipped',
       legs: [pastLegTemplate, pastLegTemplate, cancelledLegTemplate(false, true)],
-      now: new Date('2023-12-05T12:11:00').valueOf(),
+      now: new Date('2023-12-05T12:11:00'),
     },
     {
       name: 'mixed',
@@ -81,7 +83,19 @@ describe(`sbb-pearl-chain`, () => {
         cancelledLegTemplate(false, false, true),
         longFutureLegTemplate,
       ],
-      now: new Date('2024-12-05T12:11:00').valueOf(),
+      now: new Date('2024-12-05T12:11:00'),
+    },
+    {
+      name: 'forced colors',
+      legs: [
+        pastLegTemplate,
+        progressLegTemplate,
+        futureLegTemplate,
+        cancelledLegTemplate(false, false, true),
+        longFutureLegTemplate,
+      ],
+      now: new Date('2024-12-05T12:11:00'),
+      forcedColors: true,
     },
   ];
 
@@ -90,14 +104,12 @@ describe(`sbb-pearl-chain`, () => {
       it(
         c.name,
         visualDiffDefault.with(async (setup) => {
-          await setup.withFixture(html`
-            <sbb-pearl-chain
-              now=${(c.now ?? new Date('2024-12-01T12:11:00').valueOf()) / 1000}
-              marker="static"
-            >
-              ${c.legs}
-            </sbb-pearl-chain>
-          `);
+          await setup.withFixture(
+            html` <sbb-pearl-chain now=${c.now} marker="static"> ${c.legs} </sbb-pearl-chain> `,
+            {
+              forcedColors: c?.forcedColors,
+            },
+          );
         }),
       );
     }

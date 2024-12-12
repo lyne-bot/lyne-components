@@ -160,7 +160,7 @@ const meta: Meta = {
       extractComponentDescription: () => readme,
     },
   },
-  title: 'experimental/sbb-pearl-chain',
+  title: 'experimental/sbb-pearl-chain-legacy',
 };
 
 export default meta;

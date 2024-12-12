@@ -44,7 +44,7 @@ const defaultArgTypes: ArgTypes = {
 
 const defaultArgs: Args = {
   marker: marker.options![0],
-  now: new Date('2024-12-05T12:11:00').valueOf(),
+  now: new Date('2024-01-05T12:11:00'),
 };
 
 const TemplateSlotted = (legs: TemplateResult[], { now, ...args }: Args): TemplateResult => {
@@ -132,7 +132,6 @@ export const ManyStops: StoryObj = {
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    now: new Date('2024-11-30T11:13:00').valueOf(),
   },
 };
 
@@ -147,6 +146,9 @@ export const Cancelled: StoryObj = {
 export const CancelledManyStops: StoryObj = {
   render: TemplateManyCancelled,
   argTypes: defaultArgTypes,
+  args: {
+    ...defaultArgs,
+  },
 };
 
 export const WithPosition: StoryObj = {
@@ -154,6 +156,7 @@ export const WithPosition: StoryObj = {
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    now: new Date('2024-12-05T12:11:00'),
   },
 };
 
@@ -162,6 +165,7 @@ export const Past: StoryObj = {
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    now: new Date('2027-12-05T12:11:00'),
   },
 };
 
@@ -170,6 +174,7 @@ export const DepartureStopSkipped: StoryObj = {
   argTypes: { ...defaultArgTypes, serviceAlteration },
   args: {
     ...defaultArgs,
+    now: new Date('2024-12-05T12:11:00'),
     serviceAlteration: serviceAlteration.options![0],
   },
 };
@@ -179,6 +184,7 @@ export const ArrivalStopSkipped: StoryObj = {
   argTypes: { ...defaultArgTypes, serviceAlteration },
   args: {
     ...defaultArgs,
+    now: new Date('2024-12-05T12:11:00'),
     serviceAlteration: serviceAlteration.options![1],
   },
 };
@@ -196,7 +202,6 @@ export const LastStopSkipped: StoryObj = {
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    now: new Date('2024-11-30T11:13:00').valueOf(),
   },
 };
 
@@ -205,18 +210,19 @@ export const Mixed: StoryObj = {
   argTypes: { ...defaultArgTypes, serviceAlteration },
   args: {
     ...defaultArgs,
+    now: new Date('2024-12-05T12:11:00'),
     serviceAlteration: serviceAlteration.options![2],
   },
 };
 
 const meta: Meta = {
-  decorators: [(story) => html`<div style="max-width: 80%;">${story()}</div>`],
+  decorators: [(story) => html` <div>${story()}</div>`],
   parameters: {
     docs: {
       extractComponentDescription: () => readme,
     },
   },
-  title: 'elements/pearl-chain/sbb-pearl-chain',
+  title: 'elements/sbb-pearl-chain/sbb-pearl-chain',
 };
 
 export default meta;

@@ -2,37 +2,48 @@ import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+import { TimeAdapter } from '../../core/datetime.js';
 import { forceType } from '../../core/decorators.js';
+import { EventEmitter } from '../../core/eventing/event-emitter.js';
 
 import style from './pearl-chain-leg.scss?lit&inline';
 
 /**
  * It displays a journey leg inside a `sbb-pearl-chain`.
+ *
+ * @event {CustomEvent<void>} leg-updated - Update event emitter
  */
 export
 @customElement('sbb-pearl-chain-leg')
 class SbbPearlChainLegElement extends LitElement {
   public static override styles: CSSResultGroup = style;
+  public static readonly events = {
+    legUpdated: 'leg-updated',
+  } as const;
 
   /** Departure time of the leg. */
-  @property()
-  public set departure(value: Date | null) {
-    this._departure = value;
+  @property({ type: Date })
+  public set departure(value: Date | string | number | null) {
+    this._departure = this._timeAdapter.deserialize(value);
   }
-  public get departure(): Date | null {
-    return this._departure;
+
+  public get departure(): Date {
+    return this._departure ?? this._timeAdapter.invalid();
   }
-  private _departure: Date | null = null;
+
+  private _departure?: Date;
 
   /** Arrival time of the leg. */
-  @property()
-  public set arrival(value: Date | null) {
-    this._arrival = value;
+  @property({ type: Date })
+  public set arrival(value: Date | string | number | null) {
+    this._arrival = this._timeAdapter.deserialize(value);
   }
-  public get arrival(): Date | null {
-    return this._arrival;
+
+  public get arrival(): Date {
+    return this._arrival ?? this._timeAdapter.invalid();
   }
-  private _arrival: Date | null = null;
+
+  private _arrival?: Date;
 
   /** Whether the leg is disrupted. */
   @forceType()
@@ -64,16 +75,28 @@ class SbbPearlChainLegElement extends LitElement {
   @property({ type: Number, attribute: 'arrival-delay' })
   public accessor arrivalDelay: number = 0;
 
+  /** Input event emitter */
+  private _legUpdated: EventEmitter = new EventEmitter(
+    this,
+    SbbPearlChainLegElement.events.legUpdated,
+    {
+      bubbles: true,
+      composed: false,
+    },
+  );
+
+  private _timeAdapter: TimeAdapter = new TimeAdapter();
+
   protected override willUpdate(changedProperties: PropertyValues): void {
     super.willUpdate(changedProperties);
 
-    // We need to update parent pearl-chain so that following leg can be styled properly.
-    if (changedProperties.has('arrivalSkipped')) {
-      const parentPearlChain = this.closest?.('sbb-pearl-chain');
-      if (!parentPearlChain) {
-        return;
-      }
-      parentPearlChain?.requestUpdate();
+    if (
+      this.hasUpdated &&
+      (changedProperties.has('arrivalSkipped') ||
+        changedProperties.has('arrival') ||
+        changedProperties.has('departure'))
+    ) {
+      this._legUpdated.emit();
     }
   }
 

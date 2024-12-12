@@ -53,9 +53,13 @@ The components allows to slot any number of `sbb-pearl-chain-leg` in the `unname
 
 ## Properties
 
-| Name        | Attribute   | Privacy | Type                  | Default    | Description                                                                                                          |
-| ----------- | ----------- | ------- | --------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------- |
-| `arrival`   | `arrival`   | public  | `SbbDateLike \| null` | `null`     | Prop to render the arrival time - will be formatted as "H:mm"                                                        |
-| `departure` | `departure` | public  | `SbbDateLike \| null` | `null`     | Prop to render the departure time - will be formatted as "H:mm"                                                      |
-| `marker`    | `marker`    | public  | `Marker`              | `'static'` | Whether the marker should be pulsing or static.                                                                      |
-| `now`       | `now`       | public  | `SbbDateLike \| null` | `null`     | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
+| Name     | Attribute | Privacy | Type                    | Default      | Description                                                                                                          |
+| -------- | --------- | ------- | ----------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `marker` | `marker`  | public  | `'static' \| 'pulsing'` | `'static'`   | Whether the marker should be pulsing or static.                                                                      |
+| `now`    | `now`     | public  | `Date`                  | `new Date()` | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
+
+## Slots
+
+| Name | Description                                                            |
+| ---- | ---------------------------------------------------------------------- |
+|      | Use the unnamed slot to add `sbb-pearl-chain-leg`s to the pearl-chain. |
