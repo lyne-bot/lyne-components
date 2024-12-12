@@ -97,6 +97,18 @@ describe(`sbb-pearl-chain`, () => {
       now: new Date('2024-12-05T12:11:00'),
       forcedColors: true,
     },
+    {
+      name: 'different background color',
+      legs: [
+        pastLegTemplate,
+        progressLegTemplate,
+        futureLegTemplate,
+        cancelledLegTemplate(false, false, true),
+        longFutureLegTemplate,
+      ],
+      now: new Date('2024-12-05T12:11:00'),
+      changeBg: true,
+    },
   ];
 
   describeViewports({ viewports: ['medium'] }, () => {
@@ -105,9 +117,10 @@ describe(`sbb-pearl-chain`, () => {
         c.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(
-            html` <sbb-pearl-chain now=${c.now} marker="static"> ${c.legs} </sbb-pearl-chain> `,
+            html` <sbb-pearl-chain now=${c.now} marker="static"> ${c.legs}</sbb-pearl-chain> `,
             {
               forcedColors: c?.forcedColors,
+              backgroundColor: c?.changeBg ? 'aqua' : 'white',
             },
           );
         }),

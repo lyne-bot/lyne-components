@@ -4,7 +4,6 @@ import { customElement, property } from 'lit/decorators.js';
 
 import '../pearl-chain-leg.js';
 import { TimeAdapter } from '../../core/datetime.js';
-import { SbbHydrationMixin } from '../../core/mixins/hydration-mixin.js';
 import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
 import style from './pearl-chain.scss?lit&inline';
@@ -18,7 +17,7 @@ type Status = 'progress' | 'future' | 'past';
  */
 export
 @customElement('sbb-pearl-chain')
-class SbbPearlChainElement extends SbbHydrationMixin(LitElement) {
+class SbbPearlChainElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Whether the marker should be pulsing or static. */
