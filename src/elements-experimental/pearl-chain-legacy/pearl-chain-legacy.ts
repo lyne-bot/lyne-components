@@ -28,7 +28,7 @@ class SbbPearlChainLegacyElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**
-   * Define the legs of the pearl-chain.
+   * Define the legs of the pearl-chain-legacy.
    * Format:
    * `{"legs": [{"duration": 25}, ...]}`
    * `duration` in minutes. Duration of the leg is relative

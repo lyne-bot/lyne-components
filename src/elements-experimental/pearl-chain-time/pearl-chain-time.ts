@@ -21,7 +21,7 @@ import style from './pearl-chain-time.scss?lit&inline';
 import '../pearl-chain-legacy.js';
 
 /**
- * Combined with `sbb-pearl-chain`, it displays walk time information.
+ * Combined with `sbb-pearl-chain-legacy`, it displays walk time information.
  */
 export
 @customElement('sbb-pearl-chain-time')

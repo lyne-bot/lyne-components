@@ -1,11 +1,10 @@
-import { addMinutes, differenceInMinutes, isAfter, isBefore } from 'date-fns';
 import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { type DateAdapter, defaultDateAdapter } from '../../core/datetime.js';
-import type { SbbDateLike } from '../../core/interfaces/types.js';
 import '../pearl-chain-leg.js';
+import { TimeAdapter } from '../../core/datetime.js';
+import { SbbHydrationMixin } from '../../core/mixins/hydration-mixin.js';
 import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
 import style from './pearl-chain.scss?lit&inline';
@@ -14,10 +13,12 @@ type Status = 'progress' | 'future' | 'past';
 
 /**
  * It visually displays journey information.
+ *
+ * @slot - Use the unnamed slot to add `sbb-pearl-chain-leg`s to the pearl-chain.
  */
 export
 @customElement('sbb-pearl-chain')
-class SbbPearlChainElement extends LitElement {
+class SbbPearlChainElement extends SbbHydrationMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** Whether the marker should be pulsing or static. */
@@ -25,10 +26,10 @@ class SbbPearlChainElement extends LitElement {
   public accessor marker: 'static' | 'pulsing' = 'static';
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
-  @property()
-  public set now(value: Date) {
-    this._now =
-      this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value)) ?? new Date();
+  @property({ type: Date })
+  public set now(value: Date | string | number | null) {
+    const valueAsDate = this._timeAdapter.deserialize(value);
+    this._now = this._timeAdapter.isValid(valueAsDate) ? valueAsDate : new Date();
   }
 
   public get now(): Date {
@@ -37,7 +38,16 @@ class SbbPearlChainElement extends LitElement {
 
   private _now: Date = new Date();
 
-  private _dateAdapter: DateAdapter<Date> = defaultDateAdapter;
+  private _timeAdapter: TimeAdapter = new TimeAdapter();
+
+  public constructor() {
+    super();
+
+    this.addEventListener('leg-updated', (event) => {
+      event.stopPropagation();
+      this._setUpComponent();
+    });
+  }
 
   private _legs(): SbbPearlChainLegElement[] {
     return Array.from(this.querySelectorAll?.('sbb-pearl-chain-leg') ?? []);
@@ -45,85 +55,77 @@ class SbbPearlChainElement extends LitElement {
 
   private _totalDuration(legs: SbbPearlChainLegElement[]): number {
     return legs?.reduce((sum: number, leg) => {
-      const arrivalNoTz = this._dateAdapter.deserialize(leg.arrival);
-      const departureNoTz = this._dateAdapter.deserialize(leg.departure) as Date;
+      const arrivalNoTz = this._timeAdapter.deserialize(leg.arrival);
+      const departureNoTz = this._timeAdapter.deserialize(leg.departure);
       if (arrivalNoTz && departureNoTz) {
-        return sum + differenceInMinutes(arrivalNoTz, departureNoTz);
+        return sum + this._timeAdapter.differenceInMinutes(arrivalNoTz, departureNoTz);
       }
       return sum;
     }, 0);
   }
 
   private _getRelativeDuration(totalDuration: number, leg: SbbPearlChainLegElement): number {
-    const arrivalNoTz = this._dateAdapter.deserialize(leg.arrival);
-    const departureNoTz = this._dateAdapter.deserialize(leg.departure);
-    if (arrivalNoTz && departureNoTz) {
-      const duration = differenceInMinutes(arrivalNoTz, departureNoTz);
+    if (this._timeAdapter.isValid(leg.arrival) && this._timeAdapter.isValid(leg.departure)) {
+      const duration = this._timeAdapter.differenceInMinutes(leg.arrival, leg.departure);
 
       if (totalDuration === 0) {
-        return 100;
+        return 1;
       }
 
-      return (duration / totalDuration) * 100;
+      return duration / totalDuration;
     }
     return 0;
   }
 
-  private _getProgress(now: Date, start: Date, end: Date): number {
+  private _getProgress(start: Date, end: Date): number {
     if (!start || !end) {
       return 0;
     }
 
-    const total = differenceInMinutes(end, start);
-    const progress = differenceInMinutes(now, start);
+    const total = this._timeAdapter.differenceInMinutes(end, start);
+    const progress = this._timeAdapter.differenceInMinutes(this.now, start);
 
-    return total && (progress / total) * 100;
+    return total && progress / total;
   }
 
-  private _addMinutes(d: SbbDateLike<Date> | null, amount: number): Date {
-    const date: Date | null = this._dateAdapter.deserialize(d);
-    return date ? addMinutes(date, amount) : this._dateAdapter.invalid();
+  private _getLegStatus(leg: SbbPearlChainLegElement): Status {
+    const start = this._timeAdapter.addMinutes(leg.departure, leg.departureDelay);
+    const end = this._timeAdapter.addMinutes(leg.arrival, leg.arrivalDelay);
+    return this._getStatus(start, end);
   }
 
-  private _getLegStatus(now: Date, leg: SbbPearlChainLegElement): Status {
-    const start = this._addMinutes(leg.departure, leg.departureDelay);
-    const end = this._addMinutes(leg.arrival, leg.arrivalDelay);
-    return this._getStatus(now, start, end);
-  }
-
-  private _getStatus(now: Date, start?: Date, end?: Date): Status {
-    if (start && isBefore(start, now) && end && isAfter(end, now)) {
+  private _getStatus(start?: Date, end?: Date): Status {
+    if (
+      start &&
+      !this._timeAdapter.isBefore(this.now, start) &&
+      end &&
+      this._timeAdapter.isAfter(end, this.now)
+    ) {
       return 'progress';
-    } else if (end && isBefore(end, now)) {
+    } else if (end && !this._timeAdapter.isBefore(this.now, end)) {
       return 'past';
     }
     return 'future';
   }
 
-  private _renderPosition(now: Date, progressLeg: SbbPearlChainLegElement): void {
+  private _renderPosition(progressLeg: SbbPearlChainLegElement): void {
     const currentPosition = this._getProgress(
-      now,
-      this._addMinutes(progressLeg.departure, progressLeg.departureDelay),
-      this._addMinutes(progressLeg.arrival, progressLeg.arrivalDelay),
+      this._timeAdapter.addMinutes(progressLeg.departure, progressLeg.departureDelay),
+      this._timeAdapter.addMinutes(progressLeg.arrival, progressLeg.arrivalDelay),
     );
     if (currentPosition < 0 && currentPosition > 100) {
       return;
     }
 
-    progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition / 100}`);
-  }
-
-  private _getBullet(index: number): Element {
-    const a = Array.from(this.shadowRoot!.querySelectorAll('.sbb-pearl-chain__bullet'));
-    return a[index];
+    progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}`);
   }
 
   private _getFirstBullet(): Element {
-    return this._getBullet(0);
+    return Array.from(this.shadowRoot!.querySelectorAll('.sbb-pearl-chain__bullet'))[0];
   }
 
   private _getLastBullet(): Element {
-    return this._getBullet(1);
+    return Array.from(this.shadowRoot!.querySelectorAll('.sbb-pearl-chain__bullet'))[1];
   }
 
   protected override updated(changedProperties: PropertyValues): void {
@@ -133,7 +135,7 @@ class SbbPearlChainElement extends LitElement {
   }
 
   private _configureBullet(bullet: Element, leg: SbbPearlChainLegElement, first: boolean): void {
-    const status = this._getLegStatus(this.now, leg);
+    const status = this._getLegStatus(leg);
 
     bullet.toggleAttribute('data-disrupted', leg.disruption);
     bullet.toggleAttribute('data-skipped', first ? leg.departureSkipped : leg.arrivalSkipped);
@@ -147,17 +149,17 @@ class SbbPearlChainElement extends LitElement {
     this._configureBullet(this._getLastBullet(), legs[legs.length - 1], false);
 
     legs.map((leg, index) => {
-      const status = this._getLegStatus(this.now, leg);
+      const status = this._getLegStatus(leg);
 
       leg.style.setProperty(
         '--sbb-pearl-chain-leg-weight',
-        `${this._getRelativeDuration(this._totalDuration(legs), leg) / 100}`,
+        `${this._getRelativeDuration(this._totalDuration(legs), leg)}`,
       );
       leg.past = status === 'past';
       leg.toggleAttribute('data-progress', status === 'progress');
 
       if (status === 'progress') {
-        this._renderPosition(this.now, leg);
+        this._renderPosition(leg);
       }
 
       // If previous leg has arrival-skipped an attribute is set to style the stop

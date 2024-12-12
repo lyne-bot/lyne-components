@@ -1,7 +1,7 @@
 import { expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
-import { fixture } from '../../core/testing/private.js';
+import { fixture, testA11yTreeSnapshot } from '../../core/testing/private.js';
 
 import './pearl-chain.js';
 import type { SbbPearlChainElement } from './pearl-chain.js';
@@ -30,6 +30,8 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   describe('renders with two legs', () => {
@@ -55,6 +57,8 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   describe('renders with departure stop skipped', () => {
@@ -81,6 +85,8 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   describe('renders with arrival stop skipped', () => {
@@ -107,6 +113,8 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   describe('renders with progress leg', () => {
@@ -133,6 +141,8 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   describe('renders with cancelled instead of progress leg', () => {
@@ -159,5 +169,7 @@ describe(`sbb-pearl-chain`, () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 });
