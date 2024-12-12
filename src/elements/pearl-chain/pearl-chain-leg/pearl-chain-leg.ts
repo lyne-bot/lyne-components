@@ -4,7 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 import { TimeAdapter } from '../../core/datetime.js';
 import { forceType } from '../../core/decorators.js';
-import { EventEmitter } from '../../core/eventing/event-emitter.js';
+import { EventEmitter } from '../../core/eventing.js';
 
 import style from './pearl-chain-leg.scss?lit&inline';
 
