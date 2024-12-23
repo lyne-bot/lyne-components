@@ -22,7 +22,7 @@
   --sbb-calendar-cell-disabled-height: #{sbb.px-to-rem-build(1.5)};
   --sbb-calendar-cell-disabled-width: #{sbb.px-to-rem-build(25.5)};
   --sbb-calendar-cell-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-calendar-cell-transition-easing-function: var(--sbb-animation-easing);

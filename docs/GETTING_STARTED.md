@@ -193,6 +193,23 @@ and on [storybook](https://lyne-storybook.app.sbb.ch).
 
 ## Styles
 
+### Lean variant
+
+Lean uses a more compact design by defaulting the `size` property to the smallest available value.
+Components that do not have a `size` property remain unchanged.
+To enable lean mode, add the CSS class `sbb-lean` to the `html` tag.
+
+```html
+<html lang="en" class="sbb-lean">
+  <head>
+    <title>Lyne Design System - Lean example</title>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
 ### CSS files
 
 Basically, all our styles are included in 'standard-theme.css' which should be included in your application.
@@ -211,6 +228,8 @@ However, if you like to more specifically pick what you need, consider the follo
 | `animation.css`                 | Provides CSS classes to disable animation (e.g. for testing).                       |
 | `layout.css`                    | Provides layout related CSS classes (e.g. page spacing, grid).                      |
 | `lists.css`                     | Provides CSS classes to style lists.                                                |
+| `scrollbar.css`                 | Provides CSS classes to style a scrollbar.                                          |
+| `table.css`                     | Provides CSS classes to style a table.                                              |
 | `typography.css`                | Provides typography related CSS classes.                                            |
 
 ### Full Font
@@ -242,10 +261,10 @@ Some design tokens are responsive: they change their value depending on the curr
 > There is a corresponding responsive CSS variable without the `-breakpoint` suffix,
 > e.g. `sbb-spacing-responsive-s` which should be used.
 
-### SASS Mixins
+### Sass Mixins
 
-Lyne Components provides various SASS mixins which can be used by consumers.
-For available SASS mixins, check [SASS Mixins](https://github.com/sbb-design-systems/lyne-components/tree/main/src/elements/core/styles/mixins).
+Lyne Components provides various Sass mixins which can be used by consumers.
+For available Sass mixins, check [Sass Mixins](https://github.com/sbb-design-systems/lyne-components/tree/main/src/elements/core/styles/mixins).
 
 ```scss
 @use '@sbb-esta/lyne-elements' as sbb;
@@ -309,7 +328,7 @@ when font size changes in browsers.
 
 Focus outlines should only be displayed when users are navigating by keyboard.
 Lyne components use the CSS selector `:focus-visible`, to achieve that. Whenever you have custom interactive elements,
-you should use the `:focus-visible` selector as well and include our SASS mixin `focus-outline`.
+you should use the `:focus-visible` selector as well and include our Sass mixin `focus-outline`.
 
 ```scss
 @use '../../core/styles' as sbb;
@@ -344,7 +363,7 @@ Please note, although SBB provides more fonts than `Roman`, `Bold` and `Light`,
 Lyne only intends to use these three fonts.
 To apply the SBB font family you can use the CSS var `var(--sbb-typo-font-family)`. However,
 this only includes the family but no letter spacing, so we recommend to always
-use our SASS mixins or CSS classes which contain all necessary properties.
+use our Sass mixins or CSS classes which contain all necessary properties.
 See [Text styles](https://lyne-storybook.app.sbb.ch/?path=/docs/styles-typography--docs) for what's available.
 
 ```html

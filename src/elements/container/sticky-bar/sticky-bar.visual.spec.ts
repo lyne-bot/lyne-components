@@ -10,6 +10,8 @@ import {
 } from '../../core/testing/private.js';
 import { waitForLitRender } from '../../core/testing.js';
 
+import type { SbbStickyBarElement } from './sticky-bar.js';
+
 import './sticky-bar.js';
 import '../container.js';
 import '../../action-group.js';
@@ -18,8 +20,6 @@ import '../../link.js';
 import '../../title.js';
 
 describe(`sbb-sticky-bar`, () => {
-  let root: HTMLElement;
-
   const cases = {
     color: [undefined, 'white', 'milk'],
     containerExpanded: [false, true],
@@ -29,9 +29,9 @@ describe(`sbb-sticky-bar`, () => {
   const containerContent = (): TemplateResult => html`
     <sbb-title level="4">Example title</sbb-title>
     <p class="sbb-text-s">The container component will give its content the correct spacing.</p>
-    <sbb-secondary-button style="margin-block-end: 0.75rem;" size="m"
-      >See more</sbb-secondary-button
-    >
+    <sbb-secondary-button style="margin-block-end: 0.75rem;" size="m">
+      See more
+    </sbb-secondary-button>
   `;
 
   const actionGroup = (): TemplateResult => html`
@@ -43,8 +43,10 @@ describe(`sbb-sticky-bar`, () => {
     </sbb-action-group>
   `;
 
-  describeViewports(() => {
+  describeViewports({ viewports: ['zero', 'medium', 'ultra'] }, () => {
     describeEach(cases, ({ color, containerExpanded, scrolled }) => {
+      let root: HTMLElement;
+
       beforeEach(async function () {
         const element = await visualRegressionFixture(
           html`
@@ -77,13 +79,31 @@ describe(`sbb-sticky-bar`, () => {
         }),
       );
     });
+
+    it(
+      `unstick`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-container>
+            ${containerContent()}
+            <sbb-sticky-bar color="milk"> ${actionGroup()} </sbb-sticky-bar>
+          </sbb-container>`,
+          { padding: '0' },
+        );
+
+        setup.withPostSetupAction(async () => {
+          setup.snapshotElement.querySelector<SbbStickyBarElement>('sbb-sticky-bar')!.unstick();
+          await waitForLitRender(setup.snapshotElement);
+        });
+      }),
+    );
   });
 
   it(
     `viewport=medium_short content`,
     visualDiffDefault.with(async (setup) => {
       await setup.withFixture(
-        html` <sbb-container>
+        html`<sbb-container>
           ${containerContent()}
           <sbb-sticky-bar color="milk"> ${actionGroup()} </sbb-sticky-bar>
         </sbb-container>`,

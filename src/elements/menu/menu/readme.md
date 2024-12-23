@@ -64,7 +64,7 @@ to identify which actions are active and which are not.
 | Name                     | Attribute                  | Privacy | Type                            | Default | Description                                                                                                                       |
 | ------------------------ | -------------------------- | ------- | ------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `isOpen`                 | -                          | public  | `boolean`                       |         | Whether the element is open.                                                                                                      |
-| `listAccessibilityLabel` | `list-accessibility-label` | public  | `string \| undefined`           |         | This will be forwarded as aria-label to the inner list. Used only if the menu automatically renders the actions inside as a list. |
+| `listAccessibilityLabel` | `list-accessibility-label` | public  | `string`                        | `''`    | This will be forwarded as aria-label to the inner list. Used only if the menu automatically renders the actions inside as a list. |
 | `trigger`                | `trigger`                  | public  | `string \| HTMLElement \| null` | `null`  | The element that will trigger the menu overlay. Accepts both a string (id of an element) or an HTML element.                      |
 
 ## Methods

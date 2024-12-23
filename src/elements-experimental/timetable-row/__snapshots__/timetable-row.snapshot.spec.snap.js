@@ -17,7 +17,6 @@ snapshots["sbb-timetable-row renders defaultTrip Shadow DOM"] =
   <sbb-card-button
     data-action=""
     data-button=""
-    role="button"
     slot="action"
     tabindex="0"
   >
@@ -97,7 +96,6 @@ snapshots["sbb-timetable-row renders platform Shadow DOM"] =
   <sbb-card-button
     data-action=""
     data-button=""
-    role="button"
     slot="action"
     tabindex="0"
   >
@@ -196,7 +194,6 @@ snapshots["sbb-timetable-row renders bus strip Shadow DOM"] =
   <sbb-card-button
     data-action=""
     data-button=""
-    role="button"
     slot="action"
     tabindex="0"
   >

@@ -31,16 +31,16 @@ accepting its associated properties (`href`, `target`, `rel` and `download`).
 
 ## Properties
 
-| Name                 | Attribute             | Privacy | Type                                    | Default | Description                                                                                                                |
-| -------------------- | --------------------- | ------- | --------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityLabel` | `accessibility-label` | public  | `string \| undefined`                   |         | This will be forwarded as aria-label to the inner anchor element.                                                          |
-| `disabled`           | `disabled`            | public  | `boolean`                               | `false` | Whether the component is disabled.                                                                                         |
-| `download`           | `download`            | public  | `boolean \| undefined`                  |         | Whether the browser will show the download dialog on click.                                                                |
-| `href`               | `href`                | public  | `string \| undefined`                   |         | The href value you want to link to.                                                                                        |
-| `negative`           | `negative`            | public  | `boolean`                               | `false` | Negative coloring variant flag.                                                                                            |
-| `rel`                | `rel`                 | public  | `string \| undefined`                   |         | The relationship of the linked URL as space-separated link types.                                                          |
-| `size`               | `size`                | public  | `SbbLinkSize`                           | `'s'`   | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used. |
-| `target`             | `target`              | public  | `LinkTargetType \| string \| undefined` |         | Where to display the linked URL.                                                                                           |
+| Name                 | Attribute             | Privacy | Type                       | Default             | Description                                                                                                                |
+| -------------------- | --------------------- | ------- | -------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `accessibilityLabel` | `accessibility-label` | public  | `string`                   | `''`                | This will be forwarded as aria-label to the inner anchor element.                                                          |
+| `disabled`           | `disabled`            | public  | `boolean`                  | `false`             | Whether the component is disabled.                                                                                         |
+| `download`           | `download`            | public  | `boolean`                  | `false`             | Whether the browser will show the download dialog on click.                                                                |
+| `href`               | `href`                | public  | `string`                   | `''`                | The href value you want to link to.                                                                                        |
+| `negative`           | `negative`            | public  | `boolean`                  | `false`             | Negative coloring variant flag.                                                                                            |
+| `rel`                | `rel`                 | public  | `string`                   | `''`                | The relationship of the linked URL as space-separated link types.                                                          |
+| `size`               | `size`                | public  | `SbbLinkSize`              | `'s' / 'xs' (lean)` | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used. |
+| `target`             | `target`              | public  | `LinkTargetType \| string` | `''`                | Where to display the linked URL.                                                                                           |
 
 ## Slots
 

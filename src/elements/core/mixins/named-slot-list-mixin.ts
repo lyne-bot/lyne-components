@@ -34,7 +34,7 @@ export declare abstract class SbbNamedSlotListMixinType<
   C extends HTMLElement,
 > extends SbbHydrationMixinType {
   protected abstract readonly listChildLocalNames: string[];
-  @state() protected listChildren: C[];
+  protected accessor listChildren: C[];
   protected renderList(
     attributes?: {
       class?: string;
@@ -73,7 +73,7 @@ export const SbbNamedSlotListMixin = <
      * This array is only updated if there is an actual change
      * to the child elements.
      */
-    @state() protected listChildren: C[] = [];
+    @state() protected accessor listChildren: C[] = [];
 
     public override connectedCallback(): void {
       super.connectedCallback();

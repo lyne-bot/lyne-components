@@ -15,15 +15,21 @@ otherwise, see [sbb-teaser-product](/docs/elements-sbb-teaser-sbb-teaser-product
 
 ## Slots
 
-Use the `image` slot to pass a `sbb-image` or an `img` that will be used as a background,
-and use the optional `footnote` slot to add a text anchored to the bottom-end of the component.
+Use the `image` slot to pass an `sbb-image` or an `img` that will be used as background.
+Optionally, you can add an overlapping `sbb-chip-label` by wrapping the `sbb-image` in a `figure` tag (see [sbb-image doc](/docs/elements-sbb-image--docs#utility%classes)).
+
+Use the optional `footnote` slot to add a text anchored to the bottom-end of the component.
 
 The default slot is reserved for the main content: it could be a simple text or a text combined with more elements,
 like a `sbb-title` or some interactive elements, like buttons or links within the `sbb-action-group` component.
 
 ```html
 <sbb-teaser-product-static>
-  <sbb-image slot="image" image-src="..."></sbb-image>
+  <figure slot="image" class="sbb-figure">
+    <sbb-image image-src="..."></sbb-image>
+    <sbb-chip-label class="sbb-figure-overlap-start-start">Chip label</sbb-chip-label>
+  </figure>
+
   <p class="sbb-teaser-product--spacing">Content ...</p>
 </sbb-teaser-product-static>
 ```

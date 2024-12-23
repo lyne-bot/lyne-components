@@ -83,7 +83,7 @@ Depending on the circumstances, additional options might be considered.
 - ⚠️ Is every value from a design token and if not, well documented?
 - Are modern style properties used (e.g. gap, inset, margin-block, padding-inline, etc.)?
 - Are there as little style definitions as possible (e.g. using gap instead of exceptions for last-child, etc.)?
-- Do the css class names follow BEM and have the sbb prefix?
+- Do the CSS class names follow BEM and have the sbb prefix?
 - Does the visual output match the Figma spec (also confirmed with UX)?
 
 #### Accessibility

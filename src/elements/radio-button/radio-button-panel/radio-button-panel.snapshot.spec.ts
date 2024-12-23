@@ -8,10 +8,10 @@ import { SbbRadioButtonPanelElement } from './radio-button-panel.js';
 describe('sbb-radio-button-panel', () => {
   let element: SbbRadioButtonPanelElement;
 
-  describe('should render unchecked', async () => {
+  describe('renders', async () => {
     beforeEach(async () => {
       element = (await fixture(
-        html`<sbb-radio-button-panel value="radio-value">
+        html`<sbb-radio-button-panel name="radio" value="radio-value">
           Label
           <span slot="subtext">Subtext</span>
           <span slot="suffix">Suffix</span>
@@ -27,12 +27,14 @@ describe('sbb-radio-button-panel', () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
-  describe('should render checked', async () => {
+  describe('renders checked', async () => {
     beforeEach(async () => {
       element = await fixture(
-        html`<sbb-radio-button-panel value="radio-value" checked>
+        html`<sbb-radio-button-panel name="radio" value="radio-value" checked>
           Label
           <span slot="subtext">Subtext</span>
           <span slot="suffix">Suffix</span>
@@ -47,15 +49,20 @@ describe('sbb-radio-button-panel', () => {
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
+
+    testA11yTreeSnapshot();
   });
 
   testA11yTreeSnapshot(
-    html`<sbb-radio-button-panel>Label</sbb-radio-button-panel>`,
-    'Unchecked - A11y tree',
+    html`<sbb-radio-button-panel name="radio" disabled>Label</sbb-radio-button-panel>`,
+    'renders disabled - A11y tree',
   );
-
   testA11yTreeSnapshot(
-    html`<sbb-radio-button-panel checked>Label</sbb-radio-button-panel>`,
-    'Checked - A11y tree',
+    html`<sbb-radio-button-panel
+      value="radio-value"
+      name="radio"
+      required
+    ></sbb-radio-button-panel>`,
+    'renders required - A11y tree',
   );
 });

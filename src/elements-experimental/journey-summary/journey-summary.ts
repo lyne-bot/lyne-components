@@ -1,5 +1,6 @@
 import { SbbLanguageController } from '@sbb-esta/lyne-elements/core/controllers.js';
 import { defaultDateAdapter } from '@sbb-esta/lyne-elements/core/datetime.js';
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import { i18nTripDuration } from '@sbb-esta/lyne-elements/core/i18n.js';
 import type { SbbDateLike } from '@sbb-esta/lyne-elements/core/interfaces/types';
 import type { SbbTitleLevel } from '@sbb-esta/lyne-elements/title.js';
@@ -35,30 +36,35 @@ export interface InterfaceSbbJourneySummaryAttributes {
  *
  * @slot content - Use this slot to add `sbb-button`s or other interactive elements.
  */
+export
 @customElement('sbb-journey-summary')
-export class SbbJourneySummaryElement extends LitElement {
+class SbbJourneySummaryElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**  The trip prop */
-  @property({ type: Object }) public trip!: InterfaceSbbJourneySummaryAttributes;
+  @property({ type: Object }) public accessor trip: InterfaceSbbJourneySummaryAttributes = null!;
 
   /**  The tripBack prop */
   @property({ attribute: 'trip-back', type: Object })
-  public tripBack?: InterfaceSbbJourneySummaryAttributes;
+  public accessor tripBack: InterfaceSbbJourneySummaryAttributes = null!;
 
   /**
    * The RoundTrip prop. This prop controls if one or two arrows are displayed in the header.
    */
-  @property({ attribute: 'round-trip', type: Boolean }) public roundTrip?: boolean;
+  @forceType()
+  @property({ attribute: 'round-trip', type: Boolean })
+  public accessor roundTrip: boolean = false;
 
   /** Heading level of the journey header element (e.g. h1-h6). */
-  @property({ attribute: 'header-level' }) public headerLevel: SbbTitleLevel = '3';
+  @property({ attribute: 'header-level' }) public accessor headerLevel: SbbTitleLevel = '3';
 
   /**
    * Per default, the current location has a pulsating animation. You can
    * disable the animation with this property.
    */
-  @property({ attribute: 'disable-animation', type: Boolean }) public disableAnimation?: boolean;
+  @forceType()
+  @property({ attribute: 'disable-animation', type: Boolean })
+  public accessor disableAnimation: boolean = false;
 
   /**
    * The Footpath attribute for rendering different icons
@@ -66,7 +72,9 @@ export class SbbJourneySummaryElement extends LitElement {
    * false: render walk-icon
    * default: render walk-icon
    */
-  @property({ attribute: 'a11y-footpath', type: Boolean }) public a11yFootpath?: boolean;
+  @forceType()
+  @property({ attribute: 'a11y-footpath', type: Boolean })
+  public accessor a11yFootpath: boolean = false;
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()

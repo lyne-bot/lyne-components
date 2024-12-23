@@ -8,7 +8,6 @@ import {
 } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import { SbbConnectedAbortController } from '../../core/controllers.js';
 import { hostAttributes } from '../../core/decorators.js';
 import { EventEmitter } from '../../core/eventing.js';
 import type { SbbStepLabelElement } from '../step-label.js';
@@ -19,10 +18,10 @@ import style from './step.scss?lit&inline';
 let nextId = 0;
 
 export type SbbStepValidateEventDetails = {
-  currentIndex?: number;
-  currentStep?: SbbStepElement;
-  nextIndex?: number;
-  nextStep?: SbbStepElement;
+  currentIndex: number | null;
+  currentStep: SbbStepElement | null;
+  nextIndex: number | null;
+  nextStep: SbbStepElement | null;
 };
 
 /**
@@ -31,12 +30,13 @@ export type SbbStepValidateEventDetails = {
  * @slot - Use the unnamed slot to provide content.
  * @event {CustomEvent<SbbStepValidateEventDetails>} validate - Emits whenever step switch is triggered. Can be canceled.
  */
+export
 @customElement('sbb-step')
 @hostAttributes({
   slot: 'step',
   role: 'tabpanel',
 })
-export class SbbStepElement extends LitElement {
+class SbbStepElement extends LitElement {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
     validate: 'validate',
@@ -49,7 +49,6 @@ export class SbbStepElement extends LitElement {
   );
 
   private _loaded: boolean = false;
-  private _abort = new SbbConnectedAbortController(this);
   private _stepper: SbbStepperElement | null = null;
   private _label: SbbStepLabelElement | null = null;
   private _stepResizeObserver = new ResizeController(this, {
@@ -61,6 +60,11 @@ export class SbbStepElement extends LitElement {
   /** The label of the step. */
   public get label(): SbbStepLabelElement | null {
     return this._label;
+  }
+
+  public constructor() {
+    super();
+    this.addEventListener?.('click', (e) => this._handleClick(e));
   }
 
   /**
@@ -146,9 +150,7 @@ export class SbbStepElement extends LitElement {
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
     this.id = this.id || `sbb-step-${nextId++}`;
-    this.addEventListener('click', (e) => this._handleClick(e), { signal });
     this._stepper = this.closest('sbb-stepper');
     this._label = this._getStepLabel();
   }

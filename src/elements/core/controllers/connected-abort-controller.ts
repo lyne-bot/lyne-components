@@ -1,5 +1,9 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
 
+/**
+ * @deprecated No replacement should be necessary, as this was intended
+ *   for event listeners, which should be applied in the constructor.
+ */
 export class SbbConnectedAbortController implements ReactiveController {
   private _abortController?: AbortController = new AbortController();
 

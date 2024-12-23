@@ -1,16 +1,18 @@
 import type { LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 
+import { forceType, getOverride } from '../decorators.js';
+
 import type { AbstractConstructor } from './constructor.js';
+import type { SbbFormAssociatedMixinType } from './form-associated-mixin.js';
 
 export declare class SbbDisabledMixinType {
-  public set disabled(value: boolean);
-  public get disabled(): boolean;
+  public accessor disabled: boolean;
   protected isDisabledExternally(): boolean;
 }
 
 export declare class SbbDisabledInteractiveMixinType {
-  public disabledInteractive: boolean;
+  public accessor disabledInteractive: boolean;
 }
 
 /**
@@ -22,16 +24,10 @@ export const SbbDisabledMixin = <T extends AbstractConstructor<LitElement>>(
 ): AbstractConstructor<SbbDisabledMixinType> & T => {
   abstract class SbbDisabledElement extends superClass implements Partial<SbbDisabledMixinType> {
     /** Whether the component is disabled. */
+    @forceType()
     @property({ reflect: true, type: Boolean })
-    public set disabled(value: boolean) {
-      // To provide the same behavior as the native disabled state,
-      // any value is converted to a boolean.
-      this._disabled = Boolean(value);
-    }
-    public get disabled(): boolean {
-      return this._disabled || this.isDisabledExternally();
-    }
-    private _disabled: boolean = false;
+    @getOverride((e, v) => v || e.isDisabledExternally())
+    public accessor disabled: boolean = false;
 
     /**
      * Will be used as 'or' check to the current disabled state.
@@ -58,9 +54,10 @@ export const SbbDisabledInteractiveMixin = <
     extends superClass
     implements Partial<SbbDisabledInteractiveMixinType>
   {
-    /** Whether disabled buttons should be interactive. */
-    @property({ attribute: 'disabled-interactive', type: Boolean }) public disabledInteractive =
-      false;
+    /** Whether the button should be aria-disabled but stay interactive. */
+    @forceType()
+    @property({ attribute: 'disabled-interactive', type: Boolean, reflect: true })
+    public accessor disabledInteractive: boolean = false;
   }
 
   return SbbDisabledInteractiveElement as unknown as AbstractConstructor<SbbDisabledInteractiveMixinType> &
@@ -68,7 +65,9 @@ export const SbbDisabledInteractiveMixin = <
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const SbbDisabledTabIndexActionMixin = <T extends AbstractConstructor<LitElement>>(
+export const SbbDisabledTabIndexActionMixin = <
+  T extends AbstractConstructor<LitElement & SbbFormAssociatedMixinType>,
+>(
   superClass: T,
 ): AbstractConstructor<SbbDisabledMixinType & SbbDisabledInteractiveMixinType> & T => {
   abstract class SbbDisabledTabIndexAction
@@ -78,20 +77,18 @@ export const SbbDisabledTabIndexActionMixin = <T extends AbstractConstructor<Lit
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
       super.willUpdate(changedProperties);
 
-      if (!changedProperties.has('disabled') && !changedProperties.has('disabledInteractive')) {
+      if (changedProperties.has('disabledInteractive')) {
+        this.internals.ariaDisabled = this.disabledInteractive ? 'true' : null;
+      }
+
+      if (!changedProperties.has('disabled')) {
         return;
       }
 
-      if (!this.disabled || this.disabledInteractive) {
+      if (!this.disabled) {
         this.setAttribute('tabindex', '0');
       } else {
         this.removeAttribute('tabindex');
-      }
-
-      if (this.disabled) {
-        this.setAttribute('aria-disabled', 'true');
-      } else {
-        this.removeAttribute('aria-disabled');
       }
     }
   }
@@ -99,34 +96,4 @@ export const SbbDisabledTabIndexActionMixin = <T extends AbstractConstructor<Lit
     SbbDisabledMixinType & SbbDisabledInteractiveMixinType
   > &
     T;
-};
-
-/**
- * Extends `SbbDisabledMixin` with the `aria-disabled` attribute.
- * For a11y purposes, keeps the element focusable even when disabled.
- * @deprecated Will be removed with next major version
- */
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const SbbFocusableDisabledActionMixin = <T extends AbstractConstructor<LitElement>>(
-  superClass: T,
-): AbstractConstructor<SbbDisabledMixinType> & T => {
-  abstract class SbbFocusableDisabledAction
-    extends SbbDisabledMixin(superClass)
-    implements SbbDisabledMixinType
-  {
-    protected override willUpdate(changedProperties: PropertyValues<this>): void {
-      super.willUpdate(changedProperties);
-
-      if (!changedProperties.has('disabled')) {
-        return;
-      }
-
-      if (this.disabled) {
-        this.setAttribute('aria-disabled', 'true');
-      } else {
-        this.removeAttribute('aria-disabled');
-      }
-    }
-  }
-  return SbbFocusableDisabledAction as AbstractConstructor<SbbDisabledMixinType> & T;
 };

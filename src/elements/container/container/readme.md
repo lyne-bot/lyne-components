@@ -19,6 +19,21 @@ use CSS object-position for slotted `img`, or `--sbb-image-object-position` vari
 If an image is present, the container receives a pre-defined padding.
 It's possible to override the padding by using the CSS variable `--sbb-container-padding`.
 
+Optionally, you can add an overlapping `sbb-chip-label` by wrapping the `sbb-image` in a `figure` tag (see [sbb-image doc](/docs/elements-sbb-image--docs#utility%classes)).
+
+```html
+<sbb-container>
+  <figure class="sbb-figure" slot="image">
+    <sbb-image
+      image-src="https://cdn.img.sbb.ch/content/dam/internet/lyne/Bahnhof-Luzern.jpg"
+      alt="Station of Lucerne from outside"
+    ></sbb-image>
+    <sbb-chip-label class="sbb-figure-overlap-start-start">...</sbb-chip-label>
+  </figure>
+  ...
+</sbb-container>
+```
+
 ## Style
 
 By default `sbb-container` uses the `page spacing` defined in the [layout documentation](/docs/styles-layout--docs). Optionally the user can use the `expanded` property (default: `false`) to switch to the `page spacing expanded` layout.

@@ -2,8 +2,7 @@ import { assert, expect, nextFrame } from '@open-wc/testing';
 import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
-import { tabKey } from '../../core/testing/private/keys.js';
-import { fixture } from '../../core/testing/private.js';
+import { fixture, tabKey } from '../../core/testing/private.js';
 import { waitForCondition, waitForLitRender } from '../../core/testing.js';
 import { SbbOptionElement } from '../../option.js';
 import { SbbSelectElement } from '../../select.js';
@@ -297,7 +296,7 @@ describe(`sbb-form-field`, () => {
       label.click();
       await waitForLitRender(element);
 
-      expect(select).to.have.attribute('data-state', 'opening');
+      expect(select).to.have.attribute('data-state', 'opened');
     });
 
     it('should focus select on form field click readonly', async () => {
@@ -417,7 +416,7 @@ describe(`sbb-form-field`, () => {
       expect(element).to.have.attribute('data-input-empty');
     });
 
-    it('should reset floating label when calling reset of sbb-form-field', async () => {
+    it('should reset floating label when changing value programmatically', async () => {
       const element: SbbFormFieldElement = await fixture(html`
         <sbb-form-field floating-label>
           <input />
@@ -434,15 +433,58 @@ describe(`sbb-form-field`, () => {
       input.value = '';
       await waitForLitRender(element);
 
-      // Then empty state is not updated
-      expect(element).not.to.have.attribute('data-input-empty');
+      // Then the empty state is updated
+      expect(element).to.have.attribute('data-input-empty');
+    });
 
-      // When manually calling reset method
-      element.reset();
+    it('should unpatch on input removal', async () => {
+      const element: SbbFormFieldElement = await fixture(html`
+        <sbb-form-field floating-label></sbb-form-field>
+      `);
+
+      const newInput = document.createElement('input');
+
+      const originalSetter = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(newInput),
+        'value',
+      )!.set;
+
+      element.appendChild(newInput);
       await waitForLitRender(element);
 
-      // Then empty state should be updated
-      expect(element).to.have.attribute('data-input-empty');
+      expect(Object.getOwnPropertyDescriptor(newInput, 'value')!.set).not.to.be.equal(
+        originalSetter,
+      );
+
+      newInput.remove();
+      await waitForLitRender(element);
+
+      expect(Object.getOwnPropertyDescriptor(newInput, 'value')!.set).to.be.equal(originalSetter);
+    });
+
+    it('should unpatch on disconnection', async () => {
+      const element: SbbFormFieldElement = await fixture(html`
+        <sbb-form-field floating-label></sbb-form-field>
+      `);
+
+      const newInput = document.createElement('input');
+
+      const originalSetter = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(newInput),
+        'value',
+      )!.set;
+
+      element.appendChild(newInput);
+      await waitForLitRender(element);
+
+      expect(Object.getOwnPropertyDescriptor(newInput, 'value')!.set).not.to.be.equal(
+        originalSetter,
+      );
+
+      element.remove();
+      await waitForLitRender(element);
+
+      expect(Object.getOwnPropertyDescriptor(newInput, 'value')!.set).to.be.equal(originalSetter);
     });
   });
 });

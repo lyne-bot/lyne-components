@@ -7,31 +7,27 @@ import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import readme from './readme.md?raw';
 import './train-wagon.js';
+import '../train-formation.js';
+import '../train.js';
+
+const trainFormationWrapper = (content: TemplateResult): TemplateResult =>
+  html`<sbb-train-formation><sbb-train>${content}</sbb-train></sbb-train-formation>`;
 
 const Template = (args: Args): TemplateResult =>
-  html`<sbb-train-wagon ${sbbSpread(args)}></sbb-train-wagon>`;
+  trainFormationWrapper(html`<sbb-train-wagon ${sbbSpread(args)}></sbb-train-wagon>`);
 
-const WagonIconsTemplate = (args: Args): TemplateResult => html`
-  <sbb-train-wagon ${sbbSpread(args)}>
-    <sbb-icon aria-hidden="false" aria-label="wheelchair space" name="sa-rs"></sbb-icon>
-    <sbb-icon aria-hidden="false" aria-label="low-floor entry" name="sa-nf"></sbb-icon>
-    <sbb-icon
-      aria-hidden="false"
-      aria-label="Business zone in 1st class: Reservation possible"
-      name="sa-bz"
-    ></sbb-icon>
-  </sbb-train-wagon>
-`;
-
-const WagonOneIconTemplate = (args: Args): TemplateResult => html`
-  <sbb-train-wagon ${sbbSpread(args)}>
-    <sbb-icon
-      aria-hidden="false"
-      aria-label="Business zone in 1st class: Reservation possible"
-      name="sa-bz"
-    ></sbb-icon>
-  </sbb-train-wagon>
-`;
+const WagonIconsTemplate = (args: Args): TemplateResult =>
+  trainFormationWrapper(html`
+    <sbb-train-wagon ${sbbSpread(args)}>
+      <sbb-icon aria-hidden="false" aria-label="wheelchair space" name="sa-rs"></sbb-icon>
+      <sbb-icon aria-hidden="false" aria-label="low-floor entry" name="sa-nf"></sbb-icon>
+      <sbb-icon
+        aria-hidden="false"
+        aria-label="Business zone in 1st class: Reservation possible"
+        name="sa-bz"
+      ></sbb-icon>
+    </sbb-train-wagon>
+  `);
 
 const label: InputType = {
   control: {
@@ -49,21 +45,30 @@ const occupancy: InputType = {
   control: {
     type: 'inline-radio',
   },
-  options: ['high', 'medium', 'low', 'none'],
+  options: ['high', 'medium', 'low', 'none', null],
 };
 
 const type: InputType = {
   control: {
     type: 'inline-radio',
   },
-  options: ['locomotive', 'closed', 'wagon'],
+  options: [
+    'wagon',
+    'wagon-end-left',
+    'wagon-end-right',
+    'couchette',
+    'sleeping',
+    'restaurant',
+    'locomotive',
+    'closed',
+  ],
 };
 
 const wagonClass: InputType = {
   control: {
     type: 'inline-radio',
   },
-  options: ['1', '2'],
+  options: ['1', '2', null],
 };
 
 const defaultArgTypes: ArgTypes = {
@@ -76,10 +81,10 @@ const defaultArgTypes: ArgTypes = {
 
 const defaultArgs: Args = {
   label: '36',
-  type: type.options![2],
+  type: type.options![0],
   occupancy: occupancy.options![2],
   'wagon-class': wagonClass.options![1],
-  'additional-accessibility-text': undefined,
+  'additional-accessibility-text': '',
 };
 
 export const wagonLowOccupancy: StoryObj = {
@@ -88,20 +93,22 @@ export const wagonLowOccupancy: StoryObj = {
   args: defaultArgs,
 };
 
-export const wagonMediumOccupancy: StoryObj = {
+export const wagonEndLeftMediumOccupancy: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    type: type.options![1],
     occupancy: occupancy.options![1],
   },
 };
 
-export const wagonHighOccupancy: StoryObj = {
+export const wagonEndRightHighOccupancy: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
+    type: type.options![2],
     occupancy: occupancy.options![0],
   },
 };
@@ -115,25 +122,37 @@ export const wagonNoneOccupancy: StoryObj = {
   },
 };
 
-export const wagonUndefinedOccupancy: StoryObj = {
+export const couchette: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    occupancy: '',
+    type: type.options![3],
+    'wagon-class': '',
+    occupancy: null,
   },
 };
 
-export const wagonOneIcon: StoryObj = {
-  render: WagonOneIconTemplate,
+export const sleeping: StoryObj = {
+  render: Template,
   argTypes: defaultArgTypes,
-  args: defaultArgs,
+  args: {
+    ...defaultArgs,
+    type: type.options![4],
+    'wagon-class': '',
+    occupancy: null,
+  },
 };
 
-export const wagonMultipleIcons: StoryObj = {
+export const RestaurantIcons: StoryObj = {
   render: WagonIconsTemplate,
   argTypes: defaultArgTypes,
-  args: defaultArgs,
+  args: {
+    ...defaultArgs,
+    type: type.options![5],
+    'wagon-class': '',
+    occupancy: null,
+  },
 };
 
 export const wagonFirstClass: StoryObj = {
@@ -145,21 +164,14 @@ export const wagonFirstClass: StoryObj = {
   },
 };
 
-export const wagonUndefinedClass: StoryObj = {
-  render: Template,
-  argTypes: defaultArgTypes,
-  args: {
-    ...defaultArgs,
-    'wagon-class': undefined,
-  },
-};
-
 export const locomotive: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    type: type.options![0],
+    type: type.options![6],
+    'wagon-class': '',
+    occupancy: null,
   },
 };
 
@@ -168,7 +180,7 @@ export const closed: StoryObj = {
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    type: type.options![1],
+    type: type.options![7],
   },
 };
 

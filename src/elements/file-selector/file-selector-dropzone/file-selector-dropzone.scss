@@ -1,0 +1,38 @@
+@use '../../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+.sbb-file-selector__dropzone-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sbb-spacing-responsive-s);
+  background-color: var(--sbb-file-selector-background-color);
+  border: var(--sbb-border-width-1x) dashed var(--sbb-file-selector-border-color);
+  border-radius: var(--sbb-border-radius-4x);
+  transition-duration: var(--sbb-file-selector-transition-duration);
+  transition-timing-function: var(--sbb-file-selector-transition-easing-function);
+  transition-property: background-color, border-color;
+}
+
+.sbb-file-selector__dropzone-area--icon {
+  color: var(--sbb-file-selector-color);
+  line-height: 0;
+}
+
+.sbb-file-selector__dropzone-area--title {
+  @include sbb.text--bold;
+  @include sbb.title-6($exclude-spacing: true);
+
+  text-align: center;
+  color: var(--sbb-file-selector-color);
+}
+
+.sbb-file-selector__dropzone-area--subtitle {
+  @include sbb.text-xs--regular;
+
+  text-align: center;
+  color: var(--sbb-file-selector-subtitle-color);
+  margin-block-end: var(--sbb-spacing-fixed-4x);
+}

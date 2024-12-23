@@ -8,7 +8,8 @@ import {
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { slotState } from '../core/decorators.js';
+import { forceType, omitEmptyConverter, slotState } from '../core/decorators.js';
+import { isLean } from '../core/dom.js';
 import { SbbNamedSlotListMixin, type WithListChildren } from '../core/mixins.js';
 import type { SbbBlockLinkButtonElement, SbbBlockLinkElement } from '../link.js';
 import type { SbbTitleLevel } from '../title.js';
@@ -26,9 +27,10 @@ import '../title.js';
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-skiplink-list')
 @slotState()
-export class SbbSkiplinkListElement extends SbbNamedSlotListMixin<
+class SbbSkiplinkListElement extends SbbNamedSlotListMixin<
   SbbBlockLinkElement | SbbBlockLinkButtonElement,
   typeof LitElement
 >(LitElement) {
@@ -36,17 +38,19 @@ export class SbbSkiplinkListElement extends SbbNamedSlotListMixin<
   protected override readonly listChildLocalNames = ['sbb-block-link', 'sbb-block-link-button'];
 
   /** The title text we want to place before the list. */
-  @property({ attribute: 'title-content', reflect: true }) public titleContent?: string;
+  @forceType()
+  @property({ attribute: 'title-content', reflect: true, converter: omitEmptyConverter })
+  public accessor titleContent: string = '';
 
   /** The semantic level of the title, e.g. 2 = h2. */
-  @property({ attribute: 'title-level' }) public titleLevel: SbbTitleLevel = '2';
+  @property({ attribute: 'title-level' }) public accessor titleLevel: SbbTitleLevel = '2';
 
   protected override willUpdate(changedProperties: PropertyValues<WithListChildren<this>>): void {
     super.willUpdate(changedProperties);
 
     if (changedProperties.has('listChildren')) {
       for (const child of this.listChildren) {
-        child.size = 'm';
+        child.size = isLean() ? 'xs' : 'm';
         child.negative = true;
       }
     }

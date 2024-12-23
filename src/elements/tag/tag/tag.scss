@@ -1,5 +1,8 @@
 @use '../../core/styles' as sbb;
 
+$disabled: ':disabled, [disabled-interactive]';
+$active: ':active, [data-active]';
+
 // Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
 @include sbb.box-sizing;
 
@@ -7,7 +10,7 @@
   display: inline-block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
   max-width: 100%;
 
@@ -22,7 +25,7 @@
   --sbb-tag-inset: 0;
   --sbb-tag-content-shift: translateY(0);
   --sbb-tag-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-tag-animation-easing: var(--sbb-animation-easing);
@@ -48,7 +51,7 @@
   }
 }
 
-:host([disabled]) {
+:host(:is(#{$disabled})) {
   --sbb-tag-text-color: var(--sbb-color-granite);
   --sbb-tag-amount-color: var(--sbb-tag-text-color);
   --sbb-tag-background-color: var(--sbb-color-milk);
@@ -62,11 +65,11 @@
   }
 }
 
-:host([checked][disabled]) {
+:host([checked]:is(#{$disabled})) {
   --sbb-tag-border-color: var(--sbb-color-metal);
 }
 
-:host(:hover:not([disabled], :active, [data-active])) {
+:host(:hover:not(#{$disabled}, #{$active})) {
   @include sbb.hover-mq($hover: true) {
     --sbb-tag-background-color: var(--sbb-color-milk);
     --sbb-tag-inset: calc(var(--sbb-border-width-2x) * -1);
@@ -79,7 +82,7 @@
 }
 
 // Pressed state
-:host(:is(:active, [data-active]):not([disabled])) {
+:host(:is(#{$active}):not(#{$disabled})) {
   --sbb-tag-background-color: var(--sbb-color-milk);
   --sbb-tag-border-color: var(--sbb-color-iron);
   --sbb-tag-border-width: var(--sbb-border-width-2x);
@@ -130,7 +133,7 @@
     }
   }
 
-  :host([disabled]) & {
+  :host(#{$disabled}) & {
     cursor: unset;
     pointer-events: none;
   }

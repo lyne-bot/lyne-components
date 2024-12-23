@@ -5,8 +5,6 @@ export const YEARS_PER_PAGE: number = 24;
 export const FORMAT_DATE =
   /(^0?[1-9]?|[12]?[0-9]?|3?[01]?)[.,\\/\-\s](0?[1-9]?|1?[0-2]?)?[.,\\/\-\s](\d{1,4}$)?/;
 
-// TODO(breaking-change): Change undefined return types to null.
-
 /**
  * Abstract date functionality.
  *
@@ -139,11 +137,12 @@ export abstract class DateAdapter<T = any> {
    * @param value The date in the format DD.MM.YYYY.
    * @param now The current date as Date.
    */
-  public abstract parse(value: string | null | undefined, now: T): T | undefined;
+  public abstract parse(value: string | null | undefined, now: T): T | null;
 
   /**
    * Format the given date as string.
    * @param date The date to format.
+   * @param options options object with weekdayStyle as property
    */
   public format(
     date: T | null | undefined,

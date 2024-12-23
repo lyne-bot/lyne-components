@@ -35,7 +35,8 @@ describe(`sbb-header`, () => {
             href="https://github.com/sbb-design-systems/lyne-components"
             >Menu</sbb-header-link
           >
-          <div slot="logo">
+          <div class="sbb-header-spacer"></div>
+          <div class="sbb-header-logo">
             <circle cx="25" cy="75" r="20"></circle>
           </div>
         </sbb-header>

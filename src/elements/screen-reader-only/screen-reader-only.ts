@@ -9,8 +9,9 @@ import style from './screen-reader-only.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to provide content.
  */
+export
 @customElement('sbb-screen-reader-only')
-export class SbbScreenReaderOnlyElement extends LitElement {
+class SbbScreenReaderOnlyElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   protected override render(): TemplateResult {

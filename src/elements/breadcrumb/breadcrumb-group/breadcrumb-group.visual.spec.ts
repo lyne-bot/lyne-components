@@ -29,10 +29,7 @@ describe('sbb-breadcrumb-group', () => {
                     .fill(undefined)
                     .map(
                       (_, i) =>
-                        html` <sbb-breadcrumb
-                          href="https://www.sbb.ch"
-                          target="_blank"
-                          download="false"
+                        html` <sbb-breadcrumb href="https://www.sbb.ch" target="_blank"
                           >Breadcrumb ${i + 1}
                         </sbb-breadcrumb>`,
                     )}

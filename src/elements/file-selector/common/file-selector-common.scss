@@ -1,0 +1,86 @@
+@use '../../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-file-selector-color: var(--sbb-color-black);
+  --sbb-file-selector-subtitle-color: var(--sbb-color-granite);
+  --sbb-file-selector-background-color: var(--sbb-color-white);
+  --sbb-file-selector-border-color: var(--sbb-color-cloud);
+  --sbb-file-selector-transition-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-2x)
+  );
+  --sbb-file-selector-transition-easing-function: var(--sbb-animation-easing);
+
+  display: block;
+  width: #{sbb.px-to-rem-build(320)};
+}
+
+:host(:disabled) {
+  @include sbb.if-forced-colors {
+    --sbb-file-selector-color: GrayText;
+    --sbb-file-selector-subtitle-color: GrayText;
+    --sbb-file-selector-border-color: GrayText;
+  }
+}
+
+:host([data-active]) {
+  --sbb-file-selector-background-color: var(--sbb-color-milk);
+  --sbb-file-selector-border-color: var(--sbb-color-storm);
+  @include sbb.if-forced-colors {
+    --sbb-file-selector-border-color: Highlight;
+  }
+}
+
+.sbb-file-selector__input-container {
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.sbb-file-selector__visually-hidden {
+  @include sbb.screen-reader-only;
+}
+
+.sbb-file-selector__file-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--sbb-spacing-fixed-3x);
+  margin-block: 0;
+  padding-inline: 0;
+  padding-block: var(--sbb-spacing-fixed-6x) var(--sbb-spacing-fixed-1x);
+}
+
+.sbb-file-selector__file {
+  @include sbb.text-s--regular;
+
+  display: flex;
+  gap: var(--sbb-spacing-fixed-4x);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sbb-file-selector__file-details {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: var(--sbb-spacing-fixed-4x);
+  overflow: auto;
+}
+
+.sbb-file-selector__file-name {
+  @include sbb.ellipsis;
+}
+
+.sbb-file-selector__file-size {
+  white-space: nowrap;
+  color: var(--sbb-color-metal);
+}
+
+.sbb-file-selector__error {
+  :host(:not([data-slot-names~='error'])) & {
+    display: none;
+  }
+}

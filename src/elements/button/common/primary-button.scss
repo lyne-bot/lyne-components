@@ -24,6 +24,6 @@
   --sbb-button-shadow-2-color: var(--sbb-color-metal-alpha-20);
 }
 
-:host(:not([disabled], :active, [data-active])) {
+:host(:not([disabled], :disabled, [disabled-interactive], :active, [data-active])) {
   --sbb-button-box-shadow: var(--sbb-button-box-shadow-definition);
 }

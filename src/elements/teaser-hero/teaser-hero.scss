@@ -7,12 +7,8 @@
   display: block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
-
-  --sbb-teaser-hero-brightness-hover: var(--sbb-hover-image-brightness);
-  --sbb-teaser-hero-chip-inset: var(--sbb-spacing-responsive-xxxs) auto auto
-    var(--sbb-spacing-responsive-xxxs);
 
   @include sbb.panel-variables;
 }
@@ -20,14 +16,18 @@
 @include sbb.hover-mq($hover: true) {
   :host(:hover) {
     --sbb-panel-background-color: var(--sbb-panel-background-color-hover);
-    --sbb-teaser-hero-brightness: var(--sbb-teaser-hero-brightness-hover);
   }
+}
+
+::slotted([slot='image']) {
+  width: 100%;
 }
 
 .sbb-teaser-hero {
   position: relative;
-  display: block;
+  display: flex;
   min-height: var(--sbb-panel-height);
+  text-decoration: none;
 
   // Hide focus outline when focus origin is mouse or touch. This is being used as a workaround in various components.
   :host(:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) &:focus-visible {
@@ -59,17 +59,4 @@
   display: inline;
   margin: 0;
   padding: 0;
-}
-
-::slotted([slot='image']),
-sbb-image {
-  will-change: filter;
-  filter: brightness(var(--sbb-teaser-hero-brightness, 1));
-  transition: filter var(--sbb-panel-animation-duration) var(--sbb-panel-animation-easing);
-}
-
-::slotted([slot='chip']) {
-  position: absolute;
-  inset: var(--sbb-teaser-hero-chip-inset);
-  z-index: 2;
 }

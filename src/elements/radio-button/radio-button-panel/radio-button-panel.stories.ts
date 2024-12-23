@@ -1,12 +1,15 @@
+import { withActions } from '@storybook/addon-actions/decorator';
 import type { InputType } from '@storybook/types';
-import type { Args, ArgTypes, Meta, StoryObj } from '@storybook/web-components';
-import { html, type TemplateResult } from 'lit';
+import type { Args, ArgTypes, Decorator, Meta, StoryObj } from '@storybook/web-components';
+import { html, nothing, type TemplateResult } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import readme from './readme.md?raw';
 
 import '../../icon.js';
+import '../../title.js';
 import '../../card/card-badge.js';
 import '../radio-button-panel.js';
 
@@ -85,7 +88,7 @@ const defaultArgs: Args = {
 const cardBadge = (): TemplateResult => html`<sbb-card-badge>%</sbb-card-badge>`;
 
 const DefaultTemplate = ({ labelBoldClass, ...args }: Args): TemplateResult =>
-  html`<sbb-radio-button-panel ${sbbSpread(args)}
+  html`<sbb-radio-button-panel ${sbbSpread(args)} name=${args.name || nothing}
     >${labelBoldClass ? html`<span class="sbb-text--bold">Label</span>` : 'Label'}
     <span slot="subtext">Subtext</span>
     <span slot="suffix" style="margin-inline-start: auto; display:flex; align-items:center;">
@@ -102,6 +105,30 @@ const DefaultTemplate = ({ labelBoldClass, ...args }: Args): TemplateResult =>
     </span>
     ${cardBadge()}
   </sbb-radio-button-panel>`;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const StandaloneTemplate = ({ value, ...args }: Args): TemplateResult => html`
+  <form>
+    <sbb-title level="6" style="margin-block-start: 0">Group 1</sbb-title>
+      ${repeat(
+        new Array(3),
+        (_, i) =>
+          html` <div style="margin-block-start: .5rem">
+            ${DefaultTemplate({ ...args, value: `value-${i + 1}`, name: `group-1` })}
+          </div>`,
+      )}
+    </div>
+
+    <sbb-title level="6">Group 2</sbb-title>
+    ${repeat(
+      new Array(4),
+      (_, i) =>
+        html` <div style="margin-block-start: .5rem">
+          ${DefaultTemplate({ ...args, value: `value-${i + 1}`, name: `group-2` })}
+        </div>`,
+    )}
+  </form>
+`;
 
 export const Default: StoryObj = {
   render: DefaultTemplate,
@@ -151,8 +178,18 @@ export const CheckedBold: StoryObj = {
   args: { ...defaultArgs, checked: true, labelBoldClass: true },
 };
 
+export const StandaloneGroup: StoryObj = {
+  render: StandaloneTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs },
+};
+
 const meta: Meta = {
   parameters: {
+    decorators: [withActions as Decorator],
+    actions: {
+      handles: ['change', 'input'],
+    },
     docs: {
       extractComponentDescription: () => readme,
     },

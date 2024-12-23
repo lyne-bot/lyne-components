@@ -9,8 +9,9 @@ import { SbbHeaderActionCommonElementMixin } from '../common.js';
  * @slot icon - Slot used to render the link icon.
  * @slot - Use the unnamed slot to add content to the `sbb-header-link`.
  */
+export
 @customElement('sbb-header-link')
-export class SbbHeaderLinkElement extends SbbHeaderActionCommonElementMixin(SbbLinkBaseElement) {}
+class SbbHeaderLinkElement extends SbbHeaderActionCommonElementMixin(SbbLinkBaseElement) {}
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -15,10 +15,10 @@ to provide the possibility to display a clear button which can clear the input v
 
 ## Properties
 
-| Name       | Attribute  | Privacy | Type                  | Default    | Description                                      |
-| ---------- | ---------- | ------- | --------------------- | ---------- | ------------------------------------------------ |
-| `form`     | `form`     | public  | `string \| undefined` |            | The <form> element to associate the button with. |
-| `name`     | `name`     | public  | `string`              |            | The name of the button element.                  |
-| `negative` | `negative` | public  | `boolean`             | `false`    | Negative coloring variant flag.                  |
-| `type`     | `type`     | public  | `SbbButtonType`       | `'button'` | The type attribute to use for the button.        |
-| `value`    | `value`    | public  | `string`              |            | The value of the button element.                 |
+| Name       | Attribute  | Privacy | Type                      | Default    | Description                                                 |
+| ---------- | ---------- | ------- | ------------------------- | ---------- | ----------------------------------------------------------- |
+| `form`     | `form`     | public  | `HTMLFormElement \| null` |            | The `<form>` element to associate the button with.          |
+| `name`     | `name`     | public  | `string`                  |            | Name of the form element. Will be read from name attribute. |
+| `negative` | `negative` | public  | `boolean`                 | `false`    | Negative coloring variant flag.                             |
+| `type`     | `type`     | public  | `SbbButtonType`           | `'button'` | The type attribute to use for the button.                   |
+| `value`    | `value`    | public  | `string \| null`          | `null`     | Value of the form element.                                  |

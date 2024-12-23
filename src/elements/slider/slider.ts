@@ -4,9 +4,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { SbbConnectedAbortController } from '../core/controllers.js';
-import { hostAttributes } from '../core/decorators.js';
-import { EventEmitter, forwardEventToHost } from '../core/eventing.js';
+import { forceType, hostAttributes } from '../core/decorators.js';
+import { EventEmitter, forwardEvent } from '../core/eventing.js';
 import {
   type FormRestoreReason,
   type FormRestoreState,
@@ -25,11 +24,12 @@ import '../icon.js';
  * @slot suffix - Use this slot to render an icon on the right side of the input.
  * @event {CustomEvent<void>} didChange - Deprecated. used for React. Will probably be removed once React 19 is available.
  */
+export
 @customElement('sbb-slider')
 @hostAttributes({
   tabindex: '0',
 })
-export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(LitElement)) {
+class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(LitElement)) {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
     didChange: 'didChange',
@@ -55,8 +55,8 @@ export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(Li
 
   /** Numeric value for the inner HTMLInputElement. */
   @property({ attribute: 'value-as-number', type: Number })
-  public set valueAsNumber(value: number) {
-    this.value = value?.toString();
+  public set valueAsNumber(value: number | null) {
+    this.value = value?.toString() ?? null;
   }
   public get valueAsNumber(): number | null {
     return Number(this.value);
@@ -96,19 +96,33 @@ export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(Li
    * Readonly state for the inner HTMLInputElement.
    * Since the input range does not allow this attribute, it will be merged with the `disabled` one.
    */
-  @property({ type: Boolean }) public readonly?: boolean = false;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor readonly: boolean = false;
 
   /** Name of the icon at component's start, which will be forward to the nested `sbb-icon`. */
-  @property({ attribute: 'start-icon' }) public startIcon?: string;
+  @forceType()
+  @property({ attribute: 'start-icon' })
+  public accessor startIcon: string = '';
 
   /** Name of the icon at component's end, which will be forward to the nested `sbb-icon`. */
-  @property({ attribute: 'end-icon' }) public endIcon?: string;
+  @forceType()
+  @property({ attribute: 'end-icon' })
+  public accessor endIcon: string = '';
+
+  /**
+   * Form type of element.
+   * @default 'range'
+   */
+  public override get type(): string {
+    return 'range';
+  }
 
   /**
    * The ratio between the absolute value and the validity interval.
    * E.g. given `min=0`, `max=100` and `value=50`, then `_valueFraction=0.5`
    */
-  @state() private _valueFraction = 0;
+  @state() private accessor _valueFraction = 0;
 
   /**
    * @deprecated only used for React. Will probably be removed once React 19 is available.
@@ -121,18 +135,15 @@ export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(Li
   /** Reference to the inner HTMLInputElement with type='range'. */
   private _rangeInput!: HTMLInputElement;
 
-  private _abort = new SbbConnectedAbortController(this);
-
   public constructor() {
     super();
     /** @internal */
     this.internals.role = 'slider';
+    this.addEventListener?.('keydown', (e) => this._handleKeydown(e));
   }
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('keydown', (e) => this._handleKeydown(e), { signal });
 
     if (!this.value) {
       this.value = this._getDefaultValue();
@@ -237,7 +248,7 @@ export class SbbSliderElement extends SbbDisabledMixin(SbbFormAssociatedMixin(Li
 
   /** Emits the change event. */
   private _emitChange(event: Event): void {
-    forwardEventToHost(event, this);
+    forwardEvent(event, this);
     this._didChange.emit();
   }
 

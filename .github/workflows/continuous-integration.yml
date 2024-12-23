@@ -159,3 +159,12 @@ jobs:
           docker push $IMAGE_REPO_VISUAL_REGRESSION:baseline
         env:
           DOCKER_BUILDKIT: 1
+      - name: Build slim image
+        uses: ./.github/actions/docker-slim
+        with:
+          target: '${{ env.IMAGE_REPO_VISUAL_REGRESSION }}:baseline'
+          tag: '${{ env.IMAGE_REPO_VISUAL_REGRESSION }}:baseline-slim'
+      - name: Push slim image
+        run: |
+          docker push $IMAGE_REPO_VISUAL_REGRESSION:baseline-slim
+          docker image list

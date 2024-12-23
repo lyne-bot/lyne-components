@@ -3,7 +3,7 @@ import { sendKeys, setViewport } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbBreadcrumbElement } from '../breadcrumb.js';
 
 import { SbbBreadcrumbGroupElement } from './breadcrumb-group.js';
@@ -149,7 +149,7 @@ describe(`sbb-breadcrumb-group`, () => {
       const changeSpy = new EventSpy('click', ellipsisButton);
       ellipsisButton.click();
       await waitForLitRender(ellipsisListItemElement);
-      await waitForCondition(() => changeSpy.events.length === 1);
+      await changeSpy.calledOnce();
 
       ellipsisListItemElement = element.shadowRoot!.querySelector(
         '#sbb-breadcrumb-group-ellipsis',

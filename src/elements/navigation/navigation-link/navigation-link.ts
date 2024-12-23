@@ -8,10 +8,9 @@ import { SbbNavigationActionCommonElementMixin } from '../common.js';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-navigation-link`.
  */
+export
 @customElement('sbb-navigation-link')
-export class SbbNavigationLinkElement extends SbbNavigationActionCommonElementMixin(
-  SbbLinkBaseElement,
-) {}
+class SbbNavigationLinkElement extends SbbNavigationActionCommonElementMixin(SbbLinkBaseElement) {}
 
 declare global {
   interface HTMLElementTagNameMap {

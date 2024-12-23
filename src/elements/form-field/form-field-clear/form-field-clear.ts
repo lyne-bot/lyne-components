@@ -3,7 +3,7 @@ import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import { SbbButtonBaseElement } from '../../core/base-elements.js';
-import { SbbConnectedAbortController, SbbLanguageController } from '../../core/controllers.js';
+import { SbbLanguageController } from '../../core/controllers.js';
 import { hostAttributes } from '../../core/decorators.js';
 import { i18nClearInput } from '../../core/i18n.js';
 import { SbbNegativeMixin } from '../../core/mixins.js';
@@ -16,21 +16,24 @@ import '../../icon.js';
 /**
  * Combined with `sbb-form-field`, it displays a button which clears the input value.
  */
+export
 @customElement('sbb-form-field-clear')
 @hostAttributes({
   slot: 'suffix',
 })
-export class SbbFormFieldClearElement extends SbbNegativeMixin(SbbButtonBaseElement) {
+class SbbFormFieldClearElement extends SbbNegativeMixin(SbbButtonBaseElement) {
   public static override styles: CSSResultGroup = style;
 
   private _formField?: SbbFormFieldElement | null;
-  private _abort = new SbbConnectedAbortController(this);
   private _language = new SbbLanguageController(this);
+
+  public constructor() {
+    super();
+    this.addEventListener?.('click', () => this._handleClick());
+  }
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('click', () => this._handleClick(), { signal });
     this._formField = this.closest<SbbFormFieldElement>('sbb-form-field, [data-form-field]');
 
     if (this._formField) {

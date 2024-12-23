@@ -63,7 +63,6 @@ snapshots["sbb-autocomplete-grid-optgroup renders Safari Shadow DOM"] =
 
 snapshots["sbb-autocomplete-grid-optgroup renders Chrome-Firefox DOM"] = 
 `<sbb-autocomplete-grid-optgroup
-  aria-disabled="false"
   aria-label="Group"
   label="Group"
   role="group"

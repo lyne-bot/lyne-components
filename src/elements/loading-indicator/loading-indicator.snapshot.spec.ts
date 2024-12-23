@@ -4,6 +4,7 @@ import { html } from 'lit/static-html.js';
 import { fixture, testA11yTreeSnapshot } from '../core/testing/private.js';
 
 import type { SbbLoadingIndicatorElement } from './loading-indicator.js';
+
 import './loading-indicator.js';
 
 describe(`sbb-loading-indicator`, () => {
@@ -11,9 +12,7 @@ describe(`sbb-loading-indicator`, () => {
 
   describe('renders with variant `window`', () => {
     beforeEach(async () => {
-      element = await fixture(
-        html`<sbb-loading-indicator variant="window"></sbb-loading-indicator>`,
-      );
+      element = await fixture(html`<sbb-loading-indicator></sbb-loading-indicator>`);
     });
 
     it('DOM', async () => {
@@ -25,21 +24,5 @@ describe(`sbb-loading-indicator`, () => {
     });
 
     testA11yTreeSnapshot();
-  });
-
-  describe('renders with variant `circle`', () => {
-    beforeEach(async () => {
-      element = await fixture(
-        html`<sbb-loading-indicator variant="circle"></sbb-loading-indicator>`,
-      );
-    });
-
-    it('DOM', async () => {
-      await expect(element).dom.to.be.equalSnapshot();
-    });
-
-    it('Shadow DOM', async () => {
-      await expect(element).shadowDom.to.be.equalSnapshot();
-    });
   });
 });

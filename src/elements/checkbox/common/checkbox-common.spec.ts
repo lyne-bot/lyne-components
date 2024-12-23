@@ -51,7 +51,7 @@ describe(`checkbox common behaviors`, () => {
           element.focus();
           await sendKeys({ press: 'Space' });
 
-          await waitForCondition(() => changeSpy.count === 1);
+          await changeSpy.calledOnce();
           expect(changeSpy.count).to.be.greaterThan(0);
         });
       });
@@ -216,6 +216,7 @@ describe(`checkbox common behaviors`, () => {
       })) as unknown as CheckboxAccessibilitySnapshot;
 
       expect(snapshot.role).to.equal('checkbox');
+      expect(element.type).to.be.equal('checkbox');
 
       expect(snapshot.checked, `ariaChecked in ${JSON.stringify(snapshot)}`).to.be.equal(
         isFirefox && assertions.ariaChecked === false ? undefined : assertions.ariaChecked,

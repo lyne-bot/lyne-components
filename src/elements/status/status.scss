@@ -92,7 +92,8 @@ $has-title: ':is([data-slot-names~=title], [title-content])';
         (var(--_sbb-status-icon-font-size) * var(--sbb-typo-line-height-body-text)) - var(
             --sbb-size-icon-ui-small
           )
-      ) / 2
+      ) /
+      2
   );
 }
 

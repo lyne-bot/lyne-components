@@ -11,8 +11,9 @@ import style from './dialog-actions.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add `sbb-block-link` or `sbb-button` elements to the `sbb-dialog-actions`.
  */
+export
 @customElement('sbb-dialog-actions')
-export class SbbDialogActionsElement extends SbbActionGroupElement {
+class SbbDialogActionsElement extends SbbActionGroupElement {
   public static override styles: CSSResultGroup = [SbbActionGroupElement.styles, style];
 
   protected override render(): TemplateResult {

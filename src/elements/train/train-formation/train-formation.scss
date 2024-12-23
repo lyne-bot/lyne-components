@@ -6,19 +6,15 @@
 :host {
   display: block;
 
-  --sbb-train-formation-inline-padding: var(--sbb-spacing-fixed-4x);
-  --sbb-train-formation-background-color: var(--sbb-color-white);
-  --sbb-train-formation-sector-label-color: var(--sbb-color-metal);
-  --sbb-train-formation-sector-line-color: var(--sbb-color-smoke);
+  --sbb-train-formation-sector-line-color: var(--sbb-color-cement);
+  --sbb-train-formation-sector-line-width: var(--sbb-border-width-1x);
   --sbb-train-formation-blocked-passage-width: #{sbb.px-to-rem-build(16)};
+  --sbb-train-formation-text-color: var(--sbb-color-charcoal);
+  --sbb-train-formation-vertical-gap: var(--sbb-spacing-fixed-2x);
 
   @include sbb.if-forced-colors {
     --sbb-train-formation-sector-line-color: CanvasText;
   }
-}
-
-:host([hide-wagon-label]) {
-  --sbb-train-formation-wagon-label-display: none;
 }
 
 .sbb-train-formation {
@@ -31,7 +27,11 @@
       'start trains end' auto / auto 1fr auto;
     position: relative;
     overflow-x: auto;
-    background-color: var(--sbb-train-formation-background-color);
+    row-gap: calc(
+      var(--sbb-train-formation-show-sectors-gap, 0) * var(--sbb-train-formation-vertical-gap)
+    );
+    padding-block-end: var(--sbb-train-formation-vertical-gap);
+    color: var(--sbb-train-formation-text-color);
   }
 
   // Enable inline padding
@@ -39,8 +39,7 @@
   &::after {
     content: '';
     display: block;
-    width: var(--sbb-train-formation-inline-padding);
-    background-color: var(--sbb-train-formation-background-color);
+    width: var(--sbb-train-formation-padding-inline);
   }
 
   &::before {
@@ -68,34 +67,41 @@
   --_gap-sum: calc((var(--_total-count) - 1) * var(--sbb-train-formation-wagon-gap));
   --_sector-width: calc(var(--_wagon-sum) + var(--_blocked-passage-sum) + var(--_gap-sum));
 
-  @include sbb.text-s--regular;
+  @include sbb.text-xs--regular;
 
   flex: 0 0 var(--_sector-width);
-  color: var(--sbb-train-formation-sector-label-color);
   text-align: center;
-  position: relative;
-  display: inline-block;
-  margin-block-end: var(--sbb-spacing-fixed-4x);
-  max-width: var(--_sector-width);
-
-  // Line behind the sector-label
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 50% 0;
-    height: 1px;
-    background-color: var(--sbb-train-formation-sector-line-color);
-  }
+  overflow-x: clip;
 }
 
 .sbb-train-formation__sector-sticky-wrapper {
-  background-color: var(--sbb-train-formation-background-color);
   position: sticky;
   inset: auto 0;
   padding: 0 var(--sbb-spacing-fixed-1x);
   margin: 0 var(--sbb-spacing-fixed-2x);
   overflow: hidden;
   white-space: nowrap;
+
+  // Lines beside the sector-label
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+
+    // Exactly center the line by subtracting half of the border width
+    inset-block: calc(50% - var(--sbb-train-formation-sector-line-width) / 2);
+    border-block-end: var(--sbb-train-formation-sector-line-width) solid
+      var(--sbb-train-formation-sector-line-color);
+    width: calc(0.5 * var(--_sector-width));
+  }
+
+  &::before {
+    inset-inline-end: 100%;
+  }
+
+  &::after {
+    inset-inline-start: 100%;
+  }
 }
 
 .sbb-train-formation__trains {

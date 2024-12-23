@@ -16,15 +16,21 @@ If it has to include more than one interactive element, use the [sbb-teaser-prod
 
 ## Slots
 
-Use the `image` slot to pass a `sbb-image` or an `img` that will be used as a background,
-and use the optional `footnote` slot to add a text anchored to the bottom-end of the component.
+Use the `image` slot to pass an `sbb-image` or an `img` that will be used as background.
+Optionally, you can add an overlapping `sbb-chip-label` by wrapping the `sbb-image` in a `figure` tag (see [sbb-image doc](/docs/elements-sbb-image--docs#utility%classes)).
+
+Use the optional `footnote` slot to add a text anchored to the bottom-end of the component.
 
 The default slot is reserved for the main content: it could be a simple text or a text combined with more elements,
 like the `sbb-title` or an interactive element, like a button or a link (needs to be in static variant!).
 
 ```html
 <sbb-teaser-product href="...">
-  <sbb-image slot="image" image-src="..."></sbb-image>
+  <figure slot="image" class="sbb-figure">
+    <sbb-image image-src="..."></sbb-image>
+    <sbb-chip-label class="sbb-figure-overlap-start-start">Chip label</sbb-chip-label>
+  </figure>
+
   <p class="sbb-teaser-product--spacing">Content ...</p>
 </sbb-teaser-product>
 ```
@@ -68,15 +74,15 @@ It's important to set the `accessibilityLabel` on the `<sbb-teaser-product>`, wh
 
 ## Properties
 
-| Name                 | Attribute             | Privacy | Type                                    | Default   | Description                                                                                                                           |
-| -------------------- | --------------------- | ------- | --------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityLabel` | `accessibility-label` | public  | `string \| undefined`                   |           | This will be forwarded as aria-label to the inner anchor element.                                                                     |
-| `download`           | `download`            | public  | `boolean \| undefined`                  |           | Whether the browser will show the download dialog on click.                                                                           |
-| `href`               | `href`                | public  | `string \| undefined`                   |           | The href value you want to link to.                                                                                                   |
-| `imageAlignment`     | `image-alignment`     | public  | `'after' \| 'before'`                   | `'after'` | Whether the fully visible part of the image is aligned 'before' or 'after' the content. Only relevant starting from large breakpoint. |
-| `negative`           | `negative`            | public  | `boolean`                               | `false`   | Negative coloring variant flag.                                                                                                       |
-| `rel`                | `rel`                 | public  | `string \| undefined`                   |           | The relationship of the linked URL as space-separated link types.                                                                     |
-| `target`             | `target`              | public  | `LinkTargetType \| string \| undefined` |           | Where to display the linked URL.                                                                                                      |
+| Name                 | Attribute             | Privacy | Type                       | Default   | Description                                                                                                                           |
+| -------------------- | --------------------- | ------- | -------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessibilityLabel` | `accessibility-label` | public  | `string`                   | `''`      | This will be forwarded as aria-label to the inner anchor element.                                                                     |
+| `download`           | `download`            | public  | `boolean`                  | `false`   | Whether the browser will show the download dialog on click.                                                                           |
+| `href`               | `href`                | public  | `string`                   | `''`      | The href value you want to link to.                                                                                                   |
+| `imageAlignment`     | `image-alignment`     | public  | `'after' \| 'before'`      | `'after'` | Whether the fully visible part of the image is aligned 'before' or 'after' the content. Only relevant starting from large breakpoint. |
+| `negative`           | `negative`            | public  | `boolean`                  | `false`   | Negative coloring variant flag.                                                                                                       |
+| `rel`                | `rel`                 | public  | `string`                   | `''`      | The relationship of the linked URL as space-separated link types.                                                                     |
+| `target`             | `target`              | public  | `LinkTargetType \| string` | `''`      | Where to display the linked URL.                                                                                                      |
 
 ## CSS Properties
 

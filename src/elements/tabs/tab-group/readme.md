@@ -57,10 +57,10 @@ type SbbTabChangedEventDetails = {
 
 ## Properties
 
-| Name                   | Attribute                | Privacy | Type                              | Default | Description                                                                                                                        |
-| ---------------------- | ------------------------ | ------- | --------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `initialSelectedIndex` | `initial-selected-index` | public  | `number`                          | `0`     | Sets the initial tab. If it matches a disabled tab or exceeds the length of the tab group, the first enabled tab will be selected. |
-| `size`                 | `size`                   | public  | `InterfaceSbbTabGroupTab['size']` | `'l'`   | Size variant, either s, l or xl.                                                                                                   |
+| Name                   | Attribute                | Privacy | Type                              | Default            | Description                                                                                                                        |
+| ---------------------- | ------------------------ | ------- | --------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `initialSelectedIndex` | `initial-selected-index` | public  | `number`                          | `0`                | Sets the initial tab. If it matches a disabled tab or exceeds the length of the tab group, the first enabled tab will be selected. |
+| `size`                 | `size`                   | public  | `InterfaceSbbTabGroupTab['size']` | `'l' / 's' (lean)` | Size variant, either s, l or xl.                                                                                                   |
 
 ## Methods
 

@@ -25,7 +25,7 @@ const MountedFormationTemplate = (args: Args): TemplateResult => html`
         additional-accessibility-text="Top of the train"
         sector="A"
       ></sbb-train-wagon>
-      <sbb-train-wagon type="closed" sector="A"></sbb-train-wagon>
+      <sbb-train-wagon type="closed" sector="A" label="37"></sbb-train-wagon>
       <sbb-train-blocked-passage></sbb-train-blocked-passage>
       <sbb-train-wagon
         type="wagon"
@@ -51,15 +51,10 @@ const MountedFormationTemplate = (args: Args): TemplateResult => html`
       <sbb-train-wagon type="wagon" label="39" occupancy="none" wagon-class="1" sector="B">
         <sbb-icon aria-hidden="false" aria-label="low-floor entry" name="sa-nf"></sbb-icon>
       </sbb-train-wagon>
-      <sbb-train-wagon type="wagon" label="40" occupancy="high" wagon-class="2" sector="B">
-        <sbb-icon
-          aria-hidden="false"
-          aria-label="Restaurant 1st and 2nd class"
-          name="sa-wr"
-        ></sbb-icon>
+      <sbb-train-wagon type="restaurant" label="40" sector="B">
         <sbb-icon aria-hidden="false" aria-label="wheelchair space" name="sa-rs"></sbb-icon>
       </sbb-train-wagon>
-      <sbb-train-wagon type="wagon" label="41" occupancy="medium" wagon-class="2" sector="B">
+      <sbb-train-wagon type="wagon" label="41" occupancy="high" wagon-class="2" sector="B">
         <sbb-icon aria-hidden="false" aria-label="low-floor entry" name="sa-nf"></sbb-icon>
       </sbb-train-wagon>
       <sbb-train-wagon
@@ -107,21 +102,15 @@ const MountedFormationTemplate = (args: Args): TemplateResult => html`
         wagon-class="2"
         sector="D"
       ></sbb-train-wagon>
+      <sbb-train-wagon type="couchette" label="46" sector="D"></sbb-train-wagon>
       <sbb-train-wagon
-        type="wagon"
-        label="46"
-        occupancy="low"
-        wagon-class="2"
-        sector="D"
-      ></sbb-train-wagon>
-      <sbb-train-wagon
-        type="wagon"
+        type="sleeping"
         label="47"
         additional-accessibility-text="End of the train"
-        occupancy="low"
-        wagon-class="2"
         sector="D"
+        blocked-passage="next"
       ></sbb-train-wagon>
+      <sbb-train-blocked-passage></sbb-train-blocked-passage>
     </sbb-train>
     <sbb-train
       direction-label="Direction of travel"
@@ -130,18 +119,18 @@ const MountedFormationTemplate = (args: Args): TemplateResult => html`
       accessibility-label="The top of the train is in Sector E. The train leaves the station in this direction"
     >
       <sbb-train-wagon
-        type="locomotive"
+        type="wagon-end-left"
         additional-accessibility-text="Top of the train"
+        blocked-passage="previous"
+        occupancy="none"
+        wagon-class="2"
         sector="E"
       ></sbb-train-wagon>
-      <sbb-train-wagon type="closed" label="49" sector="E"></sbb-train-wagon>
-      <sbb-train-blocked-passage></sbb-train-blocked-passage>
       <sbb-train-wagon
         type="wagon"
         label="50"
         occupancy="low"
         wagon-class="2"
-        blocked-passage="previous"
         sector="E"
       ></sbb-train-wagon>
       <sbb-train-wagon
@@ -201,7 +190,7 @@ const MountedFormationTemplate = (args: Args): TemplateResult => html`
         sector="H"
       ></sbb-train-wagon>
       <sbb-train-wagon
-        type="wagon"
+        type="wagon-end-right"
         label="59"
         occupancy="low"
         wagon-class="2"
@@ -325,18 +314,19 @@ const SingleFormationTemplate = (args: Args): TemplateResult => html`
   </sbb-train-formation>
 `;
 
-const hideWagonLabel: InputType = {
+const view: InputType = {
   control: {
-    type: 'boolean',
+    type: 'inline-radio',
   },
+  options: ['side', 'top'],
 };
 
 const defaultArgTypes: ArgTypes = {
-  'hide-wagon-label': hideWagonLabel,
+  view,
 };
 
 const defaultArgs: Args = {
-  'hide-wagon-label': false,
+  view: 'side',
 };
 
 export const TrainFormation: StoryObj = {
@@ -355,12 +345,12 @@ export const SingleFormation: StoryObj = {
   },
 };
 
-export const TrainFormationHideWagonLabel: StoryObj = {
+export const TrainFormationTopView: StoryObj = {
   render: MountedFormationTemplate,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
-    'hide-wagon-label': true,
+    view: 'top',
   },
 };
 

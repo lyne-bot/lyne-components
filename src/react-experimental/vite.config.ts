@@ -46,6 +46,7 @@ export default defineConfig((config) =>
           /^@lit\/react\/?/,
           /^lit\/?/,
           /^react/,
+          /^tslib$/,
         ],
       },
     },

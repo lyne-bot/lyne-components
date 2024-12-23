@@ -7,7 +7,7 @@
   display: inline-block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   --sbb-toggle-check-checked-color: var(--sbb-color-red);
@@ -26,7 +26,7 @@
   --sbb-toggle-check-flex-direction: row-reverse;
   --sbb-toggle-check-gap: var(--sbb-spacing-fixed-3x);
   --sbb-toggle-check-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
 

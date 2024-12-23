@@ -12,11 +12,12 @@ let autocompleteRowNextId = 0;
  *
  * @slot - Use the unnamed slot to add a `sbb-autocomplete-grid-option` and a `sbb-autocomplete-grid-cell` with one or more `sbb-autocomplete-grid-button`.
  */
+export
 @customElement('sbb-autocomplete-grid-row')
 @hostAttributes({
   role: 'row',
 })
-export class SbbAutocompleteGridRowElement extends LitElement {
+class SbbAutocompleteGridRowElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   public override connectedCallback(): void {

@@ -18,10 +18,10 @@ and it can be set using the `title-content` property.
 
 ## Properties
 
-| Name           | Attribute       | Privacy | Type                  | Default | Description                                      |
-| -------------- | --------------- | ------- | --------------------- | ------- | ------------------------------------------------ |
-| `titleContent` | `title-content` | public  | `string \| undefined` |         | The title text we want to place before the list. |
-| `titleLevel`   | `title-level`   | public  | `SbbTitleLevel`       | `'2'`   | The semantic level of the title, e.g. 2 = h2.    |
+| Name           | Attribute       | Privacy | Type            | Default | Description                                      |
+| -------------- | --------------- | ------- | --------------- | ------- | ------------------------------------------------ |
+| `titleContent` | `title-content` | public  | `string`        | `''`    | The title text we want to place before the list. |
+| `titleLevel`   | `title-level`   | public  | `SbbTitleLevel` | `'2'`   | The semantic level of the title, e.g. 2 = h2.    |
 
 ## CSS Properties
 

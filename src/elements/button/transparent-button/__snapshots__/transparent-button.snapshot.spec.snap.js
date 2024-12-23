@@ -3,7 +3,6 @@ export const snapshots = {};
 
 snapshots["sbb-transparent-button renders a sbb-transparent-button without icon DOM"] = 
 `<sbb-transparent-button
-  aria-disabled="true"
   data-action=""
   data-button=""
   data-sbb-button=""
@@ -12,7 +11,6 @@ snapshots["sbb-transparent-button renders a sbb-transparent-button without icon 
   form="formid"
   name="name"
   negative=""
-  role="button"
   size="m"
   type="button"
   value="value"
@@ -40,7 +38,6 @@ snapshots["sbb-transparent-button renders a sbb-transparent-button with slotted 
   data-button=""
   data-sbb-button=""
   data-slot-names="icon unnamed"
-  role="button"
   size="l"
   tabindex="0"
 >

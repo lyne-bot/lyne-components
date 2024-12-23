@@ -12,7 +12,7 @@
   --sbb-map-container-sidebar-background-color: var(--sbb-color-white);
   --sbb-map-container-border-radius: var(--sbb-border-radius-4x);
   --sbb-map-container-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
   --sbb-map-container-map-height: calc(
@@ -39,7 +39,8 @@
     grid-template-columns: max(var(--sbb-map-container-sidebar-width)) calc(
         100% - var(--sbb-map-container-sidebar-width)
       );
-    height: calc(100vh - var(--sbb-map-container-margin-start, var(--sbb-header-height)));
+    position: fixed;
+    inset: var(--sbb-map-container-margin-start, var(--sbb-header-height)) 0 0 0;
   }
 }
 

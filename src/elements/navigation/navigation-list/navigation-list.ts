@@ -7,7 +7,8 @@ import {
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { slotState } from '../../core/decorators.js';
+import { forceType, omitEmptyConverter, slotState } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import { SbbNamedSlotListMixin, type WithListChildren } from '../../core/mixins.js';
 import type { SbbNavigationButtonElement } from '../navigation-button.js';
 import type { SbbNavigationLinkElement } from '../navigation-link.js';
@@ -20,9 +21,10 @@ import style from './navigation-list.scss?lit&inline';
  * @slot - Use the unnamed slot to add content to the `sbb-navigation-list`.
  * @slot label - Use this to provide a label element.
  */
+export
 @customElement('sbb-navigation-list')
 @slotState()
-export class SbbNavigationListElement extends SbbNamedSlotListMixin<
+class SbbNavigationListElement extends SbbNamedSlotListMixin<
   SbbNavigationButtonElement | SbbNavigationLinkElement,
   typeof LitElement
 >(LitElement) {
@@ -35,13 +37,15 @@ export class SbbNavigationListElement extends SbbNamedSlotListMixin<
   /**
    * The label to be shown before the action list.
    */
-  @property({ reflect: true }) public label?: string;
+  @forceType()
+  @property({ reflect: true, converter: omitEmptyConverter })
+  public accessor label: string = '';
 
   protected override willUpdate(changedProperties: PropertyValues<WithListChildren<this>>): void {
     super.willUpdate(changedProperties);
 
     if (changedProperties.has('listChildren')) {
-      this.listChildren.forEach((c) => (c.size = 'm'));
+      this.listChildren.forEach((c) => (c.size = isLean() ? 's' : 'm'));
     }
   }
 

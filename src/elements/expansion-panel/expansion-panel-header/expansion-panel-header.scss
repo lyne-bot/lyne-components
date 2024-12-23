@@ -23,7 +23,7 @@
   --sbb-expansion-panel-header-padding-inline: var(--sbb-spacing-fixed-5x);
 }
 
-:host([disabled]) {
+:host(:is(:disabled, [disabled-interactive])) {
   --sbb-expansion-panel-header-cursor: default;
   --sbb-expansion-panel-header-text-color: var(--sbb-color-granite);
 
@@ -82,7 +82,7 @@
 }
 
 .sbb-expansion-panel-header__toggle-icon {
-  transition: transform var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-4x));
+  transition: transform var(--sbb-disable-animation-duration, var(--sbb-animation-duration-4x));
 
   :host([aria-expanded]:not([aria-expanded='false'])) & {
     transform: rotate(-180deg);

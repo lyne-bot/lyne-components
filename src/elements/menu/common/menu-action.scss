@@ -1,11 +1,13 @@
 @use '../../core/styles' as sbb;
 
+$disabled: '[disabled], :disabled, [disabled-interactive]';
+
 // Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
 @include sbb.box-sizing;
 
 :host {
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   --sbb-menu-action-border-radius: var(--sbb-border-radius-infinity);
@@ -18,14 +20,14 @@
   display: block;
 }
 
-:host(:hover:not([disabled])) {
+:host(:hover:not(#{$disabled})) {
   @include sbb.hover-mq($hover: true) {
     --sbb-menu-background-color: var(--sbb-color-iron);
     --sbb-menu-action-forced-color-border-color: Highlight;
   }
 }
 
-:host([disabled]) {
+:host(:is(#{$disabled})) {
   --sbb-menu-action-cursor: default;
   --sbb-menu-action-color: var(--sbb-color-graphite);
   --sbb-menu-action-forced-color-border-color: GrayText;
@@ -38,7 +40,7 @@
   }
 }
 
-:host([role='button']) {
+:host([data-button]) {
   @include sbb.if-forced-colors {
     --sbb-menu-action-color: ButtonText;
   }
@@ -90,7 +92,7 @@
 .sbb-menu-action__label {
   @include sbb.ellipsis;
 
-  :host([disabled]) & {
+  :host(:is(#{$disabled})) & {
     text-decoration: line-through;
   }
 }

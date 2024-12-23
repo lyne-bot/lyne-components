@@ -55,7 +55,7 @@ const PopoverTrigger = (): TemplateResult => html`
     id="popover-trigger"
     icon-name="circle-information-small"
   ></sbb-popover-trigger>
-  <sbb-popover data-testid="popover" trigger="popover-trigger">
+  <sbb-popover trigger="popover-trigger">
     <sbb-title level="2" visual-level="6" style="margin-block-start: 0"
       >Simple info popover.</sbb-title
     >

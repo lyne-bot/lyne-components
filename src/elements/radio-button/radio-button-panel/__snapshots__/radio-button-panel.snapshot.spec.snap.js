@@ -3,11 +3,10 @@ export const snapshots = {};
 
 snapshots["sbb-radio-button-panel should render unchecked DOM"] = 
 `<sbb-radio-button-panel
-  aria-checked="false"
-  aria-required="false"
   data-slot-names="subtext suffix unnamed"
-  role="radio"
+  name="radio"
   size="m"
+  tabindex="0"
   value="radio-value"
 >
   Label
@@ -28,13 +27,6 @@ snapshots["sbb-radio-button-panel should render unchecked Shadow DOM"] =
     </slot>
   </div>
   <span class="sbb-radio-button">
-    <input
-      aria-hidden="true"
-      class="sbb-screen-reader-only"
-      tabindex="-1"
-      type="radio"
-      value="radio-value"
-    >
     <span class="sbb-radio-button__label-slot">
       <slot>
       </slot>
@@ -50,13 +42,12 @@ snapshots["sbb-radio-button-panel should render unchecked Shadow DOM"] =
 
 snapshots["sbb-radio-button-panel should render checked DOM"] = 
 `<sbb-radio-button-panel
-  aria-checked="true"
-  aria-required="false"
   checked=""
   data-checked=""
   data-slot-names="subtext suffix unnamed"
-  role="radio"
+  name="radio"
   size="m"
+  tabindex="0"
   value="radio-value"
 >
   Label
@@ -77,14 +68,6 @@ snapshots["sbb-radio-button-panel should render checked Shadow DOM"] =
     </slot>
   </div>
   <span class="sbb-radio-button">
-    <input
-      aria-hidden="true"
-      checked=""
-      class="sbb-screen-reader-only"
-      tabindex="-1"
-      type="radio"
-      value="radio-value"
-    >
     <span class="sbb-radio-button__label-slot">
       <slot>
       </slot>
@@ -98,7 +81,7 @@ snapshots["sbb-radio-button-panel should render checked Shadow DOM"] =
 `;
 /* end snapshot sbb-radio-button-panel should render checked Shadow DOM */
 
-snapshots["sbb-radio-button-panel Unchecked - A11y tree Chrome"] = 
+snapshots["sbb-radio-button-panel should render unchecked A11y tree Chrome"] = 
 `<p>
   {
   "role": "WebArea",
@@ -106,16 +89,66 @@ snapshots["sbb-radio-button-panel Unchecked - A11y tree Chrome"] =
   "children": [
     {
       "role": "radio",
-      "name": "Label",
+      "name": "Label Suffix Subtext",
       "checked": false
     }
   ]
 }
 </p>
 `;
-/* end snapshot sbb-radio-button-panel Unchecked - A11y tree Chrome */
+/* end snapshot sbb-radio-button-panel should render unchecked A11y tree Chrome */
 
-snapshots["sbb-radio-button-panel Checked - A11y tree Chrome"] = 
+snapshots["sbb-radio-button-panel should render unchecked A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext"
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel should render unchecked A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel should render checked A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext",
+      "checked": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel should render checked A11y tree Chrome */
+
+snapshots["sbb-radio-button-panel should render checked A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext",
+      "checked": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel should render checked A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel Disabled - A11y tree Chrome"] = 
 `<p>
   {
   "role": "WebArea",
@@ -124,31 +157,16 @@ snapshots["sbb-radio-button-panel Checked - A11y tree Chrome"] =
     {
       "role": "radio",
       "name": "Label",
-      "checked": true
+      "disabled": true,
+      "checked": false
     }
   ]
 }
 </p>
 `;
-/* end snapshot sbb-radio-button-panel Checked - A11y tree Chrome */
+/* end snapshot sbb-radio-button-panel Disabled - A11y tree Chrome */
 
-snapshots["sbb-radio-button-panel Unchecked - A11y tree Firefox"] = 
-`<p>
-  {
-  "role": "document",
-  "name": "",
-  "children": [
-    {
-      "role": "radio",
-      "name": "Label"
-    }
-  ]
-}
-</p>
-`;
-/* end snapshot sbb-radio-button-panel Unchecked - A11y tree Firefox */
-
-snapshots["sbb-radio-button-panel Checked - A11y tree Firefox"] = 
+snapshots["sbb-radio-button-panel Disabled - A11y tree Firefox"] = 
 `<p>
   {
   "role": "document",
@@ -157,11 +175,227 @@ snapshots["sbb-radio-button-panel Checked - A11y tree Firefox"] =
     {
       "role": "radio",
       "name": "Label",
+      "disabled": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel Disabled - A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel renders DOM"] = 
+`<sbb-radio-button-panel
+  data-slot-names="subtext suffix unnamed"
+  name="radio"
+  size="m"
+  tabindex="0"
+  value="radio-value"
+>
+  Label
+  <span slot="subtext">
+    Subtext
+  </span>
+  <span slot="suffix">
+    Suffix
+  </span>
+</sbb-radio-button-panel>
+`;
+/* end snapshot sbb-radio-button-panel renders DOM */
+
+snapshots["sbb-radio-button-panel renders Shadow DOM"] = 
+`<label class="sbb-selection-panel">
+  <div class="sbb-selection-panel__badge">
+    <slot name="badge">
+    </slot>
+  </div>
+  <span class="sbb-radio-button">
+    <span class="sbb-radio-button__label-slot">
+      <slot>
+      </slot>
+      <slot name="suffix">
+      </slot>
+    </span>
+    <slot name="subtext">
+    </slot>
+  </span>
+</label>
+`;
+/* end snapshot sbb-radio-button-panel renders Shadow DOM */
+
+snapshots["sbb-radio-button-panel renders checked DOM"] = 
+`<sbb-radio-button-panel
+  checked=""
+  data-checked=""
+  data-slot-names="subtext suffix unnamed"
+  name="radio"
+  size="m"
+  tabindex="0"
+  value="radio-value"
+>
+  Label
+  <span slot="subtext">
+    Subtext
+  </span>
+  <span slot="suffix">
+    Suffix
+  </span>
+</sbb-radio-button-panel>
+`;
+/* end snapshot sbb-radio-button-panel renders checked DOM */
+
+snapshots["sbb-radio-button-panel renders checked Shadow DOM"] = 
+`<label class="sbb-selection-panel">
+  <div class="sbb-selection-panel__badge">
+    <slot name="badge">
+    </slot>
+  </div>
+  <span class="sbb-radio-button">
+    <span class="sbb-radio-button__label-slot">
+      <slot>
+      </slot>
+      <slot name="suffix">
+      </slot>
+    </span>
+    <slot name="subtext">
+    </slot>
+  </span>
+</label>
+`;
+/* end snapshot sbb-radio-button-panel renders checked Shadow DOM */
+
+snapshots["sbb-radio-button-panel renders A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext",
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders A11y tree Chrome */
+
+snapshots["sbb-radio-button-panel renders A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext"
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel renders checked A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext",
       "checked": true
     }
   ]
 }
 </p>
 `;
-/* end snapshot sbb-radio-button-panel Checked - A11y tree Firefox */
+/* end snapshot sbb-radio-button-panel renders checked A11y tree Chrome */
+
+snapshots["sbb-radio-button-panel renders checked A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label Suffix Subtext",
+      "checked": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders checked A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel renders disabled - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label",
+      "disabled": true,
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders disabled - A11y tree Chrome */
+
+snapshots["sbb-radio-button-panel renders disabled - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "Label",
+      "disabled": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders disabled - A11y tree Firefox */
+
+snapshots["sbb-radio-button-panel renders required - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders required - A11y tree Chrome */
+
+snapshots["sbb-radio-button-panel renders required - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "required": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button-panel renders required - A11y tree Firefox */
 

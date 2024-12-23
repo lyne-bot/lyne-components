@@ -4,7 +4,7 @@ content related links; for these, the [sbb-link-list](/docs/elements-sbb-link-li
 ## Variants
 
 There are two variants of the footer: the `variant='default'`, which displays the slotted content in regular
-block element approach and the `variant='clock-columns'`, which uses a css-grid for displaying the content over different
+block element approach and the `variant='clock-columns'`, which uses a CSS-grid for displaying the content over different
 breakpoints.
 
 **Note:**
@@ -77,11 +77,11 @@ to the content where needed (e.g. `sbb-link-list`, `sbb-link` and `sbb-divider`)
 
 | Name                      | Attribute                   | Privacy | Type                           | Default     | Description                                                                                                                                                                                    |
 | ------------------------- | --------------------------- | ------- | ------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityTitle`      | `accessibility-title`       | public  | `string \| undefined`          |             | Footer title text, visually hidden, necessary for screen readers.                                                                                                                              |
+| `accessibilityTitle`      | `accessibility-title`       | public  | `string`                       | `''`        | Footer title text, visually hidden, necessary for screen readers.                                                                                                                              |
 | `accessibilityTitleLevel` | `accessibility-title-level` | public  | `SbbTitleLevel`                | `'1'`       | Level of the accessibility title, will be rendered as heading tag (e.g. h1). Defaults to level 1.                                                                                              |
 | `expanded`                | `expanded`                  | public  | `boolean`                      | `false`     | Whether to allow the footer content to stretch to full width. By default, the content has the appropriate page size.                                                                           |
 | `negative`                | `negative`                  | public  | `boolean`                      | `false`     | Negative coloring variant flag.                                                                                                                                                                |
-| `variant`                 | `variant`                   | public  | `'default' \| 'clock-columns'` | `'default'` | Variants to display the footer. The default, displays the content in regular block element approach. The clock-columns, used a css-grid for displaying the content over different breakpoints. |
+| `variant`                 | `variant`                   | public  | `'default' \| 'clock-columns'` | `'default'` | Variants to display the footer. The default, displays the content in regular block element approach. The clock-columns, used a CSS-grid for displaying the content over different breakpoints. |
 
 ## Slots
 

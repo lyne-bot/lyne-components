@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 
 import { SbbToggleOptionElement } from './toggle-option.js';
 
@@ -24,7 +24,7 @@ describe(`sbb-toggle-option`, () => {
     await waitForLitRender(element);
 
     expect(element).to.have.attribute('checked');
-    await waitForCondition(() => onInput.events.length === 1);
+    await onInput.calledOnce();
     expect(onInput.count).to.be.equal(1);
   });
 
@@ -35,14 +35,14 @@ describe(`sbb-toggle-option`, () => {
     await waitForLitRender(element);
 
     expect(element).to.have.attribute('checked');
-    await waitForCondition(() => onInput.events.length === 1);
+    await onInput.calledOnce();
     expect(onInput.count).to.be.equal(1);
 
     element.click();
     await waitForLitRender(element);
 
     expect(element).to.have.attribute('checked');
-    await waitForCondition(() => onInput.events.length === 1);
+    await onInput.calledOnce();
     expect(onInput.count).to.be.equal(1);
   });
 });

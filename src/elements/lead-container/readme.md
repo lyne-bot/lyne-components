@@ -38,12 +38,9 @@ Full example with applied spacings (CSS classes) in content:
     alt="Station of Lucerne from outside"
   ></sbb-image>
   <sbb-alert-group class="sbb-lead-container-spacing">
-    <sbb-alert
-      title-content="Interruption between Genève and Lausanne"
-      href="https://www.sbb.ch"
-      size="m"
-    >
+    <sbb-alert title-content="Interruption between Genève and Lausanne" size="m">
       The rail traffic between Allaman and Morges is interrupted. All trains are cancelled.
+      <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
     </sbb-alert>
   </sbb-alert-group>
   <sbb-breadcrumb-group class="sbb-lead-container-spacing">
@@ -67,6 +64,21 @@ Full example with applied spacings (CSS classes) in content:
     lorem. Quisque non nisl eget massa interdum tempus. Praesent vel feugiat metus.
   </sbb-notification>
   <p class="sbb-text-m other-content">Other content.</p>
+</sbb-lead-container>
+```
+
+Optionally, you can add an overlapping `sbb-chip-label` by wrapping the `sbb-image` in a `figure` tag (see [sbb-image doc](/docs/elements-sbb-image--docs#utility%classes)).
+
+```html
+<sbb-lead-container>
+  <figure class="sbb-figure" slot="image">
+    <sbb-image
+      image-src="https://cdn.img.sbb.ch/content/dam/internet/lyne/Bahnhof-Luzern.jpg"
+      alt="Station of Lucerne from outside"
+    ></sbb-image>
+    <sbb-chip-label class="sbb-figure-overlap-start-start">...</sbb-chip-label>
+  </figure>
+  ...
 </sbb-lead-container>
 ```
 

@@ -83,7 +83,7 @@ const toastTemplate = (
       (event.currentTarget as SbbButtonElement).parentElement!.querySelector('sbb-toast')!.open()}
     >Show toast</sbb-button
   >
-  <sbb-toast timeout="${timeout}" ${sbbSpread(args)} data-testid="sbb-toast">
+  <sbb-toast timeout=${timeout} ${sbbSpread(args)}>
     ${contentLength === 's'
       ? 'Lorem ipsum dolor'
       : 'Lorem ipsum dolor sit amet, ipsum consectetur adipiscing elit.'}

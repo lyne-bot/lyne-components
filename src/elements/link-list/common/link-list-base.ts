@@ -2,7 +2,8 @@ import type { PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 
-import { slotState } from '../../core/decorators.js';
+import { forceType, omitEmptyConverter, slotState } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import {
   SbbNamedSlotListMixin,
   SbbNegativeMixin,
@@ -24,8 +25,9 @@ import '../../title.js';
  * @slot - Use the unnamed slot to add one or more `sbb-block-link`.
  * @slot title - Use this slot to provide a title.
  */
+export
 @slotState()
-export class SbbLinkListBaseElement extends SbbNegativeMixin(
+class SbbLinkListBaseElement extends SbbNegativeMixin(
   SbbNamedSlotListMixin<
     SbbBlockLinkElement | SbbBlockLinkButtonElement | SbbBlockLinkStaticElement,
     typeof LitElement
@@ -38,16 +40,19 @@ export class SbbLinkListBaseElement extends SbbNegativeMixin(
   ];
 
   /** The title text we want to show before the list. */
-  @property({ attribute: 'title-content', reflect: true }) public titleContent?: string;
+  @forceType()
+  @property({ attribute: 'title-content', reflect: true, converter: omitEmptyConverter })
+  public accessor titleContent: string = '';
 
   /** The semantic level of the title, e.g. 2 = h2. */
-  @property({ attribute: 'title-level' }) public titleLevel: SbbTitleLevel = '2';
+  @property({ attribute: 'title-level' }) public accessor titleLevel: SbbTitleLevel = '2';
 
   /**
    * Text size of the nested sbb-block-link instances.
    * This will overwrite the size attribute of nested sbb-block-link instances.
+   * @default 's' / 'xs' (lean)
    */
-  @property({ reflect: true }) public size: SbbLinkSize = 's';
+  @property({ reflect: true }) public accessor size: SbbLinkSize = isLean() ? 'xs' : 's';
 
   protected override willUpdate(changedProperties: PropertyValues<WithListChildren<this>>): void {
     super.willUpdate(changedProperties);

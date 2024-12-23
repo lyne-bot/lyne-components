@@ -15,7 +15,7 @@
   --sbb-tab-label-marker-transform: scale(0);
   --sbb-tab-label-text-decoration: none;
   --sbb-tab-label-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-tab-label-animation-easing: var(--sbb-animation-easing);
@@ -27,7 +27,7 @@
   -webkit-tap-highlight-color: transparent;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   @include sbb.if-forced-colors {

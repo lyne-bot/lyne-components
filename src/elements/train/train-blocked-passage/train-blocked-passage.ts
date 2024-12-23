@@ -7,8 +7,9 @@ import style from './train-blocked-passage.scss?lit&inline';
 /**
  * It visually displays a blocked passage between train wagons.
  */
+export
 @customElement('sbb-train-blocked-passage')
-export class SbbTrainBlockedPassageElement extends LitElement {
+class SbbTrainBlockedPassageElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   protected override render(): TemplateResult {

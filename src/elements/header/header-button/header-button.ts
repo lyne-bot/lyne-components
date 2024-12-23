@@ -9,10 +9,9 @@ import { SbbHeaderActionCommonElementMixin } from '../common.js';
  * @slot icon - Slot used to render the button icon.
  * @slot - Use the unnamed slot to add content to the `sbb-header-button`.
  */
+export
 @customElement('sbb-header-button')
-export class SbbHeaderButtonElement extends SbbHeaderActionCommonElementMixin(
-  SbbButtonBaseElement,
-) {}
+class SbbHeaderButtonElement extends SbbHeaderActionCommonElementMixin(SbbButtonBaseElement) {}
 
 declare global {
   interface HTMLElementTagNameMap {

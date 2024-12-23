@@ -8,6 +8,7 @@ import '../../../elements/clock.js';
 import '../../../elements/divider.js';
 import '../../../elements/footer.js';
 import '../../../elements/icon.js';
+import '../../../elements/image.js';
 import '../../../elements/header.js';
 import '../../../elements/logo.js';
 import '../../../elements/link.js';
@@ -206,19 +207,23 @@ export const liberoProduct = (): TemplateResult => html`
 
 export const teaserHero = (): TemplateResult => html`
   <section class="sbb-page-spacing">
-    <sbb-teaser-hero
-      class="teaser-hero"
-      link-content="Learn more"
-      image-src="https://cdn.img.sbb.ch/content/dam/internet/lyne/Billetkontrolle.jpg"
-      href="https://www.sbb.ch"
-    >
+    <sbb-teaser-hero class="teaser-hero" link-content="Learn more" href="https://www.sbb.ch">
       Considerate with SBB Green Class.
+      <sbb-image
+        slot="image"
+        image-src="https://cdn.img.sbb.ch/content/dam/internet/lyne/Billetkontrolle.jpg"
+      ></sbb-image>
     </sbb-teaser-hero>
   </section>
 `;
 
 export const footer = (args: Args): TemplateResult => html`
-  <sbb-footer accessibility-title="Footer" variant="clock-columns" ?negative=${args.negative}>
+  <sbb-footer
+    accessibility-title="Footer"
+    variant="clock-columns"
+    ?negative=${args.negative}
+    ?expanded=${args.expanded}
+  >
     <div class="sbb-link-list-button-group">
       <sbb-link-list title-level="2" title-content="Help &amp; Contact." ?negative=${args.negative}>
         <sbb-block-link

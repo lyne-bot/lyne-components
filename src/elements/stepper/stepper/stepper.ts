@@ -8,8 +8,8 @@ import {
 import { customElement, property } from 'lit/decorators.js';
 
 import { getNextElementIndex, isArrowKeyPressed } from '../../core/a11y.js';
-import { SbbConnectedAbortController } from '../../core/controllers.js';
-import { breakpoints, isBreakpoint } from '../../core/dom.js';
+import { forceType } from '../../core/decorators.js';
+import { breakpoints, isBreakpoint, isLean } from '../../core/dom.js';
 import type { SbbHorizontalFrom, SbbOrientation } from '../../core/interfaces.js';
 import { SbbHydrationMixin } from '../../core/mixins.js';
 import type { SbbStepElement, SbbStepValidateEventDetails } from '../step.js';
@@ -24,53 +24,59 @@ const DEBOUNCE_TIME = 150;
  * @slot step-label - Use this slot to provide an `sbb-step-label`.
  * @slot step - Use this slot to provide an `sbb-step`.
  */
+export
 @customElement('sbb-stepper')
-export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
+class SbbStepperElement extends SbbHydrationMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** If set to true, only the current and previous labels can be clicked and selected. */
-  @property({ type: Boolean }) public linear = false;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor linear: boolean = false;
 
   /** Overrides the behaviour of `orientation` property. */
   @property({ attribute: 'horizontal-from', reflect: true })
-  public set horizontalFrom(value: SbbHorizontalFrom) {
-    this._horizontalFrom = breakpoints.includes(value) ? value : undefined;
+  public set horizontalFrom(value: SbbHorizontalFrom | null) {
+    this._horizontalFrom = value && breakpoints.includes(value) ? value : null;
     if (this._horizontalFrom && this._loaded) {
       this._checkOrientation();
     }
   }
-  public get horizontalFrom(): SbbHorizontalFrom | undefined {
+  public get horizontalFrom(): SbbHorizontalFrom | null {
     return this._horizontalFrom;
   }
-  private _horizontalFrom?: SbbHorizontalFrom | undefined;
+  private _horizontalFrom: SbbHorizontalFrom | null = null;
 
   /** Steps orientation, either horizontal or vertical. */
   @property({ reflect: true })
-  public orientation: SbbOrientation = 'horizontal';
+  public accessor orientation: SbbOrientation = 'horizontal';
 
-  /** Size variant, either s or m. */
-  @property({ reflect: true }) public size: 's' | 'm' = 'm';
+  /**
+   * Size variant, either s or m.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: 's' | 'm' = isLean() ? 's' : 'm';
 
   /** The currently selected step. */
   @property({ attribute: false })
-  public set selected(step: SbbStepElement) {
+  public set selected(step: SbbStepElement | null) {
     if (this._loaded) {
       this._select(step);
     }
   }
-  public get selected(): SbbStepElement | undefined {
-    return this.querySelector?.<SbbStepElement>('sbb-step[data-selected]') ?? undefined;
+  public get selected(): SbbStepElement | null {
+    return this.querySelector?.<SbbStepElement>('sbb-step[data-selected]') ?? null;
   }
 
   /** The currently selected step index. */
   @property({ attribute: 'selected-index', type: Number })
-  public set selectedIndex(index: number) {
-    if (this._loaded) {
+  public set selectedIndex(index: number | null) {
+    if (this._loaded && index !== null) {
       this._select(this.steps[index]);
     }
   }
-  public get selectedIndex(): number | undefined {
-    return this.selected ? this.steps.indexOf(this.selected) : undefined;
+  public get selectedIndex(): number | null {
+    return this.selected ? this.steps.indexOf(this.selected) : null;
   }
 
   /** The steps of the stepper. */
@@ -83,19 +89,23 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
   }
 
   private _loaded: boolean = false;
-  private _abort = new SbbConnectedAbortController(this);
   private _resizeObserverTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  public constructor() {
+    super();
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
+  }
 
   /** Selects the next step. */
   public next(): void {
-    if (this.selectedIndex !== undefined) {
+    if (this.selectedIndex !== null) {
       this._select(this.steps[this.selectedIndex + 1]);
     }
   }
 
   /** Selects the previous step. */
   public previous(): void {
-    if (this.selectedIndex !== undefined) {
+    if (this.selectedIndex !== null) {
       this._select(this.steps[this.selectedIndex - 1]);
     }
   }
@@ -115,7 +125,7 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
     }
   }
 
-  private _isValidStep(step: SbbStepElement): boolean {
+  private _isValidStep(step: SbbStepElement | null): boolean {
     if (!step || (!this.linear && step.label?.hasAttribute('disabled'))) {
       return false;
     }
@@ -124,7 +134,7 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
       return step === this.steps[0];
     }
 
-    if (this.linear && this.selectedIndex !== undefined) {
+    if (this.linear && this.selectedIndex !== null) {
       const index = this.steps.indexOf(step);
       return index < this.selectedIndex || index === this.selectedIndex + 1;
     }
@@ -132,22 +142,22 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
     return true;
   }
 
-  private _select(step: SbbStepElement): void {
+  private _select(step: SbbStepElement | null): void {
     if (!this._isValidStep(step)) {
       return;
     }
     const validatePayload: SbbStepValidateEventDetails = {
       currentIndex: this.selectedIndex,
       currentStep: this.selected,
-      nextIndex: this.selectedIndex !== undefined ? this.selectedIndex + 1 : undefined,
-      nextStep: this.selectedIndex !== undefined ? this.steps[this.selectedIndex + 1] : undefined,
+      nextIndex: this.selectedIndex !== null ? this.selectedIndex + 1 : null,
+      nextStep: this.selectedIndex !== null ? this.steps[this.selectedIndex + 1] : null,
     };
     if (this.selected && !this.selected.validate(validatePayload)) {
       return;
     }
     const current = this.selected;
     current?.deselect();
-    step.select();
+    step!.select();
     this._setMarkerSize();
     this._configureLinearMode();
     // In case the focus is currently inside the stepper, we focus the selected step label.
@@ -174,7 +184,7 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
   }
 
   private _calculateLabelOffsetTop(): number | undefined {
-    if (this.selectedIndex === undefined) {
+    if (this.selectedIndex === null) {
       return;
     }
     let offset = 0;
@@ -223,7 +233,7 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
     setTimeout(() => this._setMarkerSize(), 0);
   }
 
-  private _onStepperResize(): void {
+  private _onStepperResize = (): void => {
     this._checkOrientation();
     clearTimeout(this._resizeObserverTimeout!);
     this.toggleAttribute('data-disable-animation', true);
@@ -233,7 +243,7 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
       () => this.toggleAttribute('data-disable-animation', false),
       DEBOUNCE_TIME,
     );
-  }
+  };
 
   private _configureLinearMode(): void {
     this.steps.forEach((step, index) => {
@@ -247,13 +257,15 @@ export class SbbStepperElement extends SbbHydrationMixin(LitElement) {
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
-    window.addEventListener('resize', () => this._onStepperResize(), {
-      signal,
+    window.addEventListener('resize', this._onStepperResize, {
       passive: true,
     });
     this.toggleAttribute('data-disable-animation', !this._loaded);
+  }
+
+  public override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener('resize', this._onStepperResize);
   }
 
   protected override async firstUpdated(changedProperties: PropertyValues<this>): Promise<void> {

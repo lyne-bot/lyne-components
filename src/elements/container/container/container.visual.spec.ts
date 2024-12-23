@@ -11,6 +11,7 @@ import { waitForImageReady } from '../../core/testing.js';
 
 import '../../button.js';
 import '../../card.js';
+import '../../chip-label.js';
 import '../../image.js';
 import '../../title.js';
 import './container.js';
@@ -25,16 +26,34 @@ describe(`sbb-container`, () => {
 
   const images = [
     {
+      name: 'sbb-image',
       selector: 'sbb-image',
       image: html`<sbb-image slot="image" image-src=${imageUrl}></sbb-image>`,
     },
     {
+      name: 'figure-sbb-image',
+      selector: 'sbb-image',
+      image: html`<figure slot="image" class="sbb-figure">
+        <sbb-image image-src=${imageUrl}></sbb-image>
+        <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+      </figure>`,
+    },
+    {
+      name: 'img',
       selector: 'img',
       image: html`<img
       slot="image"
       src=${imageBase64}
       alt=''
     ></img>`,
+    },
+    {
+      name: 'figure-img',
+      selector: 'img',
+      image: html`<figure slot="image" class="sbb-figure">
+        <img src=${imageBase64} alt="" />
+        <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+      </figure>`,
     },
   ];
 
@@ -88,7 +107,7 @@ describe(`sbb-container`, () => {
         describe(`expanded=${expanded}`, () => {
           for (const image of images) {
             it(
-              `slotted=${image.selector}`,
+              `slotted=${image.name}`,
               visualDiffDefault.with(async (setup) => {
                 await setup.withFixture(
                   html`<sbb-container ?expanded=${expanded}>
@@ -146,23 +165,24 @@ describe(`sbb-container`, () => {
         }),
       );
 
-      it(
-        `background-image`,
-        visualDiffDefault.with(async (setup) => {
-          await setup.withFixture(
-            html`
-              <sbb-container ?background-expanded=${backgroundExpanded}>
-                ${backgroundImageContent}
-                <sbb-image slot="image" image-src=${imageUrl}></sbb-image>
-              </sbb-container>
-            `,
-            wrapperStyles,
-          );
+      for (const image of images) {
+        it(
+          `background-image slotted=${image.name}`,
+          visualDiffDefault.with(async (setup) => {
+            await setup.withFixture(
+              html`
+                <sbb-container ?background-expanded=${backgroundExpanded}>
+                  ${backgroundImageContent} ${image.image}
+                </sbb-container>
+              `,
+              wrapperStyles,
+            );
 
-          await setViewport(viewport);
-          await waitForImageReady(setup.snapshotElement.querySelector('sbb-image')!);
-        }),
-      );
+            await setViewport(viewport);
+            await waitForImageReady(setup.snapshotElement.querySelector(image.selector)!);
+          }),
+        );
+      }
     });
   }
 });

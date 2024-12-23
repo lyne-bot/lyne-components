@@ -13,8 +13,9 @@ if (!('URLPattern' in globalThis)) {
 /**
  * Main app containing the router outlet.
  */
+export
 @customElement('app-main')
-export class Main extends LitElement {
+class Main extends LitElement {
   private _router = new Router(this, [
     {
       path: '/',
@@ -28,7 +29,7 @@ export class Main extends LitElement {
       path: '/compare/:component/:testcase',
       render: ({ component, testcase }) =>
         html`<app-test-case
-          .params=${{ componentName: component, testCaseName: testcase }}
+          .params=${{ componentName: component!, testCaseName: testcase! }}
         ></app-test-case>`,
       enter: async () => {
         await import('./components/test-case/test-case.js');

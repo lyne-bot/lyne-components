@@ -9,8 +9,9 @@ import { SbbInlineLinkCommonElementMixin } from '../common.js';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-link-button`.
  */
+export
 @customElement('sbb-link-button')
-export class SbbLinkButtonElement extends SbbInlineLinkCommonElementMixin(
+class SbbLinkButtonElement extends SbbInlineLinkCommonElementMixin(
   SbbDisabledTabIndexActionMixin(SbbButtonBaseElement),
 ) {}
 

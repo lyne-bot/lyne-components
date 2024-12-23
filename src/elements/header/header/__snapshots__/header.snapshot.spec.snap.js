@@ -12,12 +12,6 @@ snapshots["sbb-header renders Shadow DOM"] =
   <div class="sbb-header__wrapper">
     <slot>
     </slot>
-    <div class="sbb-header__logo">
-      <slot name="logo">
-        <sbb-logo protective-room="none">
-        </sbb-logo>
-      </slot>
-    </div>
   </div>
 </header>
 `;
@@ -34,7 +28,9 @@ snapshots["sbb-header renders actions and logo DOM"] =
   >
     Menu
   </sbb-header-link>
-  <div slot="logo">
+  <div class="sbb-header-spacer">
+  </div>
+  <div class="sbb-header-logo">
     <circle
       cx="25"
       cy="75"
@@ -51,12 +47,6 @@ snapshots["sbb-header renders actions and logo Shadow DOM"] =
   <div class="sbb-header__wrapper">
     <slot>
     </slot>
-    <div class="sbb-header__logo">
-      <slot name="logo">
-        <sbb-logo protective-room="none">
-        </sbb-logo>
-      </slot>
-    </div>
   </div>
 </header>
 `;

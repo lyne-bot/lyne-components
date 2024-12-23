@@ -13,7 +13,7 @@
   --sbb-toggle-selected-option-border-color: var(--sbb-color-smoke);
   --sbb-toggle-padding-inline: var(--sbb-spacing-responsive-xxxs);
   --sbb-toggle-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
   --sbb-toggle-height: #{sbb.px-to-rem-build(28)};

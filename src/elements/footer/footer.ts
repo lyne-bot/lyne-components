@@ -3,6 +3,7 @@ import { LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { html, unsafeStatic } from 'lit/static-html.js';
 
+import { forceType } from '../core/decorators.js';
 import { SbbNegativeMixin } from '../core/mixins.js';
 import type { SbbTitleLevel } from '../title.js';
 
@@ -13,29 +14,34 @@ import style from './footer.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add elements like `sbb-block-link`, `sbb-link-list`, `sbb-divider` and so on.
  */
+export
 @customElement('sbb-footer')
-export class SbbFooterElement extends SbbNegativeMixin(LitElement) {
+class SbbFooterElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /**
    * Variants to display the footer. The default, displays the content in regular block element
-   * approach. The clock-columns, used a css-grid for displaying the content over different
+   * approach. The clock-columns, used a CSS-grid for displaying the content over different
    * breakpoints.
    */
-  @property({ reflect: true }) public variant: 'default' | 'clock-columns' = 'default';
+  @property({ reflect: true }) public accessor variant: 'default' | 'clock-columns' = 'default';
 
   /**
    * Whether to allow the footer content to stretch to full width.
    * By default, the content has the appropriate page size.
    */
-  @property({ reflect: true, type: Boolean }) public expanded = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor expanded: boolean = false;
 
   /** Footer title text, visually hidden, necessary for screen readers. */
-  @property({ attribute: 'accessibility-title' }) public accessibilityTitle?: string;
+  @forceType()
+  @property({ attribute: 'accessibility-title' })
+  public accessor accessibilityTitle: string = '';
 
   /** Level of the accessibility title, will be rendered as heading tag (e.g. h1). Defaults to level 1. */
   @property({ attribute: 'accessibility-title-level' })
-  public accessibilityTitleLevel: SbbTitleLevel = '1';
+  public accessor accessibilityTitleLevel: SbbTitleLevel = '1';
 
   protected override render(): TemplateResult {
     const TITLE_TAG_NAME = `h${this.accessibilityTitleLevel}`;

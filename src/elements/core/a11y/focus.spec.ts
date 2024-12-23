@@ -2,10 +2,9 @@ import { expect } from '@open-wc/testing';
 import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit';
 
-import { tabKey } from '../testing/private/keys.js';
-import { fixture } from '../testing/private.js';
+import { fixture, tabKey } from '../testing/private.js';
 
-import { SbbFocusHandler, getFirstFocusableElement, getFocusableElements } from './focus.js';
+import { getFirstFocusableElement, getFocusableElements, SbbFocusHandler } from './focus.js';
 
 describe('focus', () => {
   describe(`getFocusables`, () => {
@@ -104,8 +103,8 @@ describe('focus', () => {
           </div>
           <slot></slot>
           <button id="disabled-button" disabled>Disabled button</button>
-          <span id="disabled-interactive-button" disabled disabled-interactive tabindex="0">Disabled interactive button</span>
-          <span id="disabled-interactive-button" tabindex="0" inert>Disabled interactive button</span>
+          <span id="disabled-interactive-button" disabled-interactive tabindex="0">Disabled interactive button</span>
+          <span id="inert-button" tabindex="0" inert>Inert button</span>
       `;
         }
       },

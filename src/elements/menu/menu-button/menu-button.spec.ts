@@ -3,7 +3,7 @@ import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 
 import { SbbMenuButtonElement } from './menu-button.js';
 
@@ -23,7 +23,7 @@ describe(`sbb-menu-button`, () => {
       const changeSpy = new EventSpy('click');
 
       element.click();
-      await waitForCondition(() => changeSpy.events.length === 1);
+      await changeSpy.calledOnce();
       expect(changeSpy.count).to.be.equal(1);
     });
 

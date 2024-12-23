@@ -37,8 +37,10 @@
     (
         var(--sbb-form-field-min-height) - var(--sbb-form-field-label-size) - var(
             --sbb-form-field-text-line-height
-          ) + var(--sbb-form-field-label-to-input-overlapping)
-      ) / 2
+          ) +
+          var(--sbb-form-field-label-to-input-overlapping)
+      ) /
+      2
   );
   --sbb-form-field-spacer-margin-block-end: calc(
     -1 * var(--sbb-form-field-label-to-input-overlapping)
@@ -152,7 +154,7 @@
   --sbb-form-field-prefix-color: var(--sbb-color-granite);
 }
 
-:host(:is([data-input-focused], [data-has-popup-open])) {
+:host(:is([data-input-focused])) {
   --sbb-form-field-border-color: var(--sbb-color-charcoal);
   --sbb-form-field-prefix-color: var(--sbb-color-charcoal);
   --sbb-form-field-border-width: var(--sbb-border-width-2x);
@@ -163,7 +165,7 @@
   }
 }
 
-:host(:is([data-input-focused], [data-has-popup-open])[negative]) {
+:host(:is([data-input-focused])[negative]) {
   --sbb-form-field-border-color: var(--sbb-color-milk);
   --sbb-form-field-prefix-color: var(--sbb-color-milk);
 }
@@ -249,7 +251,7 @@
       }
     }
 
-    :host(:is([data-input-focused], [data-has-popup-open], [data-disabled])[borderless]) & {
+    :host(:is([data-input-focused], [data-disabled])[borderless]) & {
       &::after {
         content: '';
         position: absolute;
@@ -359,15 +361,14 @@
     will-change: transform, font-size;
 
     transition: {
-      duration: var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-2x));
+      duration: var(--sbb-disable-animation-duration, var(--sbb-animation-duration-2x));
       timing-function: var(--sbb-animation-easing);
       property: transform, font-size;
     }
   }
 
   // If floating-label is activated and there is no focus in it (except for select) and no popup is open
-  // and input is empty
-  // then apply the label transition.
+  // and input is empty then apply the label transition.
   // If it is empty and readonly, always apply transition
   :host(
       [floating-label]:is(
@@ -410,7 +411,7 @@
   @include sbb.input-reset;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
   overflow: var(--sbb-form-field-overflow);
   width: 100%;

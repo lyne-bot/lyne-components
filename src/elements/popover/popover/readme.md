@@ -78,15 +78,15 @@ Overlays should always contain a heading level 2 title. It can be visually hidde
 
 ## Properties
 
-| Name                      | Attribute                   | Privacy | Type                                 | Default | Description                                                                                                     |
-| ------------------------- | --------------------------- | ------- | ------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------- |
-| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `\| string     \| undefined`         |         | This will be forwarded as aria-label to the close button element.                                               |
-| `closeDelay`              | `close-delay`               | public  | `number`                             | `0`     | Close the popover after a certain delay.                                                                        |
-| `hideCloseButton`         | `hide-close-button`         | public  | `boolean \| undefined`               | `false` | Whether the close button should be hidden.                                                                      |
-| `hoverTrigger`            | `hover-trigger`             | public  | `boolean`                            | `false` | Whether the popover should be triggered on hover.                                                               |
-| `isOpen`                  | -                           | public  | `boolean`                            |         | Whether the element is open.                                                                                    |
-| `openDelay`               | `open-delay`                | public  | `number`                             | `0`     | Open the popover after a certain delay.                                                                         |
-| `trigger`                 | `trigger`                   | public  | `string \| HTMLElement \| undefined` |         | The element that will trigger the popover overlay. Accepts both a string (id of an element) or an HTML element. |
+| Name                      | Attribute                   | Privacy | Type                            | Default | Description                                                                                                     |
+| ------------------------- | --------------------------- | ------- | ------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `string`                        | `''`    | This will be forwarded as aria-label to the close button element.                                               |
+| `closeDelay`              | `close-delay`               | public  | `number`                        | `0`     | Close the popover after a certain delay.                                                                        |
+| `hideCloseButton`         | `hide-close-button`         | public  | `boolean`                       | `false` | Whether the close button should be hidden.                                                                      |
+| `hoverTrigger`            | `hover-trigger`             | public  | `boolean`                       | `false` | Whether the popover should be triggered on hover.                                                               |
+| `isOpen`                  | -                           | public  | `boolean`                       |         | Whether the element is open.                                                                                    |
+| `openDelay`               | `open-delay`                | public  | `number`                        | `0`     | Open the popover after a certain delay.                                                                         |
+| `trigger`                 | `trigger`                   | public  | `string \| HTMLElement \| null` | `null`  | The element that will trigger the popover overlay. Accepts both a string (id of an element) or an HTML element. |
 
 ## Methods
 

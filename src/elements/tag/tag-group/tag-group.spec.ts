@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { waitForCondition, waitForLitRender, EventSpy } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbTagElement } from '../tag.js';
 
 import { SbbTagGroupElement } from './tag-group.js';
@@ -46,9 +46,9 @@ describe(`sbb-tag-group`, () => {
 
         expect(tag1).to.have.attribute('checked');
         expect(tag1.checked).to.be.equal(true);
-        await waitForCondition(() => inputSpy.events.length === 1);
+        await inputSpy.calledOnce();
         expect(inputSpy.count).to.be.equal(1);
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(changeSpy.count).to.be.equal(1);
         expect(element.value).to.be.eql(['tag1']);
       });
@@ -111,9 +111,9 @@ describe(`sbb-tag-group`, () => {
 
         expect(tag2).not.to.have.attribute('checked');
         expect(tag2.checked).to.be.equal(false);
-        await waitForCondition(() => inputSpy.events.length === 1);
+        await inputSpy.calledOnce();
         expect(inputSpy.count).to.be.equal(1);
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(changeSpy.count).to.be.equal(1);
         expect(element.value).to.be.an('array').that.is.empty;
       });
@@ -279,9 +279,9 @@ describe(`sbb-tag-group`, () => {
 
         expect(tag1).to.have.attribute('checked');
         expect(tag1.checked).to.be.equal(true);
-        await waitForCondition(() => inputSpy.events.length === 1);
+        await inputSpy.calledOnce();
         expect(inputSpy.count).to.be.equal(1);
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(changeSpy.count).to.be.equal(1);
         expect(element.value).to.be.equal('tag1');
       });
@@ -394,10 +394,10 @@ describe(`sbb-tag-group`, () => {
         expect(tag2).not.to.have.attribute('checked');
         expect(tag2.checked).to.be.equal(false);
 
-        await waitForCondition(() => inputSpy.events.length === 1);
+        await inputSpy.calledOnce();
         expect(inputSpy.count).to.be.equal(1);
 
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(changeSpy.count).to.be.equal(1);
 
         expect(element.value).to.be.equal('tag3');
@@ -419,10 +419,10 @@ describe(`sbb-tag-group`, () => {
         expect(tag2).not.to.have.attribute('checked');
         expect(tag2.checked).to.be.equal(false);
 
-        await waitForCondition(() => inputSpy.events.length === 1);
+        await inputSpy.calledOnce();
         expect(inputSpy.count).to.be.equal(1);
 
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(changeSpy.count).to.be.equal(1);
 
         expect(element.value).to.be.equal('tag1');

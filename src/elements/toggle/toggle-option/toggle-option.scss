@@ -19,7 +19,7 @@
 // Hide focus outline when focus origin is mouse or touch. This is being used as a workaround in various components.
 :host(:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) {
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 }
 

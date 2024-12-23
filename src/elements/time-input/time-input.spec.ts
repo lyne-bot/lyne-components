@@ -39,13 +39,25 @@ describe(`sbb-time-input`, () => {
   it('should emit form events', async () => {
     const changeSpy = new EventSpy('change', element);
     const inputSpy = new EventSpy('input', element);
+    const nativeInputSpy = new EventSpy('input', input);
+    const nativeChangeSpy = new EventSpy('change', input);
 
-    typeInElement(input, '1');
+    input.focus();
+    await sendKeys({ press: '1' });
     input.blur();
     await waitForLitRender(element);
 
-    expect(changeSpy.count).to.be.greaterThan(0);
-    expect(inputSpy.count).to.be.greaterThan(0);
+    await nativeChangeSpy.calledOnce().then(() => {
+      expect(input.value).to.be.equal('01:00');
+    });
+    await changeSpy.calledOnce().then(() => {
+      expect(input.value).to.be.equal('01:00');
+    });
+
+    expect(inputSpy.count, 'sbb-time-input input event').to.be.equal(2);
+    expect(changeSpy.count, 'sbb-time-input change event').to.be.equal(1);
+    expect(nativeInputSpy.count, 'input input event').to.be.equal(2);
+    expect(nativeChangeSpy.count, 'input change event').to.be.equal(1);
   });
 
   it('should emit validation change event', async () => {
@@ -198,13 +210,13 @@ describe(`sbb-time-input`, () => {
     const blurSpy = new EventSpy('blur', input);
     const date = new Date('2023-01-01T15:00:00');
 
-    element.setValueAsDate(date);
+    element.valueAsDate = date;
     await waitForLitRender(element);
 
     expect(input.value).to.be.equal('15:00');
     expect(blurSpy.count).to.be.equal(1);
 
-    const dateCalculated = element.getValueAsDate()!.getTime();
+    const dateCalculated = element.valueAsDate.getTime();
     expect(new Date(dateCalculated).getHours()).to.be.equal(date.getHours());
     expect(new Date(dateCalculated).getMinutes()).to.be.equal(date.getMinutes());
   });
@@ -212,11 +224,11 @@ describe(`sbb-time-input`, () => {
   it('should set and get value as a date (string)', async () => {
     const date = new Date('2023-01-01T15:00:00');
 
-    element.setValueAsDate(date.toISOString());
+    element.valueAsDate = date.toISOString();
     await waitForLitRender(element);
     expect(input.value).to.be.equal('15:00');
 
-    const dateCalculated = element.getValueAsDate()!.getTime();
+    const dateCalculated = element.valueAsDate!.getTime();
     expect(new Date(dateCalculated).getHours()).to.be.equal(date.getHours());
     expect(new Date(dateCalculated).getMinutes()).to.be.equal(date.getMinutes());
   });
@@ -231,7 +243,7 @@ describe(`sbb-time-input`, () => {
     element = root.querySelector<SbbTimeInputElement>('sbb-time-input')!;
     input = root.querySelector<HTMLInputElement>('input')!;
 
-    element.setValueAsDate('2023-01-01T15:00:00');
+    element.valueAsDate = '2023-01-01T15:00:00';
     await waitForLitRender(element);
     expect(input.value).to.be.equal('15:00');
   });
@@ -246,7 +258,7 @@ describe(`sbb-time-input`, () => {
     element = root.querySelector<SbbTimeInputElement>('sbb-time-input')!;
     input = root.querySelector<HTMLInputElement>('input')!;
     element.input = input;
-    element.setValueAsDate('2023-01-01T15:00:00');
+    element.valueAsDate = '2023-01-01T15:00:00';
     await waitForLitRender(element);
 
     expect(input.value).to.be.equal('15:00');
@@ -263,7 +275,7 @@ describe(`sbb-time-input`, () => {
     input = root.querySelector<HTMLInputElement>('input')!;
 
     element.input = 'input-2';
-    element.setValueAsDate('2023-01-01T15:00:00');
+    element.valueAsDate = '2023-01-01T15:00:00';
     await waitForLitRender(element);
 
     expect(input.value).to.be.equal('15:00');

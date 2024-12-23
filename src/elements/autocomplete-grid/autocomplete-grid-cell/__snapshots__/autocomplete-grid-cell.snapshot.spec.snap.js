@@ -4,7 +4,6 @@ export const snapshots = {};
 snapshots["sbb-autocomplete-grid-cell renders DOM"] = 
 `<sbb-autocomplete-grid-cell role="gridcell">
   <sbb-autocomplete-grid-button
-    aria-disabled="false"
     data-action=""
     data-button=""
     icon-name="pie-small"

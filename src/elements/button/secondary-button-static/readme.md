@@ -44,7 +44,7 @@ The component can be displayed in `disabled` state using the self-named property
 ### Focus outline
 
 Please make sure that the focus outline appears in the correct color if the component is used on a dark background.
-You can set it by re-defining the css var on `sbb-button-static` or any parent element:
+You can set it by re-defining the CSS var on `sbb-button-static` or any parent element:
 
 ```css
 sbb-secondary-button-static {
@@ -60,12 +60,12 @@ Use the accessibility properties in case of an icon-only button to describe the 
 
 ## Properties
 
-| Name       | Attribute   | Privacy | Type                         | Default | Description                                                                                                                      |
-| ---------- | ----------- | ------- | ---------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled` | `disabled`  | public  | `boolean`                    | `false` | Whether the component is disabled.                                                                                               |
-| `iconName` | `icon-name` | public  | `string \| undefined`        |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `negative` | `negative`  | public  | `boolean`                    | `false` | Negative coloring variant flag.                                                                                                  |
-| `size`     | `size`      | public  | `SbbButtonSize \| undefined` | `'l'`   | Size variant, either l or m.                                                                                                     |
+| Name       | Attribute   | Privacy | Type            | Default            | Description                                                                                                                      |
+| ---------- | ----------- | ------- | --------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | `disabled`  | public  | `boolean`       | `false`            | Whether the component is disabled.                                                                                               |
+| `iconName` | `icon-name` | public  | `string`        | `''`               | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `negative` | `negative`  | public  | `boolean`       | `false`            | Negative coloring variant flag.                                                                                                  |
+| `size`     | `size`      | public  | `SbbButtonSize` | `'l' / 's' (lean)` | Size variant, either l, m or s.                                                                                                  |
 
 ## Slots
 

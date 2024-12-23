@@ -37,13 +37,13 @@ It is possible to display the component in `disabled` state by using the self-na
 
 ## Properties
 
-| Name       | Attribute   | Privacy | Type                   | Default | Description                                                                                                                                                   |
-| ---------- | ----------- | ------- | ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `active`   | `active`    | public  | `boolean \| undefined` |         | Active tab state                                                                                                                                              |
-| `amount`   | `amount`    | public  | `string \| undefined`  |         | Amount displayed inside the tab.                                                                                                                              |
-| `disabled` | `disabled`  | public  | `boolean`              | `false` | Whether the component is disabled.                                                                                                                            |
-| `iconName` | `icon-name` | public  | `string \| undefined`  |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch.                              |
-| `level`    | `level`     | public  | `SbbTitleLevel`        | `'1'`   | The level will correspond to the heading tag generated in the title. Use this property to generate the appropriate header tag, taking SEO into consideration. |
+| Name       | Attribute   | Privacy | Type            | Default | Description                                                                                                                                                   |
+| ---------- | ----------- | ------- | --------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `active`   | `active`    | public  | `boolean`       | `false` | Active tab state                                                                                                                                              |
+| `amount`   | `amount`    | public  | `string`        | `''`    | Amount displayed inside the tab.                                                                                                                              |
+| `disabled` | `disabled`  | public  | `boolean`       | `false` | Whether the component is disabled.                                                                                                                            |
+| `iconName` | `icon-name` | public  | `string`        | `''`    | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch.                              |
+| `level`    | `level`     | public  | `SbbTitleLevel` | `'1'`   | The level will correspond to the heading tag generated in the title. Use this property to generate the appropriate header tag, taking SEO into consideration. |
 
 ## Slots
 

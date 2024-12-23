@@ -9,16 +9,10 @@ import { sbbSpread } from '../../../storybook/helpers/spread.js';
 import readme from './readme.md?raw';
 import './header-link.js';
 
-const TemplateSingle = (args: Args): TemplateResult => html`
-  <sbb-header-link ${sbbSpread(args)}>${args.text}</sbb-header-link>
-`;
-
-const TemplateMultiple = (args: Args): TemplateResult => html`
-  <div style="display: flex; gap: 2rem;">
-    <sbb-header-link ${sbbSpread(args)}>${args.text} 1</sbb-header-link>
-    <sbb-header-link ${sbbSpread(args)}>${args.text} 2</sbb-header-link>
-    <sbb-header-link ${sbbSpread(args)}>${args.text} 3</sbb-header-link>
-  </div>
+const TemplateSingle = ({ active, text, ...args }: Args): TemplateResult => html`
+  <sbb-header-link ${sbbSpread(args)} class=${active ? 'sbb-active' : ''}>
+    ${text}
+  </sbb-header-link>
 `;
 
 const text: InputType = {
@@ -37,6 +31,12 @@ const expandFrom: InputType = {
 const iconName: InputType = {
   control: {
     type: 'text',
+  },
+};
+
+const active: InputType = {
+  control: {
+    type: 'boolean',
   },
 };
 
@@ -91,6 +91,7 @@ const basicArgTypes: ArgTypes = {
   text,
   'expand-from': expandFrom,
   'icon-name': iconName,
+  active,
   href,
   target,
   rel,
@@ -102,6 +103,7 @@ const basicArgs: Args = {
   text: 'Menu',
   'expand-from': expandFrom.options![0],
   'icon-name': 'hamburger-menu-small',
+  active: false,
   href: href.options![1],
   target: '_blank',
   rel: undefined,
@@ -109,16 +111,27 @@ const basicArgs: Args = {
   'accessibility-label': undefined,
 };
 
-export const sbbHeaderActionLink: StoryObj = {
+export const Default: StoryObj = {
   render: TemplateSingle,
   argTypes: basicArgTypes,
   args: { ...basicArgs },
 };
 
-export const sbbHeaderActionLinkMultiple: StoryObj = {
-  render: TemplateMultiple,
+export const Active: StoryObj = {
+  render: TemplateSingle,
   argTypes: basicArgTypes,
-  args: { ...basicArgs },
+  args: { ...basicArgs, active: true, 'icon-name': 'magnifying-glass-small', text: 'Label' },
+};
+
+export const ExpandFromMedium: StoryObj = {
+  render: TemplateSingle,
+  argTypes: basicArgTypes,
+  args: {
+    ...basicArgs,
+    'icon-name': 'magnifying-glass-small',
+    text: 'Label',
+    'expand-from': 'medium',
+  },
 };
 
 const meta: Meta = {

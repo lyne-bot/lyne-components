@@ -12,7 +12,8 @@
   "customElements": "custom-elements.json",
   "dependencies": {
     "@lit-labs/observers": "0.0.0-LITOBSERVERS",
-    "lit": "0.0.0-LIT"
+    "lit": "0.0.0-LIT",
+    "tslib": "0.0.0-TSLIB"
   },
   "publishConfig": {
     "access": "public"

@@ -10,7 +10,7 @@
   display: block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 }
 
@@ -40,7 +40,7 @@ sbb-icon {
   }
 }
 
-:host([role='button']) {
+:host([data-button]) {
   @include sbb.if-forced-colors {
     --sbb-navigation-action-color: ButtonText;
   }
@@ -55,7 +55,7 @@ sbb-icon {
   display: flex;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: color var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-3x)) ease;
+  transition: color var(--sbb-disable-animation-duration, var(--sbb-animation-duration-3x)) ease;
   hyphens: auto;
   text-align: left;
   color: var(--sbb-navigation-action-color);

@@ -4,7 +4,6 @@ import { customElement } from 'lit/decorators.js';
 
 import { SbbActionBaseElement } from '../../core/base-elements.js';
 import { hostAttributes, slotState } from '../../core/decorators.js';
-import { setOrRemoveAttribute } from '../../core/dom.js';
 import { isEventPrevented } from '../../core/eventing.js';
 import { SbbDisabledMixin, SbbNegativeMixin } from '../../core/mixins.js';
 import { SbbIconNameMixin } from '../../icon.js';
@@ -24,6 +23,7 @@ const buttonObserverConfig: MutationObserverInit = {
  *
  * @slot icon - Slot used to display the icon, if one is set
  */
+export
 @customElement('sbb-autocomplete-grid-button')
 @hostAttributes({
   role: 'button',
@@ -31,7 +31,7 @@ const buttonObserverConfig: MutationObserverInit = {
   'data-button': '',
 })
 @slotState()
-export class SbbAutocompleteGridButtonElement extends SbbDisabledMixin(
+class SbbAutocompleteGridButtonElement extends SbbDisabledMixin(
   SbbNegativeMixin(SbbIconNameMixin(SbbActionBaseElement)),
 ) {
   public static override styles: CSSResultGroup = style;
@@ -59,11 +59,7 @@ export class SbbAutocompleteGridButtonElement extends SbbDisabledMixin(
           for (const mutation of mutationsList) {
             if (mutation.attributeName === 'data-group-disabled') {
               this._disabledFromGroup = this.hasAttribute('data-group-disabled');
-              setOrRemoveAttribute(
-                this,
-                'aria-disabled',
-                `${this.disabled || this._disabledFromGroup}`,
-              );
+              this._updateAriaDisabled();
             }
           }
         },
@@ -85,14 +81,22 @@ export class SbbAutocompleteGridButtonElement extends SbbDisabledMixin(
     const parentGroup = this.closest('sbb-autocomplete-grid-optgroup');
     if (parentGroup) {
       this._disabledFromGroup = parentGroup.disabled;
-      setOrRemoveAttribute(this, 'aria-disabled', `${this.disabled || this._disabledFromGroup}`);
+      this._updateAriaDisabled();
     }
   }
 
   public override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
     if (changedProperties.has('disabled')) {
-      setOrRemoveAttribute(this, 'aria-disabled', `${this.disabled || this._disabledFromGroup}`);
+      this._updateAriaDisabled();
+    }
+  }
+
+  private _updateAriaDisabled(): void {
+    if (this.disabled || this._disabledFromGroup) {
+      this.setAttribute('aria-disabled', 'true');
+    } else {
+      this.removeAttribute('aria-disabled');
     }
   }
 

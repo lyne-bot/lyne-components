@@ -11,8 +11,9 @@ import style from './lead-container.scss?lit&inline';
  * `sbb-image`, `img` and `picture` elements are supported.
  * For other elements the aspect ratio has to be set manually.
  */
+export
 @customElement('sbb-lead-container')
-export class SbbLeadContainerElement extends LitElement {
+class SbbLeadContainerElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   protected override render(): TemplateResult {

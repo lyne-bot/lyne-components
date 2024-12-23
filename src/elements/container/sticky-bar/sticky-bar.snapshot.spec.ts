@@ -11,7 +11,7 @@ describe(`sbb-sticky-bar`, () => {
     let element: SbbStickyBarElement;
 
     beforeEach(async () => {
-      element = await fixture(html` <sbb-sticky-bar></sbb-sticky-bar> `);
+      element = await fixture(html`<sbb-sticky-bar></sbb-sticky-bar>`);
     });
 
     it('DOM', async () => {

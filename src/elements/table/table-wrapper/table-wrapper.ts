@@ -17,8 +17,9 @@ import style from './table-wrapper.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add the table.
  */
+export
 @customElement('sbb-table-wrapper')
-export class SbbTableWrapperElement extends SbbNegativeMixin(LitElement) {
+class SbbTableWrapperElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   private _resizeObserver = new ResizeController(this, {
@@ -28,7 +29,7 @@ export class SbbTableWrapperElement extends SbbNegativeMixin(LitElement) {
   });
   private _tableWrapper!: HTMLElement;
 
-  protected override firstUpdated(changedProperties: PropertyValues): void {
+  protected override firstUpdated(changedProperties: PropertyValues<this>): void {
     super.firstUpdated(changedProperties);
     this._tableWrapper = this.shadowRoot!.querySelector<HTMLElement>('.sbb-table-wrapper')!;
     this._resizeObserver.observe(this._tableWrapper);

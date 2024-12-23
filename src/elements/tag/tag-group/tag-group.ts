@@ -8,7 +8,8 @@ import {
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { setOrRemoveAttribute } from '../../core/dom.js';
+import { forceType } from '../../core/decorators.js';
+import { isLean, setOrRemoveAttribute } from '../../core/dom.js';
 import { SbbNamedSlotListMixin, type WithListChildren } from '../../core/mixins.js';
 import type { SbbTagElement, SbbTagSize } from '../tag.js';
 
@@ -19,8 +20,9 @@ import style from './tag-group.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add one or more 'sbb-tag' elements to the `sbb-tag-group`.
  */
+export
 @customElement('sbb-tag-group')
-export class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typeof LitElement>(
+class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typeof LitElement>(
   LitElement,
 ) {
   public static override styles: CSSResultGroup = style;
@@ -30,7 +32,9 @@ export class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typ
   /**
    * This will be forwarded as aria-label to the inner list.
    */
-  @property({ attribute: 'list-accessibility-label' }) public listAccessibilityLabel?: string;
+  @forceType()
+  @property({ attribute: 'list-accessibility-label' })
+  public accessor listAccessibilityLabel: string = '';
 
   /**
    * If set multiple to false, the selection is exclusive and the value is a string (or null).
@@ -38,10 +42,15 @@ export class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typ
    *
    * Changing multiple during run time is not supported.
    */
-  @property({ type: Boolean }) public multiple = false;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor multiple: boolean = false;
 
-  /** Tag group size. */
-  @property({ reflect: true }) public size: SbbTagSize = 'm';
+  /**
+   * Tag group size, either s or m.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: SbbTagSize = isLean() ? 's' : 'm';
 
   /**
    * Value of the sbb-tag-group.
@@ -49,7 +58,7 @@ export class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typ
    * If set multiple to true, the value is an array.
    */
   @property()
-  public set value(value: string | string[] | null) {
+  public set value(value: string | (string | null)[] | null) {
     const tags = this.tags;
     if (isServer) {
       this._value = value;
@@ -75,14 +84,14 @@ export class SbbTagGroupElement extends SbbNamedSlotListMixin<SbbTagElement, typ
       }
     }
   }
-  public get value(): string | string[] | null {
+  public get value(): string | (string | null)[] | null {
     return isServer
       ? this._value
       : this.multiple
         ? this.tags.filter((t) => t.checked).map((t) => t.value)
         : (this.tags.find((t) => t.checked)?.value ?? null);
   }
-  private _value: string | string[] | null = null;
+  private _value: string | (string | null)[] | null = null;
 
   /** The child instances of sbb-tag as an array. */
   public get tags(): SbbTagElement[] {

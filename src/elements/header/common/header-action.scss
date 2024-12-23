@@ -7,7 +7,7 @@
   display: inline-block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   --sbb-header-action-padding-inline: var(--sbb-spacing-fixed-5x);
@@ -16,7 +16,7 @@
   --sbb-header-action-min-height: var(--sbb-size-element-s);
   --sbb-header-action-min-width: var(--sbb-header-action-min-height);
   --sbb-header-action-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-header-action-transition-easing: var(--sbb-animation-easing);
@@ -25,6 +25,10 @@
   --sbb-header-action-translate-y: 0;
   --sbb-header-action-gap: var(--sbb-spacing-fixed-2x);
   --sbb-header-action-icon-dimension: var(--sbb-size-icon-ui-small);
+  --sbb-header-action-active-border-width: var(--sbb-border-width-2x);
+  --sbb-header-action-active-border-color: var(--sbb-color-black);
+  --sbb-header-action-active-border-margin-inline: var(--sbb-header-action-padding-inline);
+  --sbb-header-action-active-border-scale: 0;
 
   // If expanded, move it left by left padding.
   // As result, the icon should be aligned with the left side of the page wrapper.
@@ -37,6 +41,9 @@
   @include sbb.if-forced-colors {
     --sbb-header-action-border-color: CanvasText;
     --sbb-header-action-color: LinkText;
+
+    // Hide border with forced colors, as state is displayed on border
+    --sbb-header-action-active-border-width: 0;
   }
 }
 
@@ -60,13 +67,21 @@
   }
 }
 
-:host([role='button']) {
+:host(.sbb-active) {
+  --sbb-header-action-active-border-scale: 1;
+
+  @include sbb.if-forced-colors {
+    --sbb-header-action-border-color: Highlight;
+  }
+}
+
+:host([data-button]) {
   @include sbb.if-forced-colors {
     --sbb-header-action-color: ButtonText;
   }
 }
 
-:is(.sbb-header-button, .sbb-header-link) {
+.sbb-action-base {
   @include sbb.text-inherit;
 
   display: flex;
@@ -110,6 +125,19 @@
       @include sbb.focus-outline;
     }
   }
+
+  // Active state border
+  &::after {
+    content: '';
+    position: absolute;
+    border-bottom: var(--sbb-header-action-active-border-width) solid
+      var(--sbb-header-action-active-border-color);
+    inset: auto 0 calc(-1 * var(--sbb-header-action-active-border-width));
+    margin-inline: var(--sbb-header-action-active-border-margin-inline);
+    scale: var(--sbb-header-action-active-border-scale);
+    transition: scale var(--sbb-header-action-transition-easing)
+      var(--sbb-header-action-transition-duration);
+  }
 }
 
 .sbb-header-action__wrapper {
@@ -148,7 +176,7 @@
     @include sbb.mq($to: #{$breakpoint}) {
       // The variable is assigned to the property in the sbb-header component if it is
       // the first element in the header and needs left offset correction (see sbb-header.scss).
-      // To avoid duplicated css definitions, the value itself is assigned here in
+      // To avoid duplicated CSS definitions, the value itself is assigned here in
       // sbb-header-button/sbb-header-link instead of sbb-header.
 
       // Move it left by padding of header action to the icon itself.
@@ -156,6 +184,9 @@
         -0.5 * (var(--sbb-header-action-min-width) - var(--sbb-header-action-icon-dimension))
       );
       --sbb-header-action-padding-inline-zero: 0;
+      --sbb-header-action-active-border-margin-inline: calc(
+        0.5 * (100% - var(--sbb-size-icon-ui-small))
+      );
 
       .sbb-header-action__text {
         @include sbb.screen-reader-only;

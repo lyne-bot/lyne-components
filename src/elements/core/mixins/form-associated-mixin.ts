@@ -5,11 +5,9 @@ import type { AbstractConstructor } from './constructor.js';
 
 export declare abstract class SbbFormAssociatedMixinType<V = string> {
   public get form(): HTMLFormElement | null;
-  public get name(): string;
-  public set name(value: string);
+  public accessor name: string;
   public get type(): string;
-  public get value(): V | null;
-  public set value(value: V | null);
+  public accessor value: V | null;
 
   public get validity(): ValidityState;
   public get validationMessage(): string;
@@ -61,6 +59,9 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
     @property()
     public set name(name: string) {
       this.setAttribute('name', `${name}`);
+
+      // For `FormData` values, we have to manually update the fieldName key
+      this.updateFormValue();
     }
     public get name(): string {
       return this.getAttribute('name') ?? '';
@@ -115,7 +116,7 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
     protected readonly internals: ElementInternals = this.attachInternals();
 
     /** Whenever a surrounding form or fieldset is changing its disabled state. */
-    @state() protected formDisabled: boolean = false;
+    @state() protected accessor formDisabled: boolean = false;
 
     public override attributeChangedCallback(
       name: string,

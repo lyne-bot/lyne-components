@@ -18,6 +18,7 @@ describe(`sbb-menu-button`, () => {
     iconName: 'tick-small',
     label: 'Button',
     disabled: false,
+    disabledInteractive: false,
     slottedIcon: false,
   };
 
@@ -26,6 +27,7 @@ describe(`sbb-menu-button`, () => {
     iconName,
     label,
     disabled,
+    disabledInteractive,
     slottedIcon,
   }: typeof defaultArgs): TemplateResult => html`
     ${repeat(
@@ -35,6 +37,7 @@ describe(`sbb-menu-button`, () => {
           amount=${amount || nothing}
           icon-name=${iconName || nothing}
           ?disabled=${disabled}
+          ?disabled-interactive=${disabledInteractive}
         >
           ${label} ${index}
           ${slottedIcon
@@ -68,6 +71,16 @@ describe(`sbb-menu-button`, () => {
         `disabled ${visualDiffState.name}`,
         visualDiffState.with(async (setup) => {
           await setup.withFixture(template({ ...defaultArgs, disabled: true }), wrapperStyles);
+        }),
+      );
+
+      it(
+        `disabledInteractive ${visualDiffState.name}`,
+        visualDiffState.with(async (setup) => {
+          await setup.withFixture(
+            template({ ...defaultArgs, disabledInteractive: true }),
+            wrapperStyles,
+          );
         }),
       );
 

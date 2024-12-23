@@ -15,7 +15,9 @@ describe('sbb-teaser-product-static', () => {
   beforeEach(async () => {
     element = await fixture(html`
       <sbb-teaser-product-static>
-        <sbb-image slot="image" image-src=${imageUrl}></sbb-image>
+        <figure class="sbb-figure" slot="image">
+          <sbb-image image-src=${imageUrl}></sbb-image>
+        </figure>
         <p class="sbb-teaser-product--spacing">Content</p>
         <p slot="footnote" class="sbb-teaser-product--spacing">Footnote</p>
       </sbb-teaser-product-static>

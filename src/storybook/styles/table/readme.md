@@ -82,7 +82,7 @@ This scheme changes the text color of the cells to `sbb-color-iron`.
 In advanced scenarios, predefined classes might not suffice.
 Therefore, we provide mixins you can build on top of:
 
-| Mixin                | Css class                | Description                               |
+| Sass Mixin           | CSS class                | Description                               |
 | -------------------- | ------------------------ | ----------------------------------------- |
 | `table`              | `sbb-table`              | The table style (equivalent to `table-m`) |
 | `table--m`           | `sbb-table-m`            | Medium size table style                   |

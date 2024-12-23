@@ -2,7 +2,6 @@ import { type CSSResultGroup, html, type TemplateResult, type PropertyValues } f
 import { customElement } from 'lit/decorators.js';
 
 import { SbbButtonBaseElement } from '../../core/base-elements.js';
-import { SbbConnectedAbortController } from '../../core/controllers.js';
 import { hostAttributes } from '../../core/decorators.js';
 import { SbbDisabledMixin } from '../../core/mixins.js';
 import { SbbIconNameMixin } from '../../icon.js';
@@ -19,26 +18,32 @@ let nextId = 0;
  * @slot - Use the unnamed slot to provide a label.
  * @slot icon - Use this to display an icon in the label bubble.
  */
+export
 @customElement('sbb-step-label')
 @hostAttributes({
   slot: 'step-label',
   tabindex: '-1',
   role: 'tab',
 })
-export class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbButtonBaseElement)) {
+class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbButtonBaseElement)) {
   public static override styles: CSSResultGroup = style;
-
-  /** @internal */
-  private readonly _internals: ElementInternals = this.attachInternals();
 
   /** The step controlled by the label. */
   public get step(): SbbStepElement | null {
     return this._step;
   }
 
-  private _abort = new SbbConnectedAbortController(this);
   private _stepper: SbbStepperElement | null = null;
   private _step: SbbStepElement | null = null;
+
+  public constructor() {
+    super();
+    this.addEventListener?.('click', () => {
+      if (this._stepper && this._step) {
+        this._stepper.selected = this._step;
+      }
+    });
+  }
 
   private _getStep(): SbbStepElement | null {
     let nextSibling = this.nextElementSibling;
@@ -50,23 +55,13 @@ export class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbBu
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
     this.id = this.id || `sbb-step-label-${nextId++}`;
-    this._internals.ariaSelected = 'false';
+    this.internals.ariaSelected = 'false';
     this._stepper = this.closest('sbb-stepper');
     this._step = this._getStep();
     // The `data-disabled` attribute is used to preserve the initial disabled state of
     // step labels in case of switching from linear to non-linear mode.
     this.toggleAttribute('data-disabled', this.hasAttribute('disabled'));
-    this.addEventListener(
-      'click',
-      () => {
-        if (this._stepper && this._step) {
-          this._stepper.selected = this._step;
-        }
-      },
-      { signal },
-    );
   }
 
   protected override firstUpdated(changedProperties: PropertyValues<this>): void {
@@ -82,7 +77,7 @@ export class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbBu
    */
   public select(): void {
     this.tabIndex = 0;
-    this._internals.ariaSelected = 'true';
+    this.internals.ariaSelected = 'true';
     this.toggleAttribute('data-selected', true);
   }
 
@@ -92,7 +87,7 @@ export class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbBu
    */
   public deselect(): void {
     this.tabIndex = -1;
-    this._internals.ariaSelected = 'false';
+    this.internals.ariaSelected = 'false';
     this.toggleAttribute('data-selected', false);
   }
 
@@ -104,8 +99,8 @@ export class SbbStepLabelElement extends SbbIconNameMixin(SbbDisabledMixin(SbbBu
     if (stepperLoaded) {
       this._step = this._getStep();
     }
-    this._internals.ariaPosInSet = `${posInSet}`;
-    this._internals.ariaSetSize = `${setSize}`;
+    this.internals.ariaPosInSet = `${posInSet}`;
+    this.internals.ariaSetSize = `${setSize}`;
   }
 
   protected override render(): TemplateResult {

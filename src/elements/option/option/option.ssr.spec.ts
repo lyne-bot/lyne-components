@@ -94,7 +94,7 @@ describe(`sbb-option ssr`, () => {
       );
     });
 
-    it.only('renders', () => {
+    it('renders', () => {
       assert.instanceOf(root.querySelector('sbb-option'), SbbOptionElement);
     });
   });

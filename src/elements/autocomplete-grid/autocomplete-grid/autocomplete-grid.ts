@@ -6,7 +6,7 @@ import { hostAttributes } from '../../core/decorators.js';
 import { isSafari } from '../../core/dom.js';
 import { setAriaComboBoxAttributes } from '../../core/overlay.js';
 import type { SbbDividerElement } from '../../divider.js';
-import type { SbbOptGroupElement, SbbOptionElement } from '../../option.js';
+import type { SbbOptGroupElement } from '../../option.js';
 import type { SbbAutocompleteGridButtonElement } from '../autocomplete-grid-button.js';
 import { SbbAutocompleteGridOptionElement } from '../autocomplete-grid-option.js';
 import type { SbbAutocompleteGridRowElement } from '../autocomplete-grid-row.js';
@@ -31,11 +31,12 @@ const ariaRoleOnHost = isSafari;
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-autocomplete-grid')
 @hostAttributes({
   role: ariaRoleOnHost ? 'grid' : null,
 })
-export class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
+class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
   protected overlayId = `sbb-autocomplete-grid-${++nextId}`;
   protected panelRole = 'grid';
   private _activeItemIndex = -1;
@@ -53,23 +54,10 @@ export class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
     );
   }
 
-  protected onOptionClick(event: MouseEvent): void {
-    if (
-      (event.target as Element).localName !== 'sbb-autocomplete-grid-option' ||
-      (event.target as SbbOptionElement).disabled
-    ) {
-      return;
-    }
-    this.close();
-  }
-
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this.abort.signal;
-    this.addEventListener(
-      'autocompleteOptionSelectionChange',
-      (e: CustomEvent<void>) => this.onOptionSelected(e),
-      { signal },
+  public constructor() {
+    super();
+    this.addEventListener?.('autocompleteOptionSelectionChange', (e: CustomEvent<void>) =>
+      this.onOptionSelected(e),
     );
   }
 
@@ -95,7 +83,7 @@ export class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
         break;
 
       case 'Enter':
-        this.selectByKeyboard();
+        this.selectByKeyboard(event);
         break;
 
       case 'ArrowDown':
@@ -117,7 +105,9 @@ export class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
    * and greater than zero when a button is 'focused', so asking for `querySelectorAll(...)[this._activeColumnIndex]`
    * would always return a `SbbAutocompleteGridButtonElement`.
    */
-  protected selectByKeyboard(): void {
+  protected selectByKeyboard(event: KeyboardEvent): void {
+    event.preventDefault();
+
     if (this._activeColumnIndex !== 0) {
       (
         this._row[this._activeItemIndex].querySelectorAll(

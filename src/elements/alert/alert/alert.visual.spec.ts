@@ -3,6 +3,7 @@ import { html } from 'lit/static-html.js';
 
 import { describeViewports, visualDiffDefault } from '../../core/testing/private.js';
 
+import '../../link/link.js';
 import './alert.js';
 
 describe(`sbb-alert`, () => {
@@ -11,7 +12,6 @@ describe(`sbb-alert`, () => {
     readonly: false,
     icon: 'info',
     titleContent: 'Interruption between Berne and Olten',
-    linkContent: undefined as string | undefined,
     href: 'https://www.sbb.ch' as string | undefined,
   };
 
@@ -24,33 +24,15 @@ describe(`sbb-alert`, () => {
     readonly,
     icon,
     titleContent,
-    linkContent,
     href,
   }: typeof defaultArgs): TemplateResult => html`
-    <sbb-alert
-      size=${size}
-      ?readonly=${readonly}
-      icon-name=${icon}
-      title-content=${titleContent}
-      link-content=${linkContent ?? nothing}
-      href=${href ?? nothing}
-      >${contentSlotText}</sbb-alert
-    >
+    <sbb-alert size=${size} ?readonly=${readonly} icon-name=${icon} title-content=${titleContent}>
+      ${contentSlotText}${href ? html` <sbb-link href=${href}>Find out more</sbb-link>` : nothing}
+    </sbb-alert>
   `;
 
   describeViewports({ viewports: ['micro', 'small', 'medium'] }, () => {
-    it(
-      'with default args',
-      visualDiffDefault.with(async (setup) => {
-        await setup.withFixture(
-          html`<sbb-alert title-content=${defaultArgs.titleContent} href=${defaultArgs.href!}
-            >${contentSlotText}</sbb-alert
-          >`,
-        );
-      }),
-    );
-
-    for (const size of ['s', 'l']) {
+    for (const size of ['s', 'm', 'l']) {
       it(
         `size=${size}`,
         visualDiffDefault.with(async (setup) => {
@@ -74,23 +56,14 @@ describe(`sbb-alert`, () => {
     );
 
     it(
-      'with custom link text',
-      visualDiffDefault.with(async (setup) => {
-        await setup.withFixture(
-          alertTemplate({ ...defaultArgs, linkContent: 'Follow this link (custom text)' }),
-        );
-      }),
-    );
-
-    it(
       'icon and title as slot',
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(
-          html`<sbb-alert href="https://www.sbb.ch">
+          html`<sbb-alert>
             <sbb-icon name="disruption" slot="icon"></sbb-icon>
             <span slot="title">Slotted title</span>
-            ${contentSlotText}</sbb-alert
-          >`,
+            ${contentSlotText}
+          </sbb-alert>`,
         );
       }),
     );

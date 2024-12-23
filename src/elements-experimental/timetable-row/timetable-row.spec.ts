@@ -1,7 +1,7 @@
 import { assert, expect } from '@open-wc/testing';
 import type { SbbCardElement } from '@sbb-esta/lyne-elements/card.js';
 import { fixture } from '@sbb-esta/lyne-elements/core/testing/private.js';
-import { EventSpy, waitForCondition } from '@sbb-esta/lyne-elements/core/testing.js';
+import { EventSpy } from '@sbb-esta/lyne-elements/core/testing.js';
 import { html } from 'lit/static-html.js';
 
 import type { ITripItem, Notice, PtSituation } from '../core/timetable/timetable-properties.js';
@@ -32,7 +32,7 @@ describe(`sbb-timetable-row`, () => {
       const changeSpy = new EventSpy('click');
 
       card.click();
-      await waitForCondition(() => changeSpy.events.length === 1);
+      await changeSpy.calledOnce();
       expect(changeSpy.count).to.be.equal(1);
     });
   });

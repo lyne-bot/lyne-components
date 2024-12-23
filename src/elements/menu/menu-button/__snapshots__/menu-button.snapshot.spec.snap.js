@@ -8,7 +8,6 @@ snapshots["sbb-menu-button renders DOM"] =
   data-button=""
   form="formid"
   name="name"
-  role="button"
   tabindex="0"
   type="submit"
 >
@@ -41,7 +40,6 @@ snapshots["sbb-menu-button renders component with icon and amount DOM"] =
   data-action=""
   data-button=""
   icon-name="menu-small"
-  role="button"
   tabindex="0"
 >
   <span>

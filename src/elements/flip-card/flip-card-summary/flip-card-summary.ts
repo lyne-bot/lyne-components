@@ -14,21 +14,22 @@ export type SbbFlipCardImageAlignment = 'after' | 'below';
  * @slot - Use the unnamed slot to provide a title for the `sbb-flip-card-summary`.
  * @slot image - Use this slot to provide an image for the `sbb-flip-card-summary`.
  */
+export
 @customElement('sbb-flip-card-summary')
 @hostAttributes({
   slot: 'summary',
 })
-export class SbbFlipCardSummaryElement extends LitElement {
+class SbbFlipCardSummaryElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** The position where to render the image. */
   @property({ attribute: 'image-alignment', reflect: true })
-  public imageAlignment: SbbFlipCardImageAlignment = 'after';
+  public accessor imageAlignment: SbbFlipCardImageAlignment = 'after';
 
-  protected override willUpdate(_changedProperties: PropertyValues): void {
-    super.willUpdate(_changedProperties);
+  protected override willUpdate(changedProperties: PropertyValues<this>): void {
+    super.willUpdate(changedProperties);
 
-    if (_changedProperties.has('imageAlignment')) {
+    if (changedProperties.has('imageAlignment')) {
       this.closest?.('sbb-flip-card')?.setAttribute('data-image-alignment', this.imageAlignment);
     }
   }

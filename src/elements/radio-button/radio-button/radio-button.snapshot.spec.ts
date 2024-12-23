@@ -12,7 +12,9 @@ describe(`sbb-radio-button`, () => {
 
   describe('renders', () => {
     beforeEach(async () => {
-      element = await fixture(html`<sbb-radio-button value="radio-value"></sbb-radio-button>`);
+      element = await fixture(
+        html`<sbb-radio-button value="radio-value" name="radio"></sbb-radio-button>`,
+      );
     });
 
     it('DOM', async () => {
@@ -25,4 +27,17 @@ describe(`sbb-radio-button`, () => {
 
     testA11yTreeSnapshot();
   });
+
+  testA11yTreeSnapshot(
+    html`<sbb-radio-button value="radio-value" name="radio" checked></sbb-radio-button>`,
+    'renders checked - A11y tree',
+  );
+  testA11yTreeSnapshot(
+    html`<sbb-radio-button value="radio-value" name="radio" disabled></sbb-radio-button>`,
+    'renders disabled - A11y tree',
+  );
+  testA11yTreeSnapshot(
+    html`<sbb-radio-button value="radio-value" name="radio" required></sbb-radio-button>`,
+    'renders required - A11y tree',
+  );
 });

@@ -59,12 +59,12 @@ If needed, the `role="status"` attribute can be added on the component's tag.
 
 ## Properties
 
-| Name           | Attribute       | Privacy | Type                  | Default  | Description                                                                                                                      |
-| -------------- | --------------- | ------- | --------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `iconName`     | `icon-name`     | public  | `string \| undefined` |          | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `titleContent` | `title-content` | public  | `string \| undefined` |          | Content of title.                                                                                                                |
-| `titleLevel`   | `title-level`   | public  | `SbbTitleLevel`       | `'3'`    | Level of title, it will be rendered as heading tag (e.g. h3). Defaults to level 3.                                               |
-| `type`         | `type`          | public  | `SbbStatusType`       | `'info'` | The type of the status.                                                                                                          |
+| Name           | Attribute       | Privacy | Type            | Default  | Description                                                                                                                      |
+| -------------- | --------------- | ------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `iconName`     | `icon-name`     | public  | `string`        | `''`     | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `titleContent` | `title-content` | public  | `string`        | `''`     | Content of title.                                                                                                                |
+| `titleLevel`   | `title-level`   | public  | `SbbTitleLevel` | `'3'`    | Level of title, it will be rendered as heading tag (e.g. h3). Defaults to level 3.                                               |
+| `type`         | `type`          | public  | `SbbStatusType` | `'info'` | The type of the status.                                                                                                          |
 
 ## Slots
 

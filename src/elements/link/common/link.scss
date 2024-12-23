@@ -1,15 +1,17 @@
 @use '../../core/styles' as sbb;
 
+$disabled: '[disabled], :disabled, [disabled-interactive]';
+
 // Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
 @include sbb.box-sizing;
 
 :host {
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 }
 
-:host([role='button']) {
+:host([data-button]) {
   @include sbb.link-variables--button;
 }
 
@@ -19,14 +21,13 @@
   & {
     display: flex;
     align-items: center;
-    word-break: break-word;
     width: 100%;
     cursor: pointer;
     padding: var(--sbb-link-padding, 0);
     outline: none;
   }
 
-  :host([disabled]) & {
+  :host(:is(#{$disabled})) & {
     pointer-events: none;
     cursor: default;
 
@@ -45,11 +46,11 @@
     border-radius: calc(var(--sbb-border-radius-4x) - var(--sbb-focus-outline-offset));
   }
 
-  :host(:hover:not([disabled])) & {
+  :host(:hover:not(#{$disabled})) & {
     @include sbb.link-hover-rules;
   }
 
-  :host(:is(:active, [data-active]):not([disabled])) & {
+  :host(:is(:active, [data-active]):not(#{$disabled})) & {
     // Active definitions have to be after :hover definitions
     @include sbb.link-active-rules;
   }

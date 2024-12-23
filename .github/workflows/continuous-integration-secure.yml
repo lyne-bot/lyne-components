@@ -69,6 +69,15 @@ jobs:
           docker push $IMAGE_REPO_PREVIEW:pr$PR_NUMBER
         env:
           DOCKER_BUILDKIT: 1
+      - name: Build slim image
+        uses: ./.github/actions/docker-slim
+        with:
+          target: '${{ env.IMAGE_REPO_PREVIEW }}:pr${{ env.PR_NUMBER }}'
+          tag: '${{ env.IMAGE_REPO_PREVIEW }}:pr${{ env.PR_NUMBER }}-slim'
+      - name: Push slim image
+        run: |
+          docker push $IMAGE_REPO_PREVIEW:pr$PR_NUMBER-slim
+          docker image list
 
       - name: "Add 'preview-available' label"
         # This label is used for filtering deployments in ArgoCD
@@ -181,6 +190,16 @@ jobs:
           docker push $IMAGE_REPO_VISUAL_REGRESSION:pr$PR_NUMBER
         env:
           DOCKER_BUILDKIT: 1
+      - name: Build slim image
+        uses: ./.github/actions/docker-slim
+        with:
+          target: '${{ env.IMAGE_REPO_VISUAL_REGRESSION }}:pr${{ env.PR_NUMBER }}'
+          tag: '${{ env.IMAGE_REPO_VISUAL_REGRESSION }}:pr${{ env.PR_NUMBER }}-slim'
+      - name: Push slim image
+        run: |
+          docker push $IMAGE_REPO_VISUAL_REGRESSION:pr$PR_NUMBER-slim
+          docker image list
+
       - name: Apply labels
         if: steps.screenshot-check.outputs.result == 'changed' || steps.screenshot-check.outputs.result == 'empty'
         run: |

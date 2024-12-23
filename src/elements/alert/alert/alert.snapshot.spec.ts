@@ -6,6 +6,7 @@ import { fixture, testA11yTreeSnapshot } from '../../core/testing/private.js';
 import type { SbbAlertElement } from './alert.js';
 
 import './alert.js';
+import '../../link/link.js';
 
 describe(`sbb-alert`, () => {
   let element: SbbAlertElement;
@@ -16,9 +17,11 @@ describe(`sbb-alert`, () => {
         html`<sbb-alert title-content="Interruption">Alert content</sbb-alert>`,
       );
     });
+
     it('DOM', async () => {
       await expect(element).dom.to.be.equalSnapshot();
     });
+
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
@@ -32,30 +35,25 @@ describe(`sbb-alert`, () => {
           title-level="2"
           size="l"
           icon-name="disruption"
-          accessibility-label="label"
-          href="https://www.sbb.ch"
-          rel="noopener"
-          target="_blank"
-          link-content="Show much more"
-          >Alert content</sbb-alert
-        >`,
+        >
+          Alert content <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
+        </sbb-alert>`,
       );
     });
+
     it('DOM', async () => {
       await expect(element).dom.to.be.equalSnapshot();
     });
+
     it('Shadow DOM', async () => {
       await expect(element).shadowDom.to.be.equalSnapshot();
     });
   });
 
   testA11yTreeSnapshot(html`
-    <sbb-alert
-      title-content="Interruption"
-      href="https://www.sbb.ch"
-      accessibility-label="test-a11y-label"
-    >
+    <sbb-alert title-content="Interruption">
       Alert content
+      <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
     </sbb-alert>
   `);
 });

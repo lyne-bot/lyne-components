@@ -11,8 +11,9 @@ import style from './tab.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to provide content.
  */
+export
 @customElement('sbb-tab')
-export class SbbTabElement extends LitElement {
+class SbbTabElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** The `sbb-tab-label` associated with the tab. */

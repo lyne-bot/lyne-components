@@ -27,7 +27,7 @@ const Warning = (): TemplateResult => html`
     This example only intends to visualize the grid and is not meant to be used as is.
     <br />
     <sbb-link href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout">
-      See docs on css grid </sbb-link
+      See docs on CSS grid </sbb-link
     >.
   </span>
 `;

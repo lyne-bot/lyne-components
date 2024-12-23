@@ -74,15 +74,15 @@ When using a button to trigger the overlay, ensure to manage the appropriate ARI
 
 ## Properties
 
-| Name                      | Attribute                   | Privacy | Type                         | Default | Description                                                                                                           |
-| ------------------------- | --------------------------- | ------- | ---------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityBackLabel`  | `accessibility-back-label`  | public  | `\| string     \| undefined` |         | This will be forwarded as aria-label to the back button element.                                                      |
-| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `\| string     \| undefined` |         | This will be forwarded as aria-label to the close button element.                                                     |
-| `accessibilityLabel`      | `accessibility-label`       | public  | `string \| undefined`        |         | This will be forwarded as aria-label to the relevant nested element to describe the purpose of the overlay.           |
-| `backButton`              | `back-button`               | public  | `boolean`                    | `false` | Whether a back button is displayed next to the title.                                                                 |
-| `expanded`                | `expanded`                  | public  | `boolean`                    | `false` | Whether to allow the overlay content to stretch to full width. By default, the content has the appropriate page size. |
-| `isOpen`                  | -                           | public  | `boolean`                    |         | Whether the element is open.                                                                                          |
-| `negative`                | `negative`                  | public  | `boolean`                    | `false` | Negative coloring variant flag.                                                                                       |
+| Name                      | Attribute                   | Privacy | Type      | Default | Description                                                                                                           |
+| ------------------------- | --------------------------- | ------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| `accessibilityBackLabel`  | `accessibility-back-label`  | public  | `string`  | `''`    | This will be forwarded as aria-label to the back button element.                                                      |
+| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `string`  | `''`    | This will be forwarded as aria-label to the close button element.                                                     |
+| `accessibilityLabel`      | `accessibility-label`       | public  | `string`  | `''`    | This will be forwarded as aria-label to the relevant nested element to describe the purpose of the overlay.           |
+| `backButton`              | `back-button`               | public  | `boolean` | `false` | Whether a back button is displayed next to the title.                                                                 |
+| `expanded`                | `expanded`                  | public  | `boolean` | `false` | Whether to allow the overlay content to stretch to full width. By default, the content has the appropriate page size. |
+| `isOpen`                  | -                           | public  | `boolean` |         | Whether the element is open.                                                                                          |
+| `negative`                | `negative`                  | public  | `boolean` | `false` | Negative coloring variant flag.                                                                                       |
 
 ## Methods
 

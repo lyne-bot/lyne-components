@@ -29,7 +29,6 @@ snapshots["sbb-dialog-title renders Shadow DOM"] =
     data-button=""
     data-sbb-button=""
     icon-name="cross-small"
-    role="button"
     sbb-dialog-close=""
     size="m"
     tabindex="0"

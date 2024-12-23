@@ -10,8 +10,9 @@ import { SbbOptgroupBaseElement } from './optgroup-base-element.js';
  *
  * @slot - Use the unnamed slot to add `sbb-option` elements to the `sbb-optgroup`.
  */
+export
 @customElement('sbb-optgroup')
-export class SbbOptGroupElement extends SbbOptgroupBaseElement {
+class SbbOptGroupElement extends SbbOptgroupBaseElement {
   protected get options(): SbbOptionElement[] {
     return Array.from(this.querySelectorAll?.('sbb-option') ?? []) as SbbOptionElement[];
   }

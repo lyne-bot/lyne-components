@@ -19,6 +19,7 @@ import './teaser-product-static.js';
 import '../../action-group.js';
 import '../../button/button.js';
 import '../../button/secondary-button.js';
+import '../../chip-label.js';
 import '../../image.js';
 import '../../title.js';
 
@@ -94,6 +95,25 @@ const Template = ({ withFooter, slottedImg, ...args }: Args): TemplateResult => 
   </sbb-teaser-product-static>
 `;
 
+const WithChipTemplate = ({ withFooter, slottedImg, ...args }: Args): TemplateResult => html`
+  <sbb-teaser-product-static ${sbbSpread(args)}>
+    <figure slot="image" class="sbb-figure">
+      ${slottedImg
+        ? html`<img src=${sampleImages[4]} alt="" />`
+        : html`<sbb-image image-src=${sampleImages[4]}></sbb-image>`}
+
+      <sbb-chip-label
+        class=${args['image-alignment'] === 'after'
+          ? 'sbb-figure-overlap-start-end'
+          : 'sbb-figure-overlap-start-start'}
+      >
+        AI generated
+      </sbb-chip-label>
+    </figure>
+    ${content()} ${withFooter ? footer() : nothing}
+  </sbb-teaser-product-static>
+`;
+
 export const Default: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
@@ -122,6 +142,12 @@ export const SlottedImg: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, slottedImg: true },
+};
+
+export const WithChip: StoryObj = {
+  render: WithChipTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs },
 };
 
 const meta: Meta = {

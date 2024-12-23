@@ -289,14 +289,9 @@ const FormFieldTemplate = ({
       size=${size}
       ?negative=${negative}
       ?floating-label=${floatingLabel}
-      data-testid="form-field"
     >
       <label>Select</label>
-      <sbb-select
-        ${sbbSpread(args)}
-        @change=${(event: Event) => changeEventHandler(event)}
-        data-testid="select"
-      >
+      <sbb-select ${sbbSpread(args)} @change=${(event: Event) => changeEventHandler(event)}>
         ${withOptionGroup
           ? createOptionsGroup(numberOfOptions, disableOption, disableGroup)
           : createOptions(numberOfOptions, disableOption, false, args.value)}
@@ -330,14 +325,9 @@ const SelectEllipsisTemplate = ({
         size=${size}
         ?negative=${negative}
         ?floating-label=${floatingLabel}
-        data-testid="form-field"
       >
         <label>Select</label>
-        <sbb-select
-          ${sbbSpread(args)}
-          @change=${(event: Event) => changeEventHandler(event)}
-          data-testid="select"
-        >
+        <sbb-select ${sbbSpread(args)} @change=${(event: Event) => changeEventHandler(event)}>
           <sbb-option value=${valueEllipsis} ?selected=${ellipsisSelected}>
             ${valueEllipsis}
           </sbb-option>
@@ -380,14 +370,12 @@ const FormFieldTemplateWithError = ({
         ?negative=${negative}
         ?floating-label=${floatingLabel}
         id="sbb-form-field"
-        data-testid="form-field"
       >
         <label>Select</label>
         <sbb-select
           ${sbbSpread(args)}
           id="sbb-select"
           class="sbb-invalid"
-          data-testid="select"
           @change=${(event: Event) => {
             if ((event.target as SbbSelectElement).value !== '') {
               sbbFormError.remove();
@@ -421,13 +409,11 @@ const KeyboardInteractionTemplate = ({
     size=${size}
     ?negative=${negative}
     ?floating-label=${floatingLabel}
-    data-testid="form-field"
   >
     <label>Select</label>
     <sbb-select
       ?multiple=${args.multiple}
       placeholder=${args.placeholder}
-      data-testid="select"
       @change=${(event: Event) => changeEventHandler(event)}
     >
       <sbb-option value="TI - Bellinzona">Bellinzona</sbb-option>

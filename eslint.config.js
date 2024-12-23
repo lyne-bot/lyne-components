@@ -8,11 +8,19 @@ import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginYml from 'eslint-plugin-yml';
 import eslint from '@eslint/js';
+
 const eslintPluginLyne = await import('./tools/eslint/index.ts');
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.resolve('.'),
 });
+
+const ignores = [
+  'dist/**/*',
+  'coverage/**/*',
+  'tools/generate-component/**/*',
+  '**/__snapshots__/**/*',
+];
 
 /** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
 export default [
@@ -29,14 +37,12 @@ export default [
     },
   },
   {
-    ignores: [
-      'dist/**/*',
-      'coverage/**/*',
-      'tools/generate-component/**/*',
-      '**/__snapshots__/**/*',
-    ],
+    ignores,
   },
-  eslint.configs.recommended,
+  {
+    rules: eslint.configs.recommended.rules,
+    ignores,
+  },
   ...tseslint.configs.recommended,
   ...eslintPluginYml.configs['flat/standard'],
   ...eslintPluginYml.configs['flat/prettier'],
@@ -144,7 +150,7 @@ export default [
           'newlines-between': 'always',
         },
       ],
-      // TODO Discuss this with the team
+      // TODO: Discuss this with the team
       'lit/no-invalid-html': 'off',
       camelcase: 'off',
       '@typescript-eslint/member-ordering': [
@@ -171,8 +177,6 @@ export default [
           },
         },
       ],
-      // TODO: Activate with standard decorators
-      'lyne/property-decorator-accessor-rule': 'off',
     },
   },
   {

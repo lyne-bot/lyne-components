@@ -12,6 +12,7 @@ import './header.js';
 import '../header-button.js';
 import '../header-link.js';
 import '../../divider.js';
+import '../../logo.js';
 import '../../menu.js';
 import '../../signet.js';
 
@@ -46,7 +47,13 @@ const HeaderBasicTemplate = (
     </sbb-header-button>
     ${args.size === 's' ? appName() : nothing}
     <div class="sbb-header-spacer"></div>
-    <sbb-header-link href="https://www.sbb.ch" target="_blank" icon-name="magnifying-glass-small">
+    <sbb-header-link
+      href="https://www.sbb.ch"
+      target="_blank"
+      icon-name="magnifying-glass-small"
+      class="sbb-active"
+      aria-current="page"
+    >
       Search
     </sbb-header-link>
     ${template}
@@ -59,14 +66,15 @@ const HeaderBasicTemplate = (
       <sbb-menu-button>Italiano</sbb-menu-button>
       <sbb-menu-button icon-name="tick-small">English</sbb-menu-button>
     </sbb-menu>
+    <div class="sbb-header-spacer sbb-header-spacer-logo"></div>
     ${args.size === 's'
       ? html`
-          <a slot="logo" aria-label="Homepage" href="/">
-            <sbb-signet slot="logo" protective-room="panel"></sbb-signet>
+          <a aria-label="Homepage" href="/" class="sbb-header-logo">
+            <sbb-signet protective-room="panel"></sbb-signet>
           </a>
         `
       : html`
-          <a slot="logo" aria-label="Homepage" href="/">
+          <a aria-label="Homepage" href="/" class="sbb-header-logo">
             <sbb-logo protective-room="none"></sbb-logo>
           </a>
         `}
@@ -97,12 +105,11 @@ const TemplateWithUserMenu = (args: Args): TemplateResult => html`
       <sbb-header-button
         icon-name="user-small"
         id="user-menu-trigger"
-        data-testid="user-menu-trigger"
         class="sbb-header-shrinkable"
       >
         Christina Müller
       </sbb-header-button>
-      <sbb-menu trigger="user-menu-trigger" data-testid="user-menu">
+      <sbb-menu trigger="user-menu-trigger">
         <sbb-menu-link icon-name="user-small" href="/"> Account </sbb-menu-link>
         <sbb-menu-button icon-name="tickets-class-small">Tickets</sbb-menu-button>
         <sbb-menu-button icon-name="shopping-cart-small" amount="1">

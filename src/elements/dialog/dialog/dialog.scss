@@ -18,7 +18,7 @@
   --sbb-dialog-border-radius: var(--sbb-border-radius-8x);
   --sbb-dialog-padding-block: var(--sbb-spacing-responsive-s);
   --sbb-dialog-animation-duration: var(
-    --sbb-disable-animation-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
   --sbb-dialog-animation-easing: ease;
@@ -158,7 +158,6 @@
   max-height: var(--sbb-dialog-max-height);
   outline: none;
   position: fixed;
-  word-break: break-word;
 
   @include sbb.mq($from: medium) {
     position: sticky;

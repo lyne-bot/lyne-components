@@ -9,7 +9,7 @@
   --sbb-stepper-marker-size: 0;
   --sbb-stepper-marker-width: var(--sbb-border-width-3x);
   --sbb-stepper-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
   --sbb-stepper-marker-color: var(--sbb-color-charcoal);

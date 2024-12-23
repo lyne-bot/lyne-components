@@ -1,10 +1,17 @@
-import { type CSSResultGroup, isServer, type PropertyValues, type TemplateResult } from 'lit';
-import { html, LitElement } from 'lit';
+import {
+  type CSSResultGroup,
+  html,
+  isServer,
+  LitElement,
+  type PropertyValues,
+  type TemplateResult,
+} from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import type { SbbCheckboxGroupElement, SbbCheckboxPanelElement } from '../checkbox.js';
-import { SbbConnectedAbortController, SbbLanguageController } from '../core/controllers.js';
-import { slotState } from '../core/decorators.js';
+import { SbbLanguageController } from '../core/controllers.js';
+import { forceType, slotState } from '../core/decorators.js';
+import { isZeroAnimationDuration } from '../core/dom.js';
 import { EventEmitter } from '../core/eventing.js';
 import { i18nCollapsed, i18nExpanded } from '../core/i18n.js';
 import type { SbbOpenedClosedState, SbbStateChange } from '../core/interfaces.js';
@@ -25,10 +32,11 @@ import '../divider.js';
  * @event {CustomEvent<void>} willClose - Emits whenever the content section begins the closing transition.
  * @event {CustomEvent<void>} didClose - Emits whenever the content section is closed.
  */
+export
 @customElement('sbb-selection-expansion-panel')
 @slotState()
-export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElement) {
-  // FIXME inheriting from SbbOpenCloseBaseElement requires: https://github.com/open-wc/custom-elements-manifest/issues/253
+class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElement) {
+  // TODO: fix inheriting from SbbOpenCloseBaseElement requires: https://github.com/open-wc/custom-elements-manifest/issues/253
   public static override styles: CSSResultGroup = style;
   public static readonly events: Record<string, string> = {
     willOpen: 'willOpen',
@@ -38,13 +46,17 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
   } as const;
 
   /** The background color of the panel. */
-  @property() public color: 'white' | 'milk' = 'white';
+  @property() public accessor color: 'white' | 'milk' = 'white';
 
   /** Whether the content section is always visible. */
-  @property({ attribute: 'force-open', type: Boolean }) public forceOpen = false;
+  @forceType()
+  @property({ attribute: 'force-open', type: Boolean })
+  public accessor forceOpen: boolean = false;
 
   /** Whether the unselected panel has a border. */
-  @property({ reflect: true, type: Boolean }) public borderless = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor borderless: boolean = false;
 
   /** The state of the selection panel. */
   @state()
@@ -72,28 +84,31 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
   private _willOpen: EventEmitter<void> = new EventEmitter(
     this,
     SbbSelectionExpansionPanelElement.events.willOpen,
+    { cancelable: true },
   );
 
   /** Emits whenever the content section is opened. */
   private _didOpen: EventEmitter<void> = new EventEmitter(
     this,
     SbbSelectionExpansionPanelElement.events.didOpen,
+    { cancelable: true },
   );
 
   /** Emits whenever the content section begins the closing transition. */
   private _willClose: EventEmitter<void> = new EventEmitter(
     this,
     SbbSelectionExpansionPanelElement.events.willClose,
+    { cancelable: true },
   );
 
   /** Emits whenever the content section is closed. */
   private _didClose: EventEmitter<void> = new EventEmitter(
     this,
     SbbSelectionExpansionPanelElement.events.didClose,
+    { cancelable: true },
   );
 
   private _language = new SbbLanguageController(this);
-  private _abort = new SbbConnectedAbortController(this);
   private _initialized: boolean = false;
   private _sizeAttributeObserver = !isServer
     ? new MutationObserver((mutationsList: MutationRecord[]) =>
@@ -113,12 +128,13 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
       | SbbCheckboxGroupElement;
   }
 
+  public constructor() {
+    super();
+    this.addEventListener?.('panelConnected', (e) => this._initFromInput(e));
+  }
+
   public override connectedCallback(): void {
     super.connectedCallback();
-
-    this.addEventListener('panelConnected', this._initFromInput.bind(this), {
-      signal: this._abort.signal,
-    });
 
     this._state ||= 'closed';
   }
@@ -148,14 +164,14 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
     }
 
     if (this.forceOpen || this._checked) {
-      this._open(!this._initialized);
+      this._open();
     } else {
       this._close();
     }
     this._updateExpandedLabel(this.forceOpen || this._checked);
   }
 
-  private _open(skipAnimation = false): void {
+  private _open(): void {
     if (this._state !== 'closed' && this._state !== 'closing') {
       return;
     }
@@ -163,9 +179,10 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
     this._state = 'opening';
     this._willOpen.emit();
 
-    if (skipAnimation) {
-      this._state = 'opened';
-      this._didOpen.emit();
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (!this._initialized || this._isZeroAnimationDuration()) {
+      this._handleOpening();
     }
   }
 
@@ -176,6 +193,26 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
 
     this._state = 'closing';
     this._willClose.emit();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-selection-expansion-panel-animation-duration');
+  }
+
+  private _handleClosing(): void {
+    this._state = 'closed';
+    this._didClose.emit();
+  }
+
+  private _handleOpening(): void {
+    this._state = 'opened';
+    this._didOpen.emit();
   }
 
   private _initFromInput(event: Event): void {
@@ -222,11 +259,9 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
 
   private _onAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open-opacity' && this._state === 'opening') {
-      this._state = 'opened';
-      this._didOpen.emit();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this._state === 'closing') {
-      this._state = 'closed';
-      this._didClose.emit();
+      this._handleClosing();
     }
   }
 
@@ -259,7 +294,7 @@ export class SbbSelectionExpansionPanelElement extends SbbHydrationMixin(LitElem
         <div
           class="sbb-selection-expansion-panel__content--wrapper"
           ?inert=${this._state !== 'opened'}
-          @animationend=${(event: AnimationEvent) => this._onAnimationEnd(event)}
+          @animationend=${this._onAnimationEnd}
         >
           <div class="sbb-selection-expansion-panel__content">
             <sbb-divider></sbb-divider>

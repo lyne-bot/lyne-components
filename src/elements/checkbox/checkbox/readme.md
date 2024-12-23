@@ -77,34 +77,31 @@ If you don't want the label to appear next to the checkbox, you can use `aria-la
 <sbb-checkbox aria-label="Subscribed to email message"></sbb-checkbox>
 ```
 
-<!-- Override
-  @type value => string \| null
--->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name            | Attribute        | Privacy | Type                              | Default | Description                                                                                                                      |
-| --------------- | ---------------- | ------- | --------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `checked`       | `checked`        | public  | `boolean`                         | `false` | Whether the checkbox is checked.                                                                                                 |
-| `disabled`      | `disabled`       | public  | `boolean`                         | `false` | Whether the component is disabled.                                                                                               |
-| `form`          | -                | public  | `HTMLFormElement \| null`         |         | Returns the form owner of the internals of the target element.                                                                   |
-| `group`         | -                | public  | `SbbCheckboxGroupElement \| null` | `null`  | Reference to the connected checkbox group.                                                                                       |
-| `iconName`      | `icon-name`      | public  | `string \| undefined`             |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `iconPlacement` | `icon-placement` | public  | `SbbIconPlacement`                | `'end'` | The label position relative to the labelIcon. Defaults to end                                                                    |
-| `indeterminate` | `indeterminate`  | public  | `boolean`                         | `false` | Whether the checkbox is indeterminate.                                                                                           |
-| `name`          | `name`           | public  | `string`                          |         | Name of the form element. Will be read from name attribute.                                                                      |
-| `required`      | `required`       | public  | `boolean`                         | `false` | Whether the component is required.                                                                                               |
-| `size`          | `size`           | public  | `SbbCheckboxSize`                 | `'m'`   | Size variant.                                                                                                                    |
-| `value`         | `value`          | public  | `string \| null`                  | `null`  | Value of the form element.                                                                                                       |
+| Name            | Attribute        | Privacy | Type                              | Default             | Description                                                                                                                      |
+| --------------- | ---------------- | ------- | --------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `checked`       | `checked`        | public  | `boolean`                         | `false`             | Whether the checkbox is checked.                                                                                                 |
+| `disabled`      | `disabled`       | public  | `boolean`                         | `false`             | Whether the component is disabled.                                                                                               |
+| `form`          | -                | public  | `HTMLFormElement \| null`         |                     | Returns the form owner of the internals of the target element.                                                                   |
+| `group`         | -                | public  | `SbbCheckboxGroupElement \| null` | `null`              | Reference to the connected checkbox group.                                                                                       |
+| `iconName`      | `icon-name`      | public  | `string`                          | `''`                | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `iconPlacement` | `icon-placement` | public  | `SbbIconPlacement`                | `'end'`             | The label position relative to the labelIcon. Defaults to end                                                                    |
+| `indeterminate` | `indeterminate`  | public  | `boolean`                         | `false`             | Whether the checkbox is indeterminate.                                                                                           |
+| `name`          | `name`           | public  | `string`                          |                     | Name of the form element. Will be read from name attribute.                                                                      |
+| `required`      | `required`       | public  | `boolean`                         | `false`             | Whether the component is required.                                                                                               |
+| `size`          | `size`           | public  | `SbbCheckboxSize`                 | `'m' / 'xs' (lean)` | Size variant, either m, s or xs.                                                                                                 |
+| `type`          | -                | public  | `string`                          | `'checkbox'`        | Form type of element.                                                                                                            |
+| `value`         | `value`          | public  | `string \| null`                  | `null`              | Value of the form element.                                                                                                       |
 
 ## Events
 
-| Name        | Type                | Description                                                                      | Inherited From |
-| ----------- | ------------------- | -------------------------------------------------------------------------------- | -------------- |
-| `change`    | `Event`             | Event fired on change.                                                           |                |
-| `didChange` | `CustomEvent<void>` | Deprecated. used for React. Will probably be removed once React 19 is available. |                |
-| `input`     | `InputEvent`        | Event fired on input.                                                            |                |
+| Name     | Type         | Description            | Inherited From |
+| -------- | ------------ | ---------------------- | -------------- |
+| `change` | `Event`      | Event fired on change. |                |
+| `input`  | `InputEvent` | Event fired on input.  |                |
 
 ## Slots
 

@@ -1,8 +1,11 @@
+import { withActions } from '@storybook/addon-actions/decorator';
 import type { InputType } from '@storybook/types';
 import type { Args, ArgTypes, Meta, StoryObj } from '@storybook/web-components';
 import { html, nothing, type TemplateResult } from 'lit';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import readme from './readme.md?raw';
+import { SbbStickyBarElement } from './sticky-bar.js';
 
 import '../../action-group.js';
 import '../../button/button.js';
@@ -10,7 +13,6 @@ import '../../button/secondary-button.js';
 import '../../link.js';
 import '../../title.js';
 import '../container.js';
-import './sticky-bar.js';
 
 const containerColor: InputType = {
   name: 'color',
@@ -238,13 +240,66 @@ export const MilkContainerBackgroundExpanded: StoryObj = {
   args: { ...defaultArgs, containerColor: color.options![2], containerBackgroundExpanded: true },
 };
 
+export const ControlStickyState: StoryObj = {
+  render: WithContentAfterTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs, containerColor: 'milk', color: 'white' },
+  decorators: [
+    (story) =>
+      html`<div
+          style=${styleMap({
+            position: 'fixed',
+            'inset-block-start': 0,
+            'background-color': 'var(--sbb-color-white)',
+            padding: 'var(--sbb-spacing-responsive-xs)',
+            'z-index': 1,
+            'border-block-end': 'var(--sbb-border-width-1x) solid var(--sbb-color-black)',
+            'border-inline-end': 'var(--sbb-border-width-1x) solid var(--sbb-color-black)',
+          })}
+        >
+          Control whether the sticky bar has \`position: sticky\`.
+          <sbb-secondary-button
+            size="s"
+            @click=${(e: PointerEvent) => {
+              console.log(e);
+              (e.target as HTMLElement)?.parentElement?.parentElement
+                ?.querySelector('sbb-sticky-bar')
+                ?.stick();
+            }}
+          >
+            Stick
+          </sbb-secondary-button>
+          <sbb-secondary-button
+            size="s"
+            @click=${(e: PointerEvent) => {
+              (e.target as HTMLElement)?.parentElement?.parentElement
+                ?.querySelector('sbb-sticky-bar')
+                ?.unstick();
+            }}
+          >
+            Unstick
+          </sbb-secondary-button>
+        </div>
+        ${story()}`,
+  ],
+};
+
 const meta: Meta = {
   parameters: {
+    actions: {
+      handles: [
+        SbbStickyBarElement.events.willStick,
+        SbbStickyBarElement.events.didStick,
+        SbbStickyBarElement.events.willUnstick,
+        SbbStickyBarElement.events.didUnstick,
+      ],
+    },
     docs: {
       extractComponentDescription: () => readme,
     },
     layout: 'fullscreen',
   },
+  decorators: [withActions],
   title: 'elements/sbb-container/sbb-sticky-bar',
 };
 

@@ -59,5 +59,38 @@ describe(`sbb-popover-trigger`, () => {
         );
       }
     });
+
+    describe(`disabledInteractive`, () => {
+      for (const negative of [false, true]) {
+        describe(`negative=${negative}`, () => {
+          for (const state of visualDiffStandardStates) {
+            it(
+              state.name,
+              state.with(async (setup) => {
+                await setup.withFixture(
+                  html`
+                    <span
+                      class="sbb-text-s"
+                      style="display: flex; align-items: center; ${negative
+                        ? 'color: var(--sbb-color-white)'
+                        : ''}"
+                    >
+                      <span style="margin-inline-end: var(--sbb-spacing-fixed-1x);">
+                        This is a demo text.
+                      </span>
+                      <sbb-popover-trigger
+                        disabled-interactive
+                        ?negative=${negative}
+                      ></sbb-popover-trigger>
+                    </span>
+                  `,
+                  { backgroundColor: negative ? 'var(--sbb-color-charcoal)' : undefined },
+                );
+              }),
+            );
+          }
+        });
+      }
+    });
   });
 });

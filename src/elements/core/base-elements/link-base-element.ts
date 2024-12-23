@@ -2,7 +2,7 @@ import { html, isServer, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { SbbLanguageController } from '../controllers.js';
-import { hostAttributes } from '../decorators.js';
+import { forceType, hostAttributes } from '../decorators.js';
 import { i18nTargetOpensInNewWindow } from '../i18n.js';
 
 import { SbbActionBaseElement } from './action-base-element.js';
@@ -13,24 +13,35 @@ import '../../screen-reader-only.js';
 export type LinkTargetType = '_blank' | '_self' | '_parent' | '_top';
 
 /** Link base class. */
+export
 @hostAttributes({
   'data-link': '',
 })
-export abstract class SbbLinkBaseElement extends SbbActionBaseElement {
+abstract class SbbLinkBaseElement extends SbbActionBaseElement {
   /** The href value you want to link to. */
-  @property() public href?: string;
+  @forceType()
+  @property()
+  public accessor href: string = '';
 
   /** Where to display the linked URL. */
-  @property() public target?: LinkTargetType | string;
+  @forceType()
+  @property()
+  public accessor target: LinkTargetType | string = '';
 
   /** The relationship of the linked URL as space-separated link types. */
-  @property() public rel?: string;
+  @forceType()
+  @property()
+  public accessor rel: string = '';
 
   /** Whether the browser will show the download dialog on click. */
-  @property({ type: Boolean }) public download?: boolean;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor download: boolean = false;
 
   /** This will be forwarded as aria-label to the inner anchor element. */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel: string | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = '';
 
   protected language = new SbbLanguageController(this);
 
@@ -62,6 +73,10 @@ export abstract class SbbLinkBaseElement extends SbbActionBaseElement {
 
   /** Default render method for link-like components. Can be overridden if the LinkRenderVariables are not needed. */
   protected override render(): TemplateResult {
+    return this.renderLink(this.renderTemplate());
+  }
+
+  protected renderLink(renderContent: TemplateResult): TemplateResult {
     return html`
       <a
         class="sbb-action-base ${this.localName}"
@@ -73,7 +88,7 @@ export abstract class SbbLinkBaseElement extends SbbActionBaseElement {
         tabindex=${this.maybeDisabled && !this.maybeDisabledInteractive ? '-1' : nothing}
         aria-disabled=${this.maybeDisabled ? 'true' : nothing}
       >
-        ${this.renderTemplate()}
+        ${renderContent}
         ${!!this.href && this.target === '_blank'
           ? html`<sbb-screen-reader-only
               >. ${i18nTargetOpensInNewWindow[this.language.current]}</sbb-screen-reader-only

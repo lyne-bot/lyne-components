@@ -38,8 +38,8 @@ The slots themselves are unstyled, so that they can be used in various ways.
 
 | Name                               | Attribute                              | Privacy | Type                               | Default | Description                                                                 |
 | ---------------------------------- | -------------------------------------- | ------- | ---------------------------------- | ------- | --------------------------------------------------------------------------- |
-| `disableAnimation`                 | `disable-animation`                    | public  | `boolean \| undefined`             |         | If true, the position won't be animated.                                    |
-| `pearlChainVerticalItemAttributes` | `pearl-chain-vertical-item-attributes` | public  | `PearlChainVerticalItemAttributes` |         | The pearlChainVerticalItemAttributes Prop for styling the bullets and line. |
+| `disableAnimation`                 | `disable-animation`                    | public  | `boolean`                          | `false` | If true, the position won't be animated.                                    |
+| `pearlChainVerticalItemAttributes` | `pearl-chain-vertical-item-attributes` | public  | `PearlChainVerticalItemAttributes` | `null!` | The pearlChainVerticalItemAttributes Prop for styling the bullets and line. |
 
 ## Slots
 

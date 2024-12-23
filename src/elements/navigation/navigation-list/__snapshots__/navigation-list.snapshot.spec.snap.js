@@ -6,7 +6,6 @@ snapshots["sbb-navigation-list renders DOM"] =
   <sbb-navigation-button
     data-action=""
     data-button=""
-    role="button"
     size="m"
     slot="li-0"
     tabindex="0"
@@ -16,7 +15,6 @@ snapshots["sbb-navigation-list renders DOM"] =
   <sbb-navigation-button
     data-action=""
     data-button=""
-    role="button"
     size="m"
     slot="li-1"
     tabindex="0"
@@ -26,7 +24,6 @@ snapshots["sbb-navigation-list renders DOM"] =
   <sbb-navigation-button
     data-action=""
     data-button=""
-    role="button"
     size="m"
     slot="li-2"
     tabindex="0"
@@ -36,7 +33,6 @@ snapshots["sbb-navigation-list renders DOM"] =
   <sbb-navigation-button
     data-action=""
     data-button=""
-    role="button"
     size="m"
     slot="li-3"
     tabindex="0"

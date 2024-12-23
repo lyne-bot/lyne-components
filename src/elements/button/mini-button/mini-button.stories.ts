@@ -11,9 +11,11 @@ import type {
 import { html, type TemplateResult } from 'lit';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
-import '../../form-field.js';
-import './mini-button.js';
 import { buttonDefaultArgs, buttonDefaultArgTypes } from '../common/button-common-stories.js';
+
+import '../../form-field.js';
+import '../../icon.js';
+import './mini-button.js';
 
 import readme from './readme.md?raw';
 

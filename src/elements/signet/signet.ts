@@ -2,6 +2,7 @@ import type { CSSResultGroup, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+import { forceType } from '../core/decorators.js';
 import type { SbbProtectiveRoom } from '../core/interfaces.js';
 
 import style from './signet.scss?lit&inline';
@@ -13,16 +14,19 @@ export type SbbSignetProtectiveRoom = SbbProtectiveRoom | 'panel';
  *
  * @cssprop [--sbb-signet-height=auto] - Can be used to set the height of the signet.
  */
+export
 @customElement('sbb-signet')
-export class SbbSignetElement extends LitElement {
+class SbbSignetElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Visual protective room around signet. */
   @property({ attribute: 'protective-room', reflect: true })
-  public protectiveRoom?: SbbSignetProtectiveRoom = 'ideal';
+  public accessor protectiveRoom: SbbSignetProtectiveRoom = 'ideal';
 
   /** Accessibility label which will be forwarded to the inner SVG signet. */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel = 'Logo';
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = 'Logo';
 
   protected override render(): TemplateResult {
     return html`

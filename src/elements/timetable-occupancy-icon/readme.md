@@ -22,11 +22,11 @@ In high contrast mode, the rendered icon changes for a better user experience.
 
 ## Properties
 
-| Name         | Attribute     | Privacy | Type           | Default | Description                                                                                                                                                                                  |
-| ------------ | ------------- | ------- | -------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `negative`   | `negative`    | public  | `boolean`      | `false` | Negative coloring variant flag.                                                                                                                                                              |
-| `noSanitize` | `no-sanitize` | public  | `boolean`      | `false` | When set to `true`, SVG content that is HTTP fetched will not be checked if the response SVG content has any `<script>` elements, or any attributes that start with `on`, such as `onclick`. |
-| `occupancy`  | `occupancy`   | public  | `SbbOccupancy` |         | Wagon occupancy.                                                                                                                                                                             |
+| Name         | Attribute     | Privacy | Type           | Default  | Description                                                                                                                                                                                  |
+| ------------ | ------------- | ------- | -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `negative`   | `negative`    | public  | `boolean`      | `false`  | Negative coloring variant flag.                                                                                                                                                              |
+| `noSanitize` | `no-sanitize` | public  | `boolean`      | `false`  | When set to `true`, SVG content that is HTTP fetched will not be checked if the response SVG content has any `<script>` elements, or any attributes that start with `on`, such as `onclick`. |
+| `occupancy`  | `occupancy`   | public  | `SbbOccupancy` | `'none'` | Wagon occupancy.                                                                                                                                                                             |
 
 ## CSS Properties
 

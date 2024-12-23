@@ -85,9 +85,8 @@ const openOverlay = (_event: PointerEvent, id: string): void => {
   overlay.open();
 };
 
-const triggerButton = (overlayId: string, triggerId?: string): TemplateResult => html`
+const triggerButton = (overlayId: string): TemplateResult => html`
   <sbb-button
-    data-testid=${triggerId || 'overlay-trigger'}
     aria-haspopup="dialog"
     aria-controls=${overlayId}
     size="m"
@@ -139,8 +138,8 @@ const textBlock = (negative: boolean): TemplateResult => html`
 
 const DefaultTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('my-overlay-2')}
-  <sbb-overlay data-testid="overlay" id="my-overlay-2" ${sbbSpread(args)}>
-    <div class="overlay-content" data-testid="content">
+  <sbb-overlay id="my-overlay-2" ${sbbSpread(args)}>
+    <div class="overlay-content">
       <sbb-title visual-level="2" ?negative=${args.negative} style="margin-block-start: 0">
         Many Meetings
       </sbb-title>
@@ -172,7 +171,6 @@ const FormTemplate = (args: Args): TemplateResult => html`
     </div>
   </div>
   <sbb-overlay
-    data-testid="overlay"
     id="my-overlay-3"
     @willClose=${(event: CustomEvent) => {
       if (event.detail.returnValue) {
@@ -212,12 +210,11 @@ const FormTemplate = (args: Args): TemplateResult => html`
 
 const NestedTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('my-overlay-5')}
-  <sbb-overlay data-testid="overlay" id="my-overlay-5" ${sbbSpread(args)}>
+  <sbb-overlay id="my-overlay-5" ${sbbSpread(args)}>
     <div class="overlay-content">
-      Click the button to open a nested
-      overlay.&nbsp;${triggerButton('my-overlay-6', 'nested-trigger-id')}
+      Click the button to open a nested overlay.&nbsp;${triggerButton('my-overlay-6')}
     </div>
-    <sbb-overlay data-testid="nested-overlay" id="my-overlay-6" ${sbbSpread(args)}>
+    <sbb-overlay id="my-overlay-6" ${sbbSpread(args)}>
       <p class="overlay-content">
         Nested overlay content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis

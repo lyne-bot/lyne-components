@@ -19,7 +19,7 @@ $open-anim-opacity-to: 1;
   // Variable used to override border width of selection panels.
   --sbb-selection-expansion-panel-inner-border-width: 0px;
   --sbb-selection-expansion-panel-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
   --sbb-selection-expansion-panel-border-width: var(--sbb-border-width-1x);

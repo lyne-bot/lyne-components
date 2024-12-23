@@ -25,7 +25,7 @@
   }
 }
 
-::slotted([data-link]:is(:active, [data-active]):not([disabled])) {
+::slotted([data-link]:is(:active, [data-active]):not([disabled], :disabled)) {
   --sbb-link-list-anchor-border-color: var(--sbb-color-iron);
 
   :host([negative]) & {
@@ -33,7 +33,7 @@
   }
 }
 
-::slotted([data-link]:hover:not([disabled])) {
+::slotted([data-link]:hover:not([disabled], :disabled)) {
   --sbb-link-list-anchor-border-color: var(--sbb-color-charcoal);
 
   :host([negative]) & {

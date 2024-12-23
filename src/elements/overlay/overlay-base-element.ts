@@ -2,9 +2,10 @@ import { type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { SbbFocusHandler } from '../core/a11y.js';
-import { SbbOpenCloseBaseElement } from '../core/base-elements.js';
+import { type SbbButtonBaseElement, SbbOpenCloseBaseElement } from '../core/base-elements.js';
 import { SbbInertController, SbbLanguageController } from '../core/controllers.js';
-import { hostContext, SbbScrollHandler } from '../core/dom.js';
+import { forceType } from '../core/decorators.js';
+import { SbbScrollHandler } from '../core/dom.js';
 import { EventEmitter } from '../core/eventing.js';
 import { i18nDialog } from '../core/i18n.js';
 import type { SbbOverlayCloseEventDetails } from '../core/interfaces.js';
@@ -16,7 +17,9 @@ export const overlayRefs: SbbOverlayBaseElement[] = [];
 
 export abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenCloseBaseElement) {
   /** This will be forwarded as aria-label to the relevant nested element to describe the purpose of the overlay. */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel: string | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = '';
 
   /** Emits whenever the component is closed. */
   protected override didClose: EventEmitter<SbbOverlayCloseEventDetails> = new EventEmitter(
@@ -27,6 +30,7 @@ export abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenClos
   // The last element which had focus before the component was opened.
   protected lastFocusedElement?: HTMLElement;
   protected overlayCloseElement?: HTMLElement;
+  /** @deprecated */
   protected overlayController!: AbortController;
   protected openOverlayController!: AbortController;
   protected focusHandler = new SbbFocusHandler();
@@ -40,6 +44,8 @@ export abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenClos
   protected abstract closeAttribute: string;
   protected abstract onOverlayAnimationEnd(event: AnimationEvent): void;
   protected abstract setOverlayFocus(): void;
+  protected abstract handleClosing(): void;
+  protected abstract isZeroAnimationDuration(): boolean;
 
   /** Closes the component. */
   public close(result?: any, target?: HTMLElement): any {
@@ -59,6 +65,12 @@ export abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenClos
     }
     this.state = 'closing';
     this.removeAriaLiveRefContent();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this.isZeroAnimationDuration()) {
+      this.handleClosing();
+    }
   }
 
   public override connectedCallback(): void {
@@ -132,8 +144,8 @@ export abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenClos
     // Check if the target is a submission element within a form and return the form, if present
     const closestForm =
       overlayCloseElement.getAttribute('type') === 'submit'
-        ? (hostContext('form', overlayCloseElement) as HTMLFormElement)
-        : undefined;
+        ? ((overlayCloseElement as HTMLButtonElement | SbbButtonBaseElement).form ?? null)
+        : null;
     overlayRefs[overlayRefs.length - 1].close(closestForm, overlayCloseElement);
   }
 

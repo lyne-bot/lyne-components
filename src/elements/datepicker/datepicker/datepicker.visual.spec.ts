@@ -57,10 +57,7 @@ describe(`sbb-datepicker`, () => {
           await setup.withFixture(html`
             <div style="display: flex; gap: 0.25rem;">
               <sbb-datepicker-previous-day date-picker="datepicker"></sbb-datepicker-previous-day>
-              <sbb-datepicker-toggle
-                date-picker="datepicker"
-                data-testid="toggle"
-              ></sbb-datepicker-toggle>
+              <sbb-datepicker-toggle date-picker="datepicker"></sbb-datepicker-toggle>
               <input value="12.02.2023" id="datepicker-input" />
               <sbb-datepicker
                 id="datepicker"

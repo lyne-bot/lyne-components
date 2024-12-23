@@ -24,16 +24,16 @@ If the `sbb-time-input` is used within a `sbb-form-field`:
 </sbb-form-field>
 ```
 
-The initial value can be set using the `value` property (string) of the `input`or the `setValueAsDate()` method of the `sbb-time-input`.
+The initial value can be set using the `value` property (string) of the `input`or the `valueAsDate` setter of the `sbb-time-input`.
 
 When the input changes, if it is valid, the component updates the `value` of the `input`.
 
-To get the value as a `Date` object, the `getValueAsDate()` method of the `sbb-time-input` can be called.
+To get the value as a `Date` object, the `valueAsDate` property can be used.
 The date is constructed like following: the start date is set to 01.01.1970, 00:00:00 UTC, then the typed hours and minuted are added,
-e.g.: with a value of `12:34`, the `getValueAsDate()` will be 01.01.1970, 12:34:00 UTC.
+e.g.: with a value of `12:34`, the `valueAsDate` will be 01.01.1970, 12:34:00 UTC.
 
 If the value is invalid because not real (e.g. 12:61 or 25:30), the component does not format the `value`,
-and will return `null` if `getValueAsDate()` was called.
+and `valueAsDate` will return `null`.
 
 ## Format example
 
@@ -62,16 +62,10 @@ Whenever the validation state changes (e.g., a valid value becomes invalid or vi
 
 ## Properties
 
-| Name    | Attribute | Privacy | Type                            | Default | Description                                                |
-| ------- | --------- | ------- | ------------------------------- | ------- | ---------------------------------------------------------- |
-| `input` | `input`   | public  | `string \| HTMLElement \| null` | `null`  | Reference of the native input connected to the datepicker. |
-
-## Methods
-
-| Name             | Privacy | Description                                           | Parameters          | Return         | Inherited From |
-| ---------------- | ------- | ----------------------------------------------------- | ------------------- | -------------- | -------------- |
-| `getValueAsDate` | public  | Gets the input value with the correct date format.    |                     | `Date \| null` |                |
-| `setValueAsDate` | public  | Set the input value to the correctly formatted value. | `date: SbbDateLike` | `void`         |                |
+| Name          | Attribute | Privacy | Type                            | Default | Description                                                |
+| ------------- | --------- | ------- | ------------------------------- | ------- | ---------------------------------------------------------- |
+| `input`       | `input`   | public  | `string \| HTMLElement \| null` | `null`  | Reference of the native input connected to the datepicker. |
+| `valueAsDate` | -         | public  | `Date \| null`                  |         | Formats the current input's value as date.                 |
 
 ## Events
 

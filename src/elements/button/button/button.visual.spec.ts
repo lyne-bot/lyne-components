@@ -69,6 +69,27 @@ describe(`sbb-button`, () => {
       );
     });
 
+    describe(`disabledInteractive`, () => {
+      for (const negative of [false, true]) {
+        describe(`negative=${negative}`, () => {
+          for (const state of visualDiffStandardStates) {
+            it(
+              `${state.name}`,
+              state.with(async (setup) => {
+                await setup.withFixture(
+                  html`<sbb-button disabled-interactive ?negative=${negative}>Button</sbb-button>`,
+                  {
+                    backgroundColor: negative ? 'var(--sbb-color-iron)' : undefined,
+                    focusOutlineDark: negative,
+                  },
+                );
+              }),
+            );
+          }
+        });
+      }
+    });
+
     describe('forcedColors=true', () => {
       describeEach(forcedColorCases, ({ disabled, negative }) => {
         beforeEach(async function () {

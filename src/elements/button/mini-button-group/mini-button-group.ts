@@ -2,6 +2,8 @@ import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+import { forceType } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import { SbbNamedSlotListMixin, SbbNegativeMixin } from '../../core/mixins.js';
 import type { SbbDividerElement } from '../../divider/divider.js';
 import type { SbbMiniButtonElement } from '../mini-button/mini-button.js';
@@ -16,18 +18,24 @@ export type SbbMiniButtonGroupSize = 's' | 'm' | 'l' | 'xl';
  *
  * @slot - Use the unnamed slot to add `sbb-mini-button` and `sbb-divider` elements.
  */
+export
 @customElement('sbb-mini-button-group')
-export class SbbMiniButtonGroupElement extends SbbNegativeMixin(
+class SbbMiniButtonGroupElement extends SbbNegativeMixin(
   SbbNamedSlotListMixin<SbbMiniButtonElement, typeof LitElement>(LitElement),
 ) {
   public static override styles: CSSResultGroup = style;
   protected override readonly listChildLocalNames = ['sbb-mini-button', 'sbb-divider'];
 
   /** This will be forwarded as aria-label to the list that contains the buttons. */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel?: string;
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = '';
 
-  /** Size variant, either s, m, l or xl. */
-  @property({ reflect: true }) public size: SbbMiniButtonGroupSize = 'm';
+  /**
+   * Size variant, either s, m, l or xl.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: SbbMiniButtonGroupSize = isLean() ? 's' : 'm';
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);

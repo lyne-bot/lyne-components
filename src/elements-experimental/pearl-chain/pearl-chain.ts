@@ -1,4 +1,5 @@
 import { defaultDateAdapter } from '@sbb-esta/lyne-elements/core/datetime.js';
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import type { SbbDateLike } from '@sbb-esta/lyne-elements/core/interfaces/types';
 import { addMinutes, differenceInMinutes, isAfter, isBefore } from 'date-fns';
 import type { CSSResultGroup, TemplateResult } from 'lit';
@@ -21,8 +22,9 @@ type Time = {
 /**
  * It visually displays journey information.
  */
+export
 @customElement('sbb-pearl-chain')
-export class SbbPearlChainElement extends LitElement {
+class SbbPearlChainElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**
@@ -33,13 +35,15 @@ export class SbbPearlChainElement extends LitElement {
    * to the total travel time. Example: departure 16:30, change at 16:40,
    * arrival at 17:00. So the change should have a duration of 33.33%.
    */
-  @property({ type: Array }) public legs?: (Leg | PtRideLeg)[];
+  @property({ type: Array }) public accessor legs: (Leg | PtRideLeg)[] = [];
 
   /**
    * Per default, the current location has a pulsating animation. You can
    * disable the animation with this property.
    */
-  @property({ attribute: 'disable-animation', type: Boolean }) public disableAnimation?: boolean;
+  @forceType()
+  @property({ attribute: 'disable-animation', type: Boolean })
+  public accessor disableAnimation: boolean = false;
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()

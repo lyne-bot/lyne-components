@@ -103,15 +103,15 @@ Use an `aria-label` attribute to describe the purpose of the stepper. The `sbb-s
 
 ## Properties
 
-| Name             | Attribute         | Privacy | Type                             | Default        | Description                                                                       |
-| ---------------- | ----------------- | ------- | -------------------------------- | -------------- | --------------------------------------------------------------------------------- |
-| `horizontalFrom` | `horizontal-from` | public  | `SbbHorizontalFrom \| undefined` |                | Overrides the behaviour of `orientation` property.                                |
-| `linear`         | `linear`          | public  | `boolean`                        | `false`        | If set to true, only the current and previous labels can be clicked and selected. |
-| `orientation`    | `orientation`     | public  | `SbbOrientation`                 | `'horizontal'` | Steps orientation, either horizontal or vertical.                                 |
-| `selected`       | -                 | public  | `SbbStepElement \| undefined`    |                | The currently selected step.                                                      |
-| `selectedIndex`  | `selected-index`  | public  | `number \| undefined`            |                | The currently selected step index.                                                |
-| `size`           | `size`            | public  | `'s' \| 'm'`                     | `'m'`          | Size variant, either s or m.                                                      |
-| `steps`          | -                 | public  | `SbbStepElement[]`               |                | The steps of the stepper.                                                         |
+| Name             | Attribute         | Privacy | Type                        | Default            | Description                                                                       |
+| ---------------- | ----------------- | ------- | --------------------------- | ------------------ | --------------------------------------------------------------------------------- |
+| `horizontalFrom` | `horizontal-from` | public  | `SbbHorizontalFrom \| null` | `null`             | Overrides the behaviour of `orientation` property.                                |
+| `linear`         | `linear`          | public  | `boolean`                   | `false`            | If set to true, only the current and previous labels can be clicked and selected. |
+| `orientation`    | `orientation`     | public  | `SbbOrientation`            | `'horizontal'`     | Steps orientation, either horizontal or vertical.                                 |
+| `selected`       | -                 | public  | `SbbStepElement \| null`    |                    | The currently selected step.                                                      |
+| `selectedIndex`  | `selected-index`  | public  | `number \| null`            |                    | The currently selected step index.                                                |
+| `size`           | `size`            | public  | `'s' \| 'm'`                | `'m' / 's' (lean)` | Size variant, either s or m.                                                      |
+| `steps`          | -                 | public  | `SbbStepElement[]`          |                    | The steps of the stepper.                                                         |
 
 ## Methods
 

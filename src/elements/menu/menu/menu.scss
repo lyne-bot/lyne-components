@@ -12,7 +12,7 @@
   --sbb-menu-position-x: 0;
   --sbb-menu-position-y: 0;
   --sbb-menu-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
   --sbb-menu-animation-easing: ease;
@@ -20,7 +20,7 @@
   --sbb-menu-max-width: 100%;
   --sbb-menu-min-width: 100%;
   --sbb-menu-inset: 0 auto auto 0;
-  --sbb-menu-container-height: 100vh;
+  --sbb-menu-container-height: 100dvh;
 
   // 85vh is not an exact value but looks optimized for mobile view.
   --sbb-menu-max-height: calc(85vh - var(--sbb-spacing-fixed-8x));
@@ -28,12 +28,6 @@
   --sbb-menu-border-radius: var(--sbb-border-radius-4x);
   --sbb-menu-visibility: hidden;
   --sbb-menu-backdrop-color: transparent;
-
-  // Needed for backwards compatibility
-  // TODO: Remove once not needed
-  @supports (height: 100dvh) {
-    --sbb-menu-container-height: 100dvh;
-  }
 
   @include sbb.mq($from: medium) {
     --sbb-menu-transform: translateY(var(--sbb-spacing-fixed-2x));

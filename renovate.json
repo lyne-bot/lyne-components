@@ -8,6 +8,7 @@
   "nvm": {
     "enabled": false
   },
+  "baseBranches": ["main", "2.x"],
   "lockFileMaintenance": {
     "schedule": ["before 7am on monday"],
     "enabled": true

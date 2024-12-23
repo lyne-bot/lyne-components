@@ -2,7 +2,11 @@
 export const snapshots = {};
 
 snapshots["sbb-sticky-bar renders DOM"] = 
-`<sbb-sticky-bar slot="sticky-bar">
+`<sbb-sticky-bar
+  data-initialized=""
+  data-state="sticky"
+  slot="sticky-bar"
+>
 </sbb-sticky-bar>
 `;
 /* end snapshot sbb-sticky-bar renders DOM */

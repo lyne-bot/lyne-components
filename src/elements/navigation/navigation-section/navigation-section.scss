@@ -9,7 +9,7 @@
   --sbb-navigation-section-position: fixed;
   --sbb-navigation-section-pointer-events: none;
   --sbb-navigation-section-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-3x)
   );
   --sbb-navigation-section-animation-easing: ease-out;
@@ -18,8 +18,8 @@
   --sbb-navigation-section-transform: translateX(100%);
   --sbb-navigation-section-content-padding-inline-start: var(--sbb-spacing-fixed-12x);
   --sbb-focus-outline-color: var(--sbb-focus-outline-color-dark);
-  --sbb-navigation-section-width: 100vw;
-  --sbb-navigation-section-height: 100vh;
+  --sbb-navigation-section-width: 100dvw;
+  --sbb-navigation-section-height: 100dvh;
 
   // We have to place the styles on the host as it has to be aligned on the grid of the navigation
   display: var(--sbb-navigation-section-display);
@@ -31,22 +31,10 @@
   height: var(--sbb-navigation-section-height);
   z-index: var(--sbb-navigation-z-index, var(--sbb-overlay-default-z-index));
 
-  // Needed for backwards compatibility
-  // TODO: Remove once not needed
-  @supports (width: 100dvw) {
-    --sbb-navigation-section-width: 100dvw;
-  }
-
-  // Needed for backwards compatibility
-  // TODO: Remove once not needed
-  @supports (height: 100dvh) {
-    --sbb-navigation-section-height: 100dvh;
-  }
-
   @include sbb.mq($from: large) {
     --sbb-navigation-section-column: 5 / 9;
     --sbb-navigation-section-animation-duration: var(
-      --sbb-disable-animation-zero-time,
+      --sbb-disable-animation-duration,
       var(--sbb-animation-duration-4x)
     );
     --sbb-navigation-section-padding-block: var(--sbb-spacing-responsive-xl);

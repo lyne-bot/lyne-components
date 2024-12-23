@@ -6,6 +6,7 @@ import { describeViewports, visualDiffDefault } from '../core/testing/private.js
 import './map-container.js';
 import '../header.js';
 import '../title.js';
+import '../logo.js';
 
 describe(`sbb-map-container`, () => {
   const template = (stickyOffset = false): TemplateResult => html`
@@ -13,6 +14,8 @@ describe(`sbb-map-container`, () => {
       <sbb-header-button icon-name="hamburger-menu-small" expand-from="small">
         Menu
       </sbb-header-button>
+      <div class="sbb-header-spacer"></div>
+      <sbb-logo protective-room="none" class="sbb-header-logo"></sbb-logo>
     </sbb-header>
     <sbb-map-container
       style=${stickyOffset
@@ -66,7 +69,7 @@ describe(`sbb-map-container`, () => {
     it(
       visualDiffDefault.name,
       visualDiffDefault.with(async (setup) => {
-        await setup.withFixture(template(), { padding: '0' });
+        await setup.withFixture(template(), { padding: '0', minHeight: '500px' });
       }),
     );
   });

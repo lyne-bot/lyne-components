@@ -78,18 +78,18 @@ This can be achieved by adding an `aria-label`, `aria-labelledby` or `aria-descr
 
 ## Properties
 
-| Name                  | Attribute              | Privacy | Type                  | Default    | Description                                                                                                                      |
-| --------------------- | ---------------------- | ------- | --------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `amount`              | `amount`               | public  | `string \| undefined` |            | Amount displayed inside the tag.                                                                                                 |
-| `checked`             | `checked`              | public  | `boolean`             | `false`    | Whether the tag is checked.                                                                                                      |
-| `disabled`            | `disabled`             | public  | `boolean`             | `false`    | Whether the component is disabled.                                                                                               |
-| `disabledInteractive` | `disabled-interactive` | public  | `boolean`             | `false`    | Whether disabled buttons should be interactive.                                                                                  |
-| `form`                | `form`                 | public  | `string \| undefined` |            | The <form> element to associate the button with.                                                                                 |
-| `iconName`            | `icon-name`            | public  | `string \| undefined` |            | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `name`                | `name`                 | public  | `string`              |            | The name of the button element.                                                                                                  |
-| `size`                | `size`                 | public  | `SbbTagSize`          | `'m'`      | Tag size.                                                                                                                        |
-| `type`                | `type`                 | public  | `SbbButtonType`       | `'button'` | The type attribute to use for the button.                                                                                        |
-| `value`               | `value`                | public  | `string`              |            | The value of the button element.                                                                                                 |
+| Name                  | Attribute              | Privacy | Type                      | Default            | Description                                                                                                                      |
+| --------------------- | ---------------------- | ------- | ------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `amount`              | `amount`               | public  | `string`                  | `''`               | Amount displayed inside the tag.                                                                                                 |
+| `checked`             | `checked`              | public  | `boolean`                 | `false`            | Whether the tag is checked.                                                                                                      |
+| `disabled`            | `disabled`             | public  | `boolean`                 | `false`            | Whether the component is disabled.                                                                                               |
+| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                 | `false`            | Whether the button should be aria-disabled but stay interactive.                                                                 |
+| `form`                | `form`                 | public  | `HTMLFormElement \| null` |                    | The `<form>` element to associate the button with.                                                                               |
+| `iconName`            | `icon-name`            | public  | `string`                  | `''`               | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `name`                | `name`                 | public  | `string`                  |                    | Name of the form element. Will be read from name attribute.                                                                      |
+| `size`                | `size`                 | public  | `SbbTagSize`              | `'m' / 's' (lean)` | Tag size, either s or m.                                                                                                         |
+| `type`                | `type`                 | public  | `SbbButtonType`           | `'button'`         | The type attribute to use for the button.                                                                                        |
+| `value`               | `value`                | public  | `string \| null`          | `null`             | Value of the form element.                                                                                                       |
 
 ## Events
 

@@ -31,6 +31,12 @@ const negative: InputType = {
   },
 };
 
+const disabled: InputType = {
+  control: {
+    type: 'boolean',
+  },
+};
+
 const accessibilityLabel: InputType = {
   control: {
     type: 'text',
@@ -40,19 +46,29 @@ const accessibilityLabel: InputType = {
 const defaultArgTypes: ArgTypes = {
   size,
   negative,
+  disabled,
   'accessibility-label': accessibilityLabel,
 };
 
 const defaultArgs: Args = {
   size: size.options![1],
   negative: false,
+  disabled: false,
   'accessibility-label': '',
 };
 
-const Template = (args: Args): TemplateResult =>
+const Template = ({ disabled, ...args }: Args): TemplateResult =>
   html` <sbb-mini-button-group ${sbbSpread(args)}>
-    <sbb-mini-button aria-label="previous" icon-name="chevron-small-left-small"></sbb-mini-button>
-    <sbb-mini-button aria-label="next" icon-name="chevron-small-right-small"></sbb-mini-button>
+    <sbb-mini-button
+      ?disabled=${disabled}
+      aria-label="previous"
+      icon-name="chevron-small-left-small"
+    ></sbb-mini-button>
+    <sbb-mini-button
+      ?disabled=${disabled}
+      aria-label="next"
+      icon-name="chevron-small-right-small"
+    ></sbb-mini-button>
     <sbb-divider orientation="vertical"></sbb-divider>
     <sbb-mini-button aria-label="edit" icon-name="pen-small"></sbb-mini-button>
     <sbb-mini-button aria-label="duplicate" icon-name="copy-small"></sbb-mini-button>
@@ -71,6 +87,12 @@ export const Negative: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, negative: true },
+};
+
+export const NegativeDisabled: StoryObj = {
+  render: Template,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs, negative: true, disabled: true },
 };
 
 export const SizeS: StoryObj = {

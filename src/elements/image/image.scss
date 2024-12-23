@@ -4,84 +4,16 @@
 @include sbb.box-sizing;
 
 :host {
-  --sbb-image-border-radius: var(--sbb-border-radius-4x);
-  --sbb-image-aspect-ratio: auto;
+  --sbb-image-aspect-ratio: 16 / 9;
   --sbb-image-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
   --sbb-image-object-fit: cover;
 
   display: block;
-}
-
-:host([aspect-ratio='1-1']) {
-  --sbb-image-aspect-ratio: 1 / 1;
-}
-
-:host([aspect-ratio='1-2']) {
-  --sbb-image-aspect-ratio: 1 / 2;
-}
-
-:host([aspect-ratio='2-1']) {
-  --sbb-image-aspect-ratio: 2 / 1;
-}
-
-:host([aspect-ratio='2-3']) {
-  --sbb-image-aspect-ratio: 2 / 3;
-}
-
-:host([aspect-ratio='3-2']) {
-  --sbb-image-aspect-ratio: 3 / 2;
-}
-
-:host([aspect-ratio='3-4']) {
-  --sbb-image-aspect-ratio: 3 / 4;
-}
-
-:host([aspect-ratio='4-3']) {
-  --sbb-image-aspect-ratio: 4 / 3;
-}
-
-:host([aspect-ratio='4-5']) {
-  --sbb-image-aspect-ratio: 4 / 5;
-}
-
-:host([aspect-ratio='5-4']) {
-  --sbb-image-aspect-ratio: 5 / 4;
-}
-
-:host([aspect-ratio='16-9']) {
-  --sbb-image-aspect-ratio: 16 / 9;
-}
-
-:host([aspect-ratio='9-16']) {
-  --sbb-image-aspect-ratio: 9 / 16;
-}
-
-// Variant: Hero Teaser and Paid Teaser
-:host([data-teaser]) {
-  --sbb-image-aspect-ratio: 1 / 1;
-
-  @include sbb.mq($from: small) {
-    --sbb-image-aspect-ratio: 16 / 9;
-  }
-}
-
-:host(:is([border-radius='none'], [data-teaser])) {
-  --sbb-image-border-radius: 0;
-}
-
-:host([border-radius='round']:not([data-teaser])) {
-  --sbb-image-border-radius: var(--sbb-border-radius-infinity);
-}
-
-.sbb-image__figure {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sbb-spacing-fixed-4x);
-  margin: 0;
-  height: 100%;
+  border-radius: var(--sbb-border-radius-4x);
+  overflow: hidden;
 }
 
 .sbb-image__img {
@@ -122,13 +54,7 @@ picture {
 .sbb-image__wrapper {
   display: flex;
   position: relative;
-  overflow: hidden;
   width: 100%;
   height: 100%;
   aspect-ratio: var(--sbb-image-aspect-ratio);
-  border-radius: var(--sbb-image-border-radius);
-}
-
-.sbb-image__caption {
-  @include sbb.text-xs--regular;
 }

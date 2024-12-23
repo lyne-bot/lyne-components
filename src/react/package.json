@@ -10,11 +10,12 @@
   ],
   "type": "module",
   "peerDependencies": {
-    "@sbb-esta/lyne-elements": "0.0.0-PLACEHOLDER"
+    "@sbb-esta/lyne-elements": "0.0.0-PLACEHOLDER",
+    "react": "^18.2.0 || ^19.0.0"
   },
   "dependencies": {
     "@lit/react": "0.0.0-LITREACT",
-    "react": "0.0.0-REACT"
+    "tslib": "0.0.0-TSLIB"
   },
   "publishConfig": {
     "access": "public"

@@ -8,7 +8,8 @@ import {
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { slotState } from '../../core/decorators.js';
+import { getOverride, slotState } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import { EventEmitter } from '../../core/eventing.js';
 import type {
   SbbCheckedStateChange,
@@ -38,33 +39,30 @@ export type SbbCheckboxPanelStateChange = Extract<
  * @slot subtext - Slot used to render a subtext under the label (only visible within a selection panel).
  * @slot suffix - Slot used to render additional content after the label (only visible within a selection panel).
  * @slot badge - Use this slot to provide a `sbb-card-badge` (optional).
- * @event {CustomEvent<void>} didChange - Deprecated. used for React. Will probably be removed once React 19 is available.
  * @event {Event} change - Event fired on change.
  * @event {InputEvent} input - Event fired on input.
  */
+export
 @customElement('sbb-checkbox-panel')
 @slotState()
-export class SbbCheckboxPanelElement extends SbbPanelMixin(
+class SbbCheckboxPanelElement extends SbbPanelMixin(
   SbbCheckboxCommonElementMixin(SbbUpdateSchedulerMixin(LitElement)),
 ) {
   public static override styles: CSSResultGroup = [checkboxCommonStyle, panelCommonStyle];
 
-  // FIXME using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
+  // TODO: fix using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
   public static readonly events = {
-    didChange: 'didChange',
     stateChange: 'stateChange',
     panelConnected: 'panelConnected',
   } as const;
 
-  /** Size variant. */
+  /**
+   * Size variant, either m or s.
+   * @default 'm' / 's' (lean)
+   */
   @property({ reflect: true })
-  public set size(value: SbbPanelSize) {
-    this._size = value;
-  }
-  public get size(): SbbPanelSize {
-    return this.group?.size ? (this.group.size === 'xs' ? 's' : this.group.size) : this._size;
-  }
-  private _size: SbbPanelSize = 'm';
+  @getOverride((i, v) => (i.group?.size ? (i.group.size === 'xs' ? 's' : i.group.size) : v))
+  public accessor size: SbbPanelSize = isLean() ? 's' : 'm';
 
   /**
    * @internal
@@ -77,7 +75,7 @@ export class SbbCheckboxPanelElement extends SbbPanelMixin(
     { bubbles: true },
   );
 
-  protected override async willUpdate(changedProperties: PropertyValues<this>): Promise<void> {
+  protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
 
     if (changedProperties.has('checked')) {

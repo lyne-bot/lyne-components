@@ -11,8 +11,9 @@ import { buttonCommonStyle, buttonSecondaryStyle, SbbButtonCommonElementMixin } 
  * @slot - Use the unnamed slot to add content to the secondary-button.
  * @slot icon - Slot used to display the icon, if one is set
  */
+export
 @customElement('sbb-secondary-button')
-export class SbbSecondaryButtonElement extends SbbButtonCommonElementMixin(
+class SbbSecondaryButtonElement extends SbbButtonCommonElementMixin(
   SbbDisabledTabIndexActionMixin(SbbButtonBaseElement),
 ) {
   public static override styles: CSSResultGroup = [buttonCommonStyle, buttonSecondaryStyle];

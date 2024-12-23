@@ -11,8 +11,18 @@ import {
   setModalityOnNextFocus,
 } from '../../core/a11y.js';
 import { SbbOpenCloseBaseElement } from '../../core/base-elements.js';
-import { SbbConnectedAbortController, SbbInertController } from '../../core/controllers.js';
-import { findReferencedElement, isBreakpoint, SbbScrollHandler } from '../../core/dom.js';
+import {
+  SbbInertController,
+  SbbMediaMatcherController,
+  SbbMediaQueryBreakpointSmallAndBelow,
+} from '../../core/controllers.js';
+import { forceType } from '../../core/decorators.js';
+import {
+  findReferencedElement,
+  isZeroAnimationDuration,
+  SbbScrollHandler,
+} from '../../core/dom.js';
+import { forwardEvent } from '../../core/eventing.js';
 import { SbbNamedSlotListMixin } from '../../core/mixins.js';
 import {
   getElementPosition,
@@ -51,8 +61,9 @@ let nextId = 0;
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-menu')
-export class SbbMenuElement extends SbbNamedSlotListMixin<
+class SbbMenuElement extends SbbNamedSlotListMixin<
   SbbMenuButtonElement | SbbMenuLinkElement,
   typeof SbbOpenCloseBaseElement
 >(SbbOpenCloseBaseElement) {
@@ -78,17 +89,33 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
    * This will be forwarded as aria-label to the inner list.
    * Used only if the menu automatically renders the actions inside as a list.
    */
-  @property({ attribute: 'list-accessibility-label' }) public listAccessibilityLabel?: string;
+  @forceType()
+  @property({ attribute: 'list-accessibility-label' })
+  public accessor listAccessibilityLabel: string = '';
 
   private _menu!: HTMLDivElement;
   private _triggerElement: HTMLElement | null = null;
   private _isPointerDownEventOnMenu: boolean = false;
   private _menuController!: AbortController;
   private _windowEventsController!: AbortController;
-  private _abort = new SbbConnectedAbortController(this);
   private _focusHandler = new SbbFocusHandler();
   private _scrollHandler = new SbbScrollHandler();
   private _inertController = new SbbInertController(this);
+  private _mediaMatcher = new SbbMediaMatcherController(this, {
+    [SbbMediaQueryBreakpointSmallAndBelow]: (matches) => {
+      if (matches && (this.state === 'opening' || this.state === 'opened')) {
+        this._scrollHandler.disableScroll();
+      } else {
+        this._scrollHandler.enableScroll();
+      }
+    },
+  });
+
+  public constructor() {
+    super();
+    this.addEventListener?.('click', (e) => this._onClick(e));
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
+  }
 
   /**
    * Opens the menu on trigger click.
@@ -106,9 +133,15 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
     this._setMenuPosition();
     this._triggerElement?.setAttribute('aria-expanded', 'true');
 
-    // Starting from breakpoint medium, disable scroll
-    if (!isBreakpoint('medium')) {
+    // From zero to medium, disable scroll
+    if (this._mediaMatcher.matches(SbbMediaQueryBreakpointSmallAndBelow)) {
       this._scrollHandler.disableScroll();
+    }
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
     }
   }
 
@@ -126,6 +159,45 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
 
     this.state = 'closing';
     this._triggerElement?.setAttribute('aria-expanded', 'false');
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-menu-animation-duration');
+  }
+
+  private _handleOpening(): void {
+    this.state = 'opened';
+    this._inertController.activate();
+    this._setMenuFocus();
+    this._focusHandler.trap(this);
+    this._attachWindowEvents();
+    this.didOpen.emit();
+  }
+
+  private _handleClosing(): void {
+    this.state = 'closed';
+    this._menu?.firstElementChild?.scrollTo(0, 0);
+    this._inertController.deactivate();
+    setModalityOnNextFocus(this._triggerElement);
+    // Manually focus last focused element
+    this._triggerElement?.focus({
+      // When inside the sbb-header, we prevent the scroll to avoid the snapping to the top of the page
+      preventScroll:
+        this._triggerElement.localName === 'sbb-header-button' ||
+        this._triggerElement.localName === 'sbb-header-link',
+    });
+    this.didClose.emit();
+    this._windowEventsController?.abort();
+    this._focusHandler.disconnect();
+
+    // Starting from breakpoint medium, enable scroll
+    this._scrollHandler.enableScroll();
   }
 
   /**
@@ -182,18 +254,19 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
     }
   }
 
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('click', (e) => this._onClick(e), { signal });
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
+  protected override createRenderRoot(): HTMLElement | DocumentFragment {
+    const renderRoot = super.createRenderRoot();
     // Due to the fact that menu can both be a list and just a container, we need to check its
     // state before the SbbNamedSlotListMixin handles the slotchange event, in order to avoid
     // it interpreting the non list case as a list.
     this.shadowRoot?.addEventListener('slotchange', (e) => this._checkListCase(e), {
-      signal,
       capture: true,
     });
+    return renderRoot;
+  }
+
+  public override connectedCallback(): void {
+    super.connectedCallback();
     // Validate trigger element and attach event listeners
     this._configure(this.trigger);
   }
@@ -252,6 +325,9 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
     document.addEventListener('scroll', () => this._setMenuPosition(), {
       passive: true,
       signal: this._windowEventsController.signal,
+      // Without capture, other scroll contexts would not bubble to this event listener.
+      // Capture allows us to react to all scroll contexts in this DOM.
+      capture: true,
     });
     window.addEventListener('resize', () => this._setMenuPosition(), {
       passive: true,
@@ -296,30 +372,9 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
   // To avoid entering a corrupt state, exit when state is not expected.
   private _onMenuAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this.state === 'opening') {
-      this.state = 'opened';
-      this.didOpen.emit();
-      this._inertController.activate();
-      this._setMenuFocus();
-      this._focusHandler.trap(this);
-      this._attachWindowEvents();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this.state === 'closing') {
-      this.state = 'closed';
-      this._menu?.firstElementChild?.scrollTo(0, 0);
-      this._inertController.deactivate();
-      setModalityOnNextFocus(this._triggerElement);
-      // Manually focus last focused element
-      this._triggerElement?.focus({
-        // When inside the sbb-header, we prevent the scroll to avoid the snapping to the top of the page
-        preventScroll:
-          this._triggerElement.localName === 'sbb-header-button' ||
-          this._triggerElement.localName === 'sbb-header-link',
-      });
-      this.didClose.emit();
-      this._windowEventsController?.abort();
-      this._focusHandler.disconnect();
-
-      // Starting from breakpoint medium, enable scroll
-      this._scrollHandler.enableScroll();
+      this._handleClosing();
     }
   }
 
@@ -334,7 +389,7 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
   private _setMenuPosition(): void {
     // Starting from breakpoint medium
     if (
-      !isBreakpoint('medium') ||
+      (this._mediaMatcher.matches(SbbMediaQueryBreakpointSmallAndBelow) ?? true) ||
       !this._menu ||
       !this._triggerElement ||
       this.state === 'closing'
@@ -361,12 +416,13 @@ export class SbbMenuElement extends SbbNamedSlotListMixin<
     return html`
       <div class="sbb-menu__container">
         <div
-          @animationend=${(event: AnimationEvent) => this._onMenuAnimationEnd(event)}
+          @animationend=${this._onMenuAnimationEnd}
           class="sbb-menu"
           ${ref((el?: Element) => (this._menu = el as HTMLDivElement))}
         >
           <div
             @click=${(event: Event) => this._closeOnInteractiveElementClick(event)}
+            @scroll=${(e: Event) => forwardEvent(e, document)}
             class="sbb-menu__content"
           >
             ${this.listChildren.length

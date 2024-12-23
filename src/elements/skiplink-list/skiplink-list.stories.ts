@@ -102,7 +102,7 @@ const Template = ({
   hrefSecondLink,
   ...args
 }: Args): TemplateResult => html`
-  <sbb-skiplink-list ${sbbSpread(args)} data-testid="skiplink">
+  <sbb-skiplink-list ${sbbSpread(args)}>
     <sbb-block-link href=${hrefFirstLink}>${labelFirstLink}</sbb-block-link>
     <sbb-block-link href=${hrefSecondLink}>${labelSecondLink}</sbb-block-link>
   </sbb-skiplink-list>

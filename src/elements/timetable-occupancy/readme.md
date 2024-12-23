@@ -6,8 +6,8 @@ The accessibility strings are automatically generated.
 
 ## Properties
 
-| Name                   | Attribute                | Privacy | Type                        | Default | Description                        |
-| ---------------------- | ------------------------ | ------- | --------------------------- | ------- | ---------------------------------- |
-| `firstClassOccupancy`  | `first-class-occupancy`  | public  | `SbbOccupancy \| undefined` |         | Occupancy for first class wagons.  |
-| `negative`             | `negative`               | public  | `boolean`                   | `false` | Negative coloring variant flag.    |
-| `secondClassOccupancy` | `second-class-occupancy` | public  | `SbbOccupancy \| undefined` |         | Occupancy for second class wagons. |
+| Name                   | Attribute                | Privacy | Type                   | Default | Description                        |
+| ---------------------- | ------------------------ | ------- | ---------------------- | ------- | ---------------------------------- |
+| `firstClassOccupancy`  | `first-class-occupancy`  | public  | `SbbOccupancy \| null` | `null`  | Occupancy for first class wagons.  |
+| `negative`             | `negative`               | public  | `boolean`              | `false` | Negative coloring variant flag.    |
+| `secondClassOccupancy` | `second-class-occupancy` | public  | `SbbOccupancy \| null` | `null`  | Occupancy for second class wagons. |

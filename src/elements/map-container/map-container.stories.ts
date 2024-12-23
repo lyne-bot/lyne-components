@@ -12,6 +12,7 @@ import '../form-field.js';
 import '../icon.js';
 import '../title.js';
 import '../header.js';
+import '../logo.js';
 
 const hideScrollUpButton: InputType = {
   control: {
@@ -86,6 +87,8 @@ const meta: Meta = {
         <sbb-header-button icon-name="hamburger-menu-small" expand-from="small">
           Menu
         </sbb-header-button>
+        <div class="sbb-header-spacer"></div>
+        <sbb-logo protective-room="none" class="sbb-header-logo"></sbb-logo>
       </sbb-header>
       ${story()}
     `,

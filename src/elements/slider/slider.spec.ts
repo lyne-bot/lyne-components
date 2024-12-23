@@ -70,6 +70,9 @@ describe(`sbb-slider`, () => {
     expect(elemInputEvent.count, 'compare to native - input counts').to.be.equal(
       nativeInputEvent.count,
     );
+
+    expect(element.type, 'compare to native - type').to.be.equal(input.type);
+    expect(element.role, 'compare to native - role').to.be.equal(input.role);
   }
 
   it('renders', async () => {

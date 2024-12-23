@@ -46,7 +46,6 @@ const basicArgs: Args = {
 
 const triggerButton = (id: string): TemplateResult => html`
   <sbb-secondary-button
-    data-testid="navigation-trigger"
     id=${id}
     size="l"
     icon-name="hamburger-menu-small"
@@ -56,9 +55,7 @@ const triggerButton = (id: string): TemplateResult => html`
 `;
 
 const navigationActionsL = (): TemplateResult => html`
-  <sbb-navigation-button id="nav-1" data-testid="navigation-section-trigger-1">
-    Tickets & Offers
-  </sbb-navigation-button>
+  <sbb-navigation-button id="nav-1">Tickets & Offers</sbb-navigation-button>
   <sbb-navigation-button id="nav-2" class="sbb-active" aria-current="page"
     >Vacations & Recreation</sbb-navigation-button
   >
@@ -102,12 +99,7 @@ const actionLabels = (num: number): TemplateResult[] => {
 
 const DefaultTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('navigation-trigger-1')}
-  <sbb-navigation
-    data-testid="navigation"
-    id="navigation"
-    trigger="navigation-trigger-1"
-    ${sbbSpread(args)}
-  >
+  <sbb-navigation id="navigation" trigger="navigation-trigger-1" ${sbbSpread(args)}>
     <sbb-navigation-marker id="nav-marker">${navigationActionsL()}</sbb-navigation-marker>
     <sbb-navigation-marker size="s">${navigationActionsS()}</sbb-navigation-marker>
   </sbb-navigation>
@@ -115,12 +107,7 @@ const DefaultTemplate = (args: Args): TemplateResult => html`
 
 const LongContentTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('navigation-trigger-1')}
-  <sbb-navigation
-    data-testid="navigation"
-    id="navigation"
-    trigger="navigation-trigger-1"
-    ${sbbSpread(args)}
-  >
+  <sbb-navigation id="navigation" trigger="navigation-trigger-1" ${sbbSpread(args)}>
     <sbb-navigation-marker>${navigationActionsL()}</sbb-navigation-marker>
     <sbb-navigation-marker size="s">${actionLabels(20)}</sbb-navigation-marker>
   </sbb-navigation>
@@ -128,12 +115,7 @@ const LongContentTemplate = (args: Args): TemplateResult => html`
 
 const WithNavigationSectionTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('navigation-trigger-1')}
-  <sbb-navigation
-    data-testid="navigation"
-    id="navigation"
-    trigger="navigation-trigger-1"
-    ${sbbSpread(args)}
-  >
+  <sbb-navigation id="navigation" trigger="navigation-trigger-1" ${sbbSpread(args)}>
     <sbb-navigation-marker id="nav-marker">${navigationActionsL()}</sbb-navigation-marker>
     <sbb-navigation-marker size="s">${navigationActionsS()}</sbb-navigation-marker>
 
@@ -143,11 +125,7 @@ const WithNavigationSectionTemplate = (args: Args): TemplateResult => html`
       <sbb-button size="m" style="width: fit-content"> All Tickets & Offers </sbb-button>
     </sbb-navigation-section>
 
-    <sbb-navigation-section
-      trigger="nav-2"
-      title-content="Title two"
-      data-testid="navigation-section"
-    >
+    <sbb-navigation-section trigger="nav-2" title-content="Title two">
       ${navigationList('Label', true)} ${navigationList('Label')} ${navigationList('Label')}
       ${navigationList('Label')} ${navigationList('Label')} ${navigationList('Label')}
     </sbb-navigation-section>

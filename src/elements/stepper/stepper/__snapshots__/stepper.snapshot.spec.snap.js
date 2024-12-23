@@ -126,7 +126,8 @@ snapshots["sbb-stepper renders A11y tree Chrome"] =
     },
     {
       "role": "tab",
-      "name": "Test step label 3"
+      "name": "Test step label 3",
+      "disabled": true
     },
     {
       "role": "tab",
@@ -159,7 +160,8 @@ snapshots["sbb-stepper renders A11y tree Firefox"] =
     },
     {
       "role": "tab",
-      "name": "3 Test step label 3"
+      "name": "3 Test step label 3",
+      "disabled": true
     },
     {
       "role": "tab",

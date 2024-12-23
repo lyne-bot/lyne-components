@@ -2,13 +2,12 @@
 export const snapshots = {};
 
 snapshots["sbb-train-formation should render with one train DOM"] = 
-`<sbb-train-formation>
+`<sbb-train-formation view="side">
   <sbb-train
     direction="left"
     slot="li-0"
   >
     <sbb-train-wagon
-      data-has-visible-wagon-content=""
       sector="A"
       slot="li-0"
       type="wagon"
@@ -20,10 +19,7 @@ snapshots["sbb-train-formation should render with one train DOM"] =
 /* end snapshot sbb-train-formation should render with one train DOM */
 
 snapshots["sbb-train-formation should render with one train Shadow DOM"] = 
-`<div
-  class="sbb-train-formation"
-  style="--sbb-train-direction-width: 800px;"
->
+`<div class="sbb-train-formation">
   <div
     aria-hidden="true"
     class="sbb-train-formation__sectors"
@@ -59,13 +55,12 @@ snapshots["sbb-train-formation should render with one train Shadow DOM"] =
 /* end snapshot sbb-train-formation should render with one train Shadow DOM */
 
 snapshots["sbb-train-formation should render with multiple trains DOM"] = 
-`<sbb-train-formation>
+`<sbb-train-formation view="side">
   <sbb-train
     direction="left"
     slot="li-0"
   >
     <sbb-train-wagon
-      data-has-visible-wagon-content=""
       sector="A"
       slot="li-0"
       type="wagon"
@@ -77,7 +72,6 @@ snapshots["sbb-train-formation should render with multiple trains DOM"] =
     slot="li-1"
   >
     <sbb-train-wagon
-      data-has-visible-wagon-content=""
       sector="B"
       slot="li-0"
       type="wagon"
@@ -89,10 +83,7 @@ snapshots["sbb-train-formation should render with multiple trains DOM"] =
 /* end snapshot sbb-train-formation should render with multiple trains DOM */
 
 snapshots["sbb-train-formation should render with multiple trains Shadow DOM"] = 
-`<div
-  class="sbb-train-formation"
-  style="--sbb-train-direction-width: 800px;"
->
+`<div class="sbb-train-formation">
   <div
     aria-hidden="true"
     class="sbb-train-formation__sectors"
@@ -158,7 +149,7 @@ snapshots["sbb-train-formation should render with multiple trains A11y tree Chro
     },
     {
       "role": "text",
-      "name": "Sector, A"
+      "name": "Train coach, Sector, A"
     },
     {
       "role": "heading",
@@ -171,7 +162,7 @@ snapshots["sbb-train-formation should render with multiple trains A11y tree Chro
     },
     {
       "role": "text",
-      "name": "Sector, B"
+      "name": "Train coach, Sector, B"
     }
   ]
 }
@@ -196,7 +187,7 @@ snapshots["sbb-train-formation should render with multiple trains A11y tree Fire
     },
     {
       "role": "text leaf",
-      "name": "Sector, A"
+      "name": "Train coach, Sector, A"
     },
     {
       "role": "heading",
@@ -209,7 +200,7 @@ snapshots["sbb-train-formation should render with multiple trains A11y tree Fire
     },
     {
       "role": "text leaf",
-      "name": "Sector, B"
+      "name": "Train coach, Sector, B"
     }
   ]
 }

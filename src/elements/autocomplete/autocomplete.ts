@@ -28,11 +28,12 @@ const ariaRoleOnHost = isSafari;
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-autocomplete')
 @hostAttributes({
   role: ariaRoleOnHost ? 'listbox' : null,
 })
-export class SbbAutocompleteElement extends SbbAutocompleteBaseElement {
+class SbbAutocompleteElement extends SbbAutocompleteBaseElement {
   protected overlayId = `sbb-autocomplete-${++nextId}`;
   protected panelRole = 'listbox';
   private _activeItemIndex = -1;
@@ -41,23 +42,10 @@ export class SbbAutocompleteElement extends SbbAutocompleteBaseElement {
     return Array.from(this.querySelectorAll?.('sbb-option') ?? []);
   }
 
-  protected onOptionClick(event: MouseEvent): void {
-    if (
-      (event.target as Element).localName !== 'sbb-option' ||
-      (event.target as SbbOptionElement).disabled
-    ) {
-      return;
-    }
-    this.close();
-  }
-
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this.abort.signal;
-    this.addEventListener(
-      'optionSelectionChange',
-      (e: CustomEvent<void>) => this.onOptionSelected(e),
-      { signal },
+  public constructor() {
+    super();
+    this.addEventListener?.('optionSelectionChange', (e: CustomEvent<void>) =>
+      this.onOptionSelected(e),
     );
   }
 
@@ -81,7 +69,7 @@ export class SbbAutocompleteElement extends SbbAutocompleteBaseElement {
         break;
 
       case 'Enter':
-        this.selectByKeyboard();
+        this.selectByKeyboard(event);
         break;
 
       case 'ArrowDown':
@@ -91,7 +79,8 @@ export class SbbAutocompleteElement extends SbbAutocompleteBaseElement {
     }
   }
 
-  protected selectByKeyboard(): void {
+  protected selectByKeyboard(event: KeyboardEvent): void {
+    event.preventDefault();
     const activeOption = this.options[this._activeItemIndex];
 
     if (activeOption) {

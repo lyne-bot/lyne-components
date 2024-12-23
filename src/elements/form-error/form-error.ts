@@ -14,8 +14,9 @@ let nextId = 0;
  * @slot - Use this slot to display the error message.
  * @slot icon - Use this slot to override the default error icon.
  */
+export
 @customElement('sbb-form-error')
-export class SbbFormErrorElement extends SbbNegativeMixin(LitElement) {
+class SbbFormErrorElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   public override connectedCallback(): void {

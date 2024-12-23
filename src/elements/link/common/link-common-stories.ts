@@ -87,6 +87,11 @@ export const linkCommonDefaultArgTypes: ArgTypes = {
   tag,
 };
 
+/**
+ * NOTE
+ * The tag is the tagName of the component to display in stories,
+ * so it must be overridden before use.
+ */
 export const linkCommonDefaultArgs: Args = {
   text: 'Travelcards & tickets',
   negative: false,

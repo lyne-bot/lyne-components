@@ -10,8 +10,9 @@ import { SbbBlockLinkCommonElementMixin } from '../common.js';
  * @slot - Use the unnamed slot to add content to the `sbb-block-link`.
  * @slot icon - Slot used to display the icon, if one is set.
  */
+export
 @customElement('sbb-block-link')
-export class SbbBlockLinkElement extends SbbBlockLinkCommonElementMixin(
+class SbbBlockLinkElement extends SbbBlockLinkCommonElementMixin(
   SbbDisabledMixin(SbbLinkBaseElement),
 ) {}
 

@@ -13,8 +13,9 @@ import style from './popover-trigger.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-popover-trigger`.
  */
+export
 @customElement('sbb-popover-trigger')
-export class SbbPopoverTriggerElement extends SbbDisabledTabIndexActionMixin(
+class SbbPopoverTriggerElement extends SbbDisabledTabIndexActionMixin(
   SbbNegativeMixin(SbbIconNameMixin(SbbButtonBaseElement)),
 ) {
   public static override styles: CSSResultGroup = style;

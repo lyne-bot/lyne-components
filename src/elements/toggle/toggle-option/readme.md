@@ -31,12 +31,12 @@ The component can be displayed in `checked` or `disabled` states using the self-
 
 ## Properties
 
-| Name       | Attribute   | Privacy | Type                  | Default | Description                                                                                                                      |
-| ---------- | ----------- | ------- | --------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `checked`  | `checked`   | public  | `boolean`             | `false` | Whether the toggle-option is checked.                                                                                            |
-| `disabled` | `disabled`  | public  | `boolean`             | `false` | Whether the toggle option is disabled.                                                                                           |
-| `iconName` | `icon-name` | public  | `string \| undefined` |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `value`    | `value`     | public  | `string`              | `''`    | Value of toggle-option.                                                                                                          |
+| Name       | Attribute   | Privacy | Type      | Default | Description                                                                                                                      |
+| ---------- | ----------- | ------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `checked`  | `checked`   | public  | `boolean` | `false` | Whether the toggle-option is checked.                                                                                            |
+| `disabled` | `disabled`  | public  | `boolean` | `false` | Whether the toggle option is disabled.                                                                                           |
+| `iconName` | `icon-name` | public  | `string`  | `''`    | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `value`    | `value`     | public  | `string`  | `''`    | Value of toggle-option.                                                                                                          |
 
 ## Slots
 

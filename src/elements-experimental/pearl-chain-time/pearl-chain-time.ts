@@ -1,5 +1,6 @@
 import { SbbLanguageController } from '@sbb-esta/lyne-elements/core/controllers.js';
 import { defaultDateAdapter } from '@sbb-esta/lyne-elements/core/datetime.js';
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import {
   i18nArrival,
   i18nDeparture,
@@ -22,8 +23,9 @@ import '../pearl-chain.js';
 /**
  * Combined with `sbb-pearl-chain`, it displays walk time information.
  */
+export
 @customElement('sbb-pearl-chain-time')
-export class SbbPearlChainTimeElement extends LitElement {
+class SbbPearlChainTimeElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**
@@ -34,28 +36,40 @@ export class SbbPearlChainTimeElement extends LitElement {
    * to the total travel time. Example: departure 16:30, change at 16:40,
    * arrival at 17:00. So the change should have a duration of 33.33%.
    */
-  @property({ type: Array }) public legs!: (Leg | PtRideLeg)[];
+  @property({ type: Array }) public accessor legs: (Leg | PtRideLeg)[] = [];
 
   /** Prop to render the departure time - will be formatted as "H:mm" */
-  @property({ attribute: 'departure-time' }) public departureTime?: string;
+  @forceType()
+  @property({ attribute: 'departure-time' })
+  public accessor departureTime: string = '';
 
   /** Prop to render the arrival time - will be formatted as "H:mm" */
-  @property({ attribute: 'arrival-time' }) public arrivalTime?: string;
+  @forceType()
+  @property({ attribute: 'arrival-time' })
+  public accessor arrivalTime: string = '';
 
   /** Optional prop to render the walk time (in minutes) before departure */
-  @property({ attribute: 'departure-walk', type: Number }) public departureWalk?: number;
+  @forceType()
+  @property({ attribute: 'departure-walk', type: Number })
+  public accessor departureWalk: number = NaN;
 
   /** Optional prop to render the walk time (in minutes) after arrival */
-  @property({ attribute: 'arrival-walk', type: Number }) public arrivalWalk?: number;
+  @forceType()
+  @property({ attribute: 'arrival-walk', type: Number })
+  public accessor arrivalWalk: number = NaN;
 
   /**
    * Per default, the current location has a pulsating animation. You can
    * disable the animation with this property.
    */
-  @property({ attribute: 'disable-animation', type: Boolean }) public disableAnimation?: boolean;
+  @forceType()
+  @property({ attribute: 'disable-animation', type: Boolean })
+  public accessor disableAnimation: boolean = false;
 
   /** Optional prop to render wheelchair-small instead of walk-small */
-  @property({ attribute: 'a11y-footpath', type: Boolean }) public a11yFootpath?: boolean;
+  @forceType()
+  @property({ attribute: 'a11y-footpath', type: Boolean })
+  public accessor a11yFootpath: boolean = false;
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()

@@ -15,15 +15,18 @@ import '../timetable-occupancy-icon.js';
 /**
  * Used in `sbb-timetable-row`, it displays information about wagon occupancy.
  */
+export
 @customElement('sbb-timetable-occupancy')
-export class SbbTimetableOccupancyElement extends SbbNegativeMixin(LitElement) {
+class SbbTimetableOccupancyElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** Occupancy for first class wagons. */
-  @property({ attribute: 'first-class-occupancy' }) public firstClassOccupancy?: SbbOccupancy;
+  @property({ attribute: 'first-class-occupancy' })
+  public accessor firstClassOccupancy: SbbOccupancy | null = null;
 
   /** Occupancy for second class wagons. */
-  @property({ attribute: 'second-class-occupancy' }) public secondClassOccupancy?: SbbOccupancy;
+  @property({ attribute: 'second-class-occupancy' })
+  public accessor secondClassOccupancy: SbbOccupancy | null = null;
 
   private _language = new SbbLanguageController(this);
 
@@ -35,7 +38,7 @@ export class SbbTimetableOccupancyElement extends SbbNegativeMixin(LitElement) {
         role=${!this.firstClassOccupancy || !this.secondClassOccupancy ? 'presentation' : nothing}
       >
         ${[this.firstClassOccupancy, this.secondClassOccupancy].map(
-          (occupancy?: string, index?: number) =>
+          (occupancy: string | null, index: number) =>
             occupancy &&
             html`
               <li class="sbb-timetable-occupancy__list-item">

@@ -56,9 +56,9 @@ describe(`sbb-train`, () => {
       ></sbb-train>`,
     );
 
-    expect(
-      element.shadowRoot!.querySelector('.sbb-train__direction-arrow')!.getAttribute('name'),
-    ).to.contain('-left-');
+    expect(element.shadowRoot!.querySelector('sbb-icon')!.getAttribute('name')).to.contain(
+      '-left-',
+    );
   });
 
   it('should display right indicator if direction is right', async () => {
@@ -70,9 +70,9 @@ describe(`sbb-train`, () => {
       ></sbb-train>`,
     );
 
-    expect(
-      element.shadowRoot!.querySelector('.sbb-train__direction-arrow')!.getAttribute('name'),
-    ).to.contain('-right-');
+    expect(element.shadowRoot!.querySelector('sbb-icon')!.getAttribute('name')).to.contain(
+      '-right-',
+    );
   });
 
   describe('accessibility label', () => {

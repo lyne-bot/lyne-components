@@ -60,7 +60,7 @@ Similarly, if a navigation action is marked to indicate a selected option (e.g.,
 
 | Name                      | Attribute                   | Privacy | Type                            | Default | Description                                                                                                |
 | ------------------------- | --------------------------- | ------- | ------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `\| string     \| undefined`    |         | This will be forwarded as aria-label to the close button element.                                          |
+| `accessibilityCloseLabel` | `accessibility-close-label` | public  | `string`                        | `''`    | This will be forwarded as aria-label to the close button element.                                          |
 | `activeNavigationSection` | -                           | public  | `HTMLElement \| null`           | `null`  |                                                                                                            |
 | `isOpen`                  | -                           | public  | `boolean`                       |         | Whether the element is open.                                                                               |
 | `trigger`                 | `trigger`                   | public  | `string \| HTMLElement \| null` | `null`  | The element that will trigger the navigation. Accepts both a string (id of an element) or an HTML element. |

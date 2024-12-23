@@ -1,14 +1,15 @@
 import type { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
+import { forceType } from '../decorators.js';
 import { EventEmitter } from '../eventing.js';
 
 import type { AbstractConstructor } from './constructor.js';
 
 export declare class SbbPanelMixinType {
-  public color: 'white' | 'milk';
-  public borderless: boolean;
-  public expansionState?: string;
+  public accessor color: 'white' | 'milk';
+  public accessor borderless: boolean;
+  public accessor expansionState: string;
 }
 
 export type SbbPanelSize = 's' | 'm';
@@ -26,13 +27,17 @@ export const SbbPanelMixin = <T extends AbstractConstructor<LitElement>>(
     } as const;
 
     /** The background color of the panel. */
-    @property() public color: 'white' | 'milk' = 'white';
+    @property() public accessor color: 'white' | 'milk' = 'white';
 
     /** Whether the unselected panel has a border. */
-    @property({ reflect: true, type: Boolean }) public borderless = false;
+    @forceType()
+    @property({ reflect: true, type: Boolean })
+    public accessor borderless: boolean = false;
 
     /** @internal used for accessibility label when in expansion panel */
-    @property() public expansionState?: string;
+    @forceType()
+    @property()
+    public accessor expansionState: string = '';
 
     /**
      * @internal

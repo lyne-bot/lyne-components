@@ -7,7 +7,7 @@
   display: block;
 
   --sbb-train-blocked-passage-height: var(--sbb-train-formation-wagon-height);
-  --sbb-train-blocked-passage-background-color: var(--sbb-color-red);
+  --sbb-train-blocked-passage-background-color: var(--sbb-color-red125);
   --sbb-train-blocked-passage-bar-color: var(--sbb-color-white);
   --sbb-train-blocked-passage-icon-dimension: #{sbb.px-to-rem-build(16)};
   --sbb-train-blocked-passage-icon-bar-width: #{sbb.px-to-rem-build(10)};
@@ -24,7 +24,7 @@
   &::before {
     content: '';
     display: var(--sbb-train-formation-wagon-label-display, block);
-    height: calc(var(--sbb-font-size-text-s) * var(--sbb-typo-line-height-body-text));
+    height: calc(var(--sbb-font-size-text-xxs) * var(--sbb-typo-line-height-body-text));
   }
 }
 

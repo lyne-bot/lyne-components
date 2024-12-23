@@ -11,8 +11,9 @@ import { buttonCommonStyle, buttonPrimaryStyle, SbbButtonCommonElementMixin } fr
  * @slot - Use the unnamed slot to add content to the button-link.
  * @slot icon - Slot used to display the icon, if one is set
  */
+export
 @customElement('sbb-button-link')
-export class SbbButtonLinkElement extends SbbButtonCommonElementMixin(
+class SbbButtonLinkElement extends SbbButtonCommonElementMixin(
   SbbDisabledInteractiveMixin(SbbDisabledMixin(SbbLinkBaseElement)),
 ) {
   public static override styles: CSSResultGroup = [buttonCommonStyle, buttonPrimaryStyle];

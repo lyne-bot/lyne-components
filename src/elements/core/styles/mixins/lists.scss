@@ -96,6 +96,7 @@
   }
 }
 
+// @deprecated Will be removed with next major version
 @mixin base-marker-list(
   $dimensions,
   $padding-inline,
@@ -159,49 +160,84 @@
 }
 
 @mixin icon-list {
-  @include base-marker-list(
-    $dimensions: '--sbb-icon-list-dimensions',
-    $padding-inline: '--sbb-icon-list-padding-inline',
-    $to-text-gap: '--sbb-icon-list-to-text-gap',
-    $vertical-gap: '--sbb-icon-list-vertical-gap',
-    $text-to-marker-block-offset: '--sbb-icon-list-text-to-marker-block-offset'
+  --sbb-icon-list-marker-icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="%23000" fill-rule="evenodd" d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9m9-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2m-1.104 13.305 5-6.5-.792-.61-4.69 6.096-2.102-1.681-.624.78 2.5 2 .398.319z" clip-rule="evenodd"></path></svg>');
+  --sbb-icon-list-marker-icon-color: currentcolor;
+  --sbb-icon-list-vertical-gap: var(--sbb-spacing-fixed-2x);
+  --sbb-icon-list-dimensions: var(--sbb-size-icon-ui-small);
+  --sbb-icon-list-to-text-gap: var(--sbb-spacing-fixed-2x);
+
+  // Additional space from overall li padding to the text because text
+  // has to be centered to marker number.
+  --sbb-icon-list-text-to-marker-block-offset: calc(
+    0.5 *
+      (
+        var(--sbb-icon-list-dimensions) - var(--sbb-typo-line-height-body-text) *
+          var(--sbb-text-font-size)
+      )
   );
 
-  & {
-    --sbb-icon-list-marker-icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="%23000" fill-rule="evenodd" d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9m9-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2m-1.104 13.305 5-6.5-.792-.61-4.69 6.096-2.102-1.681-.624.78 2.5 2 .398.319z" clip-rule="evenodd"></path></svg>');
-    --sbb-icon-list-marker-icon-color: currentcolor;
-    --sbb-icon-list-vertical-gap: var(--sbb-spacing-fixed-2x);
-    --sbb-icon-list-dimensions: var(--sbb-size-icon-ui-small);
-    --sbb-icon-list-to-text-gap: var(--sbb-spacing-fixed-2x);
-  }
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
-  > li::before {
-    content: '';
-    background-color: var(--sbb-icon-list-marker-icon-color);
-    mask-image: var(--sbb-icon-list-marker-icon);
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-size: 100%;
+  // stylelint-disable-next-line no-descending-specificity
+  > li {
+    position: relative;
+    padding-inline: calc(var(--sbb-icon-list-dimensions) + var(--sbb-icon-list-to-text-gap)) 0;
+    min-height: var(--sbb-icon-list-dimensions);
+
+    + li {
+      margin-block-start: var(--sbb-icon-list-vertical-gap);
+    }
+
+    p {
+      margin-block: 0;
+    }
+
+    // P has to be redefined to be more specific
+    > * + p {
+      margin-block-start: var(--sbb-spacing-responsive-xxxs);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: var(--sbb-icon-list-dimensions);
+      height: var(--sbb-icon-list-dimensions);
+      margin-block-start: calc(-1 * var(--sbb-icon-list-text-to-marker-block-offset));
+      inset-inline-start: 0;
+      background-color: var(--sbb-icon-list-marker-icon-color);
+      mask-image: var(--sbb-icon-list-marker-icon);
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: 100%;
+    }
   }
 }
 
 @mixin step-list {
-  @include base-marker-list(
-    $dimensions: '--sbb-step-list-dimensions',
-    $padding-inline: '--sbb-step-list-padding-inline',
-    $to-text-gap: '--sbb-step-list-to-text-gap',
-    $vertical-gap: '--sbb-step-list-vertical-gap',
-    $text-to-marker-block-offset: '--sbb-step-list-text-to-marker-block-offset'
+  --sbb-step-list-dimensions: #{functions.px-to-rem-build(34)};
+  --sbb-step-list-padding-inline: var(--sbb-spacing-responsive-xxs);
+  --sbb-step-list-to-text-gap: var(--sbb-spacing-responsive-xxxs);
+  --sbb-step-list-padding-block: var(--sbb-spacing-fixed-3x);
+  --sbb-step-list-vertical-gap: var(--sbb-spacing-fixed-1x);
+  --sbb-step-list-border-radius: var(--sbb-border-radius-4x);
+
+  // Additional space from overall li padding to the text because text
+  // has to be centered to marker number.
+  --sbb-step-list-text-to-marker-block-offset: calc(
+    0.5 *
+      (
+        var(--sbb-step-list-dimensions) - var(--sbb-typo-line-height-body-text) *
+          var(--sbb-text-font-size)
+      )
   );
 
-  & {
-    --sbb-step-list-padding-block: var(--sbb-spacing-fixed-3x);
-    --sbb-step-list-vertical-gap: var(--sbb-spacing-fixed-1x);
-    --sbb-step-list-border-radius: var(--sbb-border-radius-4x);
-
-    counter-reset: steps;
-    color: var(--sbb-color-iron);
-  }
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: steps;
+  color: var(--sbb-color-iron);
 
   &:where(.sbb-text-s) {
     --sbb-step-list-padding-block: var(--sbb-spacing-fixed-4x);
@@ -211,7 +247,15 @@
     --sbb-step-list-padding-block: var(--sbb-spacing-fixed-5x);
   }
 
+  &:where(.sbb-text-xl) {
+    @include mediaqueries.mq($from: medium) {
+      --sbb-step-list-dimensions: #{functions.px-to-rem-build(41)};
+    }
+  }
+
+  // stylelint-disable-next-line no-descending-specificity
   > li {
+    position: relative;
     counter-increment: steps;
     background-color: var(--sbb-color-milk);
     padding-block: calc(
@@ -226,12 +270,33 @@
     min-height: calc(var(--sbb-step-list-dimensions) + 2 * var(--sbb-step-list-padding-block));
 
     &::before {
+      @include typo.text-xxs--bold;
+
       content: counter(steps);
+      position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: var(--sbb-border-width-1x) solid var(--sbb-color-cement);
+      height: var(--sbb-step-list-dimensions);
+      width: var(--sbb-step-list-dimensions);
+      margin-block-start: calc(-1 * var(--sbb-step-list-text-to-marker-block-offset));
+      inset-inline-start: var(--sbb-step-list-padding-inline);
       color: var(--sbb-color-charcoal);
+      border: var(--sbb-border-width-1x) solid var(--sbb-color-cement);
+      border-radius: 50%;
+    }
+
+    + li {
+      margin-block-start: var(--sbb-step-list-vertical-gap);
+    }
+
+    p {
+      margin-block: 0;
+    }
+
+    // P has to be redefined to be more specific
+    > * + p {
+      margin-block-start: var(--sbb-spacing-responsive-xxxs);
     }
 
     &:first-of-type {

@@ -24,6 +24,6 @@
   --sbb-button-color-hover-text: var(--sbb-color-milk);
 }
 
-:host(:not([disabled], [negative], :active, [data-active])) {
+:host(:not([disabled], :disabled, [disabled-interactive], [negative], :active, [data-active])) {
   --sbb-button-box-shadow: var(--sbb-button-box-shadow-definition);
 }

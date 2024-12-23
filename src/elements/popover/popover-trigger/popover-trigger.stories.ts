@@ -63,7 +63,7 @@ const defaultArgs: Args = {
 };
 
 const popover = (): TemplateResult => html`
-  <sbb-popover data-testid="popover" trigger="popover-trigger">
+  <sbb-popover trigger="popover-trigger">
     <sbb-title level="2" visual-level="6" style="margin-block-start: 0">
       Simple popover with link.
     </sbb-title>

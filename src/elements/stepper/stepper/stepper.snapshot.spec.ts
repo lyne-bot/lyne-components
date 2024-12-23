@@ -2,7 +2,6 @@ import { expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture, testA11yTreeSnapshot } from '../../core/testing/private.js';
-import { waitForLitRender } from '../../core/testing.js';
 
 import type { SbbStepperElement } from './stepper.js';
 import './stepper.js';
@@ -25,7 +24,6 @@ describe('sbb-stepper', () => {
           <sbb-step-label>Test step label 4</sbb-step-label>
         </sbb-stepper>
       `);
-      await waitForLitRender(element);
     });
 
     it('DOM', async () => {

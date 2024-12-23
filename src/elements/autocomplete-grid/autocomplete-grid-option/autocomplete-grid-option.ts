@@ -19,11 +19,12 @@ export const autocompleteGridOptionId: string = `sbb-autocomplete-grid-option`;
  * @cssprop [--sbb-option-icon-container-display=none] - Can be used to reserve space even
  * when preserve-icon-space on autocomplete is not set or iconName is not set.
  */
+export
 @customElement('sbb-autocomplete-grid-option')
 @hostAttributes({
   role: 'gridcell',
 })
-export class SbbAutocompleteGridOptionElement extends SbbOptionBaseElement {
+class SbbAutocompleteGridOptionElement extends SbbOptionBaseElement {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
     selectionChange: 'autocompleteOptionSelectionChange',

@@ -118,9 +118,8 @@ const openDialog = (_event: PointerEvent, id: string): void => {
   dialog.open();
 };
 
-const triggerButton = (dialogId: string, triggerId?: string): TemplateResult => html`
+const triggerButton = (dialogId: string): TemplateResult => html`
   <sbb-button
-    data-testid=${triggerId || 'dialog-trigger'}
     aria-haspopup="dialog"
     aria-controls=${dialogId}
     size="m"
@@ -211,7 +210,7 @@ const DefaultTemplate = ({
   ...args
 }: Args): TemplateResult => html`
   ${triggerButton('my-dialog-1')}
-  <sbb-dialog data-testid="dialog" id="my-dialog-1" ${sbbSpread(args)}>
+  <sbb-dialog id="my-dialog-1" ${sbbSpread(args)}>
     ${dialogTitle(level, backButton, hideOnScroll, accessibilityCloseLabel, accessibilityBackLabel)}
     <sbb-dialog-content>
       <p
@@ -243,9 +242,9 @@ const LongContentTemplate = ({
   ...args
 }: Args): TemplateResult => html`
   ${triggerButton('my-dialog-2')}
-  <sbb-dialog data-testid="dialog" id="my-dialog-2" ${sbbSpread(args)}>
+  <sbb-dialog id="my-dialog-2" ${sbbSpread(args)}>
     ${dialogTitle(level, backButton, hideOnScroll, accessibilityCloseLabel, accessibilityBackLabel)}
-    <sbb-dialog-content data-testid="content">
+    <sbb-dialog-content>
       Frodo halted for a moment, looking back. Elrond was in his chair and the fire was on his face
       like summer-light upon the trees. Near him sat the Lady Arwen. To his surprise Frodo saw that
       Aragorn stood beside her; his dark cloak was thrown back, and he seemed to be clad in
@@ -256,7 +255,6 @@ const LongContentTemplate = ({
         style=${styleMap({ 'margin-block': '1rem' })}
         image-src=${sampleImages[1]}
         alt="Natural landscape"
-        data-testid="image"
       ></sbb-image>
       He stood still enchanted, while the sweet syllables of the elvish song fell like clear jewels
       of blended word and melody. 'It is a song to Elbereth,'' said Bilbo. 'They will sing that, and
@@ -283,7 +281,6 @@ const FormTemplate = ({
     </div>
   </div>
   <sbb-dialog
-    data-testid="dialog"
     id="my-dialog-3"
     @willClose=${(event: CustomEvent) => {
       if (event.detail.returnValue) {
@@ -331,7 +328,7 @@ const NoFooterTemplate = ({
   ...args
 }: Args): TemplateResult => html`
   ${triggerButton('my-dialog-4')}
-  <sbb-dialog data-testid="dialog" id="my-dialog-4" ${sbbSpread(args)}>
+  <sbb-dialog id="my-dialog-4" ${sbbSpread(args)}>
     ${dialogTitle(level, backButton, hideOnScroll, accessibilityCloseLabel, accessibilityBackLabel)}
     <sbb-dialog-content>
       <p id="dialog-content-5" style=${styleMap({ margin: '0' })}>
@@ -353,13 +350,13 @@ const NestedTemplate = ({
   ...args
 }: Args): TemplateResult => html`
   ${triggerButton('my-dialog-5')}
-  <sbb-dialog data-testid="dialog" id="my-dialog-5" ${sbbSpread(args)}>
+  <sbb-dialog id="my-dialog-5" ${sbbSpread(args)}>
     ${dialogTitle(level, backButton, hideOnScroll, accessibilityCloseLabel, accessibilityBackLabel)}
     <sbb-dialog-content
       >Click the button to open a nested
-      dialog.&nbsp;${triggerButton('my-dialog-6', 'nested-trigger-id')}</sbb-dialog-content
+      dialog.&nbsp;${triggerButton('my-dialog-6')}</sbb-dialog-content
     >
-    <sbb-dialog data-testid="nested-dialog" id="my-dialog-6" ${sbbSpread(args)}>
+    <sbb-dialog id="my-dialog-6" ${sbbSpread(args)}>
       ${dialogTitle(
         level,
         backButton,

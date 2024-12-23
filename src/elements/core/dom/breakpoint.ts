@@ -9,16 +9,16 @@ export type Breakpoint = (typeof breakpoints)[number];
  *
  * @param from The breakpoint corresponding to the `min-width` value of the media query (optional).
  * @param to The breakpoint corresponding to the `max-width` value of the media query (optional).
+ * @param properties Whether the max breakpoint should be included
  * @returns A boolean indicating whether the window matches the breakpoint.
  */
 export function isBreakpoint(
   from?: Breakpoint,
   to?: Breakpoint,
   properties?: { includeMaxBreakpoint: boolean },
-): boolean {
+): boolean | null {
   if (isServer) {
-    // TODO: Remove and decide case by case what should be done on consuming end
-    return false;
+    return null;
   }
 
   const computedStyle = getComputedStyle(document.documentElement);

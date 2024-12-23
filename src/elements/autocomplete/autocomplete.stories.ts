@@ -234,15 +234,9 @@ const Template = (args: Args): TemplateResult => html`
       ?borderless=${args.borderless}
       ?floating-label=${args.floatingLabel}
       size=${args.size}
-      data-testid="form-field"
     >
       <label>Label</label>
-      <input
-        placeholder="Placeholder"
-        data-testid="autocomplete-input"
-        ?disabled=${args.disabled}
-        ?readonly=${args.readonly}
-      />
+      <input placeholder="Placeholder" ?disabled=${args.disabled} ?readonly=${args.readonly} />
 
       <sbb-autocomplete ?preserve-icon-space=${args.preserveIconSpace}>
         ${createOptionGroup1(args.iconName, args.disableOption)} ${createOptionGroup2()}
@@ -259,15 +253,9 @@ const OptionGroupTemplate = (args: Args): TemplateResult => html`
       ?borderless=${args.borderless}
       ?floating-label=${args.floatingLabel}
       size=${args.size}
-      data-testid="form-field"
     >
       <label>Label</label>
-      <input
-        placeholder="Placeholder"
-        data-testid="autocomplete-input"
-        ?disabled=${args.disabled}
-        ?readonly=${args.readonly}
-      />
+      <input placeholder="Placeholder" ?disabled=${args.disabled} ?readonly=${args.readonly} />
 
       <sbb-autocomplete ?preserve-icon-space=${args.preserveIconSpace}>
         <sbb-optgroup label="Group 1" ?disabled=${args.disableGroup}>
@@ -287,15 +275,9 @@ const MixedTemplate = (args: Args): TemplateResult => html`
       ?borderless=${args.borderless}
       ?floating-label=${args.floatingLabel}
       size=${args.size}
-      data-testid="form-field"
     >
       <label>Label</label>
-      <input
-        placeholder="Placeholder"
-        data-testid="autocomplete-input"
-        ?disabled=${args.disabled}
-        ?readonly=${args.readonly}
-      />
+      <input placeholder="Placeholder" ?disabled=${args.disabled} ?readonly=${args.readonly} />
 
       <sbb-autocomplete ?preserve-icon-space=${args.preserveIconSpace}>
         <sbb-option value="Option 1">
@@ -328,13 +310,11 @@ const RequiredTemplate = (args: Args): TemplateResult => {
         ?borderless=${args.borderless}
         ?floating-label=${args.floatingLabel}
         size=${args.size}
-        data-testid="form-field"
         id="sbb-form-field"
       >
         <label>Label</label>
         <input
           id="sbb-autocomplete"
-          data-testid="autocomplete-input"
           class="sbb-invalid"
           placeholder="Placeholder"
           ?disabled=${args.disabled}

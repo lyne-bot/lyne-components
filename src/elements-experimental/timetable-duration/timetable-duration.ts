@@ -1,4 +1,5 @@
 import { SbbLanguageController } from '@sbb-esta/lyne-elements/core/controllers.js';
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import { i18nDurationHour, i18nDurationMinute } from '@sbb-esta/lyne-elements/core/i18n.js';
 import type { CSSResultGroup, TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
@@ -9,8 +10,9 @@ import style from './timetable-duration.scss?lit&inline';
 /**
  * Used in `sbb-timetable-row`, it displays information about the trip duration.
  */
+export
 @customElement('sbb-timetable-duration')
-export class SbbTimetableDurationElement extends LitElement {
+class SbbTimetableDurationElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**
@@ -19,7 +21,9 @@ export class SbbTimetableDurationElement extends LitElement {
    * individual stories to get an idea of the
    * structure.
    */
-  @property() public config!: string;
+  @forceType()
+  @property()
+  public accessor config: string = '';
 
   private _language = new SbbLanguageController(this);
 

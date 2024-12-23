@@ -66,25 +66,23 @@ The `sbb-slider` has the following behaviour on keypress when focused:
 | End         | Set the value to the maximum.                     |
 | Home        | Set the value to the minimum.                     |
 
-<!-- Override
-  @type value => string \| null
--->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name            | Attribute         | Privacy | Type                      | Default | Description                                                                                                                                    |
-| --------------- | ----------------- | ------- | ------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled`      | `disabled`        | public  | `boolean`                 | `false` | Whether the component is disabled.                                                                                                             |
-| `endIcon`       | `end-icon`        | public  | `string \| undefined`     |         | Name of the icon at component's end, which will be forward to the nested `sbb-icon`.                                                           |
-| `form`          | -                 | public  | `HTMLFormElement \| null` |         | Returns the form owner of the internals of the target element.                                                                                 |
-| `max`           | `max`             | public  | `string`                  | `'100'` | Maximum acceptable value for the inner HTMLInputElement.                                                                                       |
-| `min`           | `min`             | public  | `string`                  | `'0'`   | Minimum acceptable value for the inner HTMLInputElement.                                                                                       |
-| `name`          | `name`            | public  | `string`                  |         | Name of the form element. Will be read from name attribute.                                                                                    |
-| `readonly`      | `readonly`        | public  | `boolean \| undefined`    | `false` | Readonly state for the inner HTMLInputElement. Since the input range does not allow this attribute, it will be merged with the `disabled` one. |
-| `startIcon`     | `start-icon`      | public  | `string \| undefined`     |         | Name of the icon at component's start, which will be forward to the nested `sbb-icon`.                                                         |
-| `value`         | `value`           | public  | `string \| null`          | `null`  | Value of the form element. If no value is provided, default is the middle point between min and max.                                           |
-| `valueAsNumber` | `value-as-number` | public  | `number \| null`          |         | Numeric value for the inner HTMLInputElement.                                                                                                  |
+| Name            | Attribute         | Privacy | Type                      | Default   | Description                                                                                                                                    |
+| --------------- | ----------------- | ------- | ------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled`      | `disabled`        | public  | `boolean`                 | `false`   | Whether the component is disabled.                                                                                                             |
+| `endIcon`       | `end-icon`        | public  | `string`                  | `''`      | Name of the icon at component's end, which will be forward to the nested `sbb-icon`.                                                           |
+| `form`          | -                 | public  | `HTMLFormElement \| null` |           | Returns the form owner of the internals of the target element.                                                                                 |
+| `max`           | `max`             | public  | `string`                  | `'100'`   | Maximum acceptable value for the inner HTMLInputElement.                                                                                       |
+| `min`           | `min`             | public  | `string`                  | `'0'`     | Minimum acceptable value for the inner HTMLInputElement.                                                                                       |
+| `name`          | `name`            | public  | `string`                  |           | Name of the form element. Will be read from name attribute.                                                                                    |
+| `readonly`      | `readonly`        | public  | `boolean`                 | `false`   | Readonly state for the inner HTMLInputElement. Since the input range does not allow this attribute, it will be merged with the `disabled` one. |
+| `startIcon`     | `start-icon`      | public  | `string`                  | `''`      | Name of the icon at component's start, which will be forward to the nested `sbb-icon`.                                                         |
+| `type`          | -                 | public  | `string`                  | `'range'` | Form type of element.                                                                                                                          |
+| `value`         | `value`           | public  | `string \| null`          | `null`    | Value of the form element. If no value is provided, default is the middle point between min and max.                                           |
+| `valueAsNumber` | `value-as-number` | public  | `number \| null`          |           | Numeric value for the inner HTMLInputElement.                                                                                                  |
 
 ## Events
 

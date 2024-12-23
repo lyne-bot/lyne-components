@@ -21,11 +21,12 @@ export type SbbOptionVariant = 'autocomplete' | 'select' | null;
  * @cssprop [--sbb-option-icon-container-display=none] - Can be used to reserve space even
  * when preserve-icon-space on autocomplete is not set or iconName is not set.
  */
+export
 @customElement('sbb-option')
 @hostAttributes({
   role: 'option',
 })
-export class SbbOptionElement extends SbbOptionBaseElement {
+class SbbOptionElement extends SbbOptionBaseElement {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
     selectionChange: 'optionSelectionChange',

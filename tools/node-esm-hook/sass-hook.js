@@ -1,8 +1,8 @@
 // @ts-check
 
 /**
- * The sass hook will compile any imports containing `.scss?` to css wrapped in the
- * lit css tagged template function.
+ * The sass hook will compile any imports containing `.scss?` to CSS wrapped in the
+ * lit CSS tagged template function.
  * This allows lit elements to be consumed in SSR tests in a Node.js worker.
  */
 

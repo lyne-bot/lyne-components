@@ -9,15 +9,15 @@
   --sbb-flip-card-border-radius: var(--sbb-border-radius-4x);
   --sbb-flip-card-min-height: #{sbb.px-to-rem-build(280)};
   --sbb-flip-card-summary-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-5x)
   );
   --sbb-flip-card-summary-transition-delay: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-flip-card-details-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
 
@@ -39,7 +39,7 @@
 :host([data-flipped]) {
   --sbb-flip-card-toggle-icon-transform: rotate(45deg);
   --sbb-flip-card-details-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-flip-card-summary-transition-delay: 0s;
@@ -75,9 +75,15 @@
   min-height: var(--sbb-flip-card-min-height);
   background-color: var(--sbb-flip-card-background-color);
   border-radius: var(--sbb-flip-card-border-radius);
-  transition: var(--sbb-flip-card-summary-transition-duration) ease-out;
+  transition:
+    all var(--sbb-flip-card-summary-transition-duration) ease-out,
+    min-height var(--sbb-flip-card-details-transition-duration);
   transition-delay: var(--sbb-flip-card-summary-transition-delay);
   cursor: pointer;
+
+  :host([data-flipped]) & {
+    min-height: max(var(--sbb-flip-card-min-height), var(--sbb-flip-card-details-height));
+  }
 
   @include sbb.if-forced-colors {
     &::after {
@@ -110,7 +116,7 @@
 
     // Use this large border radius to improve the appearance of the expanding dark background.
     border-radius: #{sbb.px-to-rem-build(256)};
-    transition: var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-3x)) ease-out;
+    transition: var(--sbb-disable-animation-duration, var(--sbb-animation-duration-3x)) ease-out;
 
     :host([data-flipped]) & {
       opacity: 1;
@@ -119,7 +125,7 @@
       width: 100%;
       height: 100%;
       border-radius: var(--sbb-flip-card-border-radius);
-      transition-duration: var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-5x));
+      transition-duration: var(--sbb-disable-animation-duration, var(--sbb-animation-duration-5x));
     }
   }
 }

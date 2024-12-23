@@ -9,8 +9,9 @@ import { SbbInlineLinkCommonElementMixin } from '../common.js';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-link`.
  */
+export
 @customElement('sbb-link')
-export class SbbLinkElement extends SbbInlineLinkCommonElementMixin(
+class SbbLinkElement extends SbbInlineLinkCommonElementMixin(
   SbbDisabledMixin(SbbLinkBaseElement),
 ) {}
 

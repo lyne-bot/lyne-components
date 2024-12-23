@@ -10,8 +10,9 @@ import type { SbbAutocompleteGridElement } from '../autocomplete-grid.js';
  *
  * @slot - Use the unnamed slot to add `sbb-autocomplete-grid-option` elements to the `sbb-autocomplete-grid-optgroup`.
  */
+export
 @customElement('sbb-autocomplete-grid-optgroup')
-export class SbbAutocompleteGridOptgroupElement extends SbbOptgroupBaseElement {
+class SbbAutocompleteGridOptgroupElement extends SbbOptgroupBaseElement {
   protected get options(): SbbAutocompleteGridOptionElement[] {
     return Array.from(
       this.querySelectorAll?.('sbb-autocomplete-grid-option') ?? [],

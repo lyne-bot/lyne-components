@@ -3,7 +3,6 @@ export const snapshots = {};
 
 snapshots["sbb-autocomplete-grid-button renders DOM"] = 
 `<sbb-autocomplete-grid-button
-  aria-disabled="false"
   data-action=""
   data-button=""
   icon-name="pie-small"
@@ -60,7 +59,6 @@ snapshots["sbb-autocomplete-grid-button renders disabled Shadow DOM"] =
 
 snapshots["sbb-autocomplete-grid-button renders negative without icon DOM"] = 
 `<sbb-autocomplete-grid-button
-  aria-disabled="false"
   data-action=""
   data-button=""
   id="sbb-autocomplete-grid-button-5"

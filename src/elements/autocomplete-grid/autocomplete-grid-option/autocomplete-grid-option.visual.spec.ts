@@ -92,9 +92,7 @@ describe(`sbb-autocomplete-grid-option`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(autocompleteTemplate(defaultArgs), { minHeight: '400px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-autocomplete-grid')!.open(),
-          );
+          setup.withPostSetupAction(() => setup.snapshotElement.querySelector('input')!.focus());
         }),
       );
 
@@ -104,9 +102,7 @@ describe(`sbb-autocomplete-grid-option`, () => {
           await setup.withFixture(autocompleteTemplate({ ...defaultArgs, disabled: true }), {
             minHeight: '400px',
           });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-autocomplete-grid')!.open(),
-          );
+          setup.withPostSetupAction(() => setup.snapshotElement.querySelector('input')!.focus());
         }),
       );
     });

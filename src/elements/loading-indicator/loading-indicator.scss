@@ -5,6 +5,29 @@
 
 :host {
   --sbb-loading-indicator-color: var(--sbb-color-red);
+  --sbb-loading-indicator-padding: 0;
+  --sbb-loading-indicator-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-6x)
+  );
+  --sbb-loading-indicator-window-element-rotation: 55.24deg;
+  --_sbb-loading-indicator-window-first-span-width: calc(
+    var(--sbb-loading-indicator-window-height) * 0.58
+  );
+
+  // Size of the gap between the windows
+  --_sbb-loading-indicator-window-unit: calc(
+    var(--_sbb-loading-indicator-window-first-span-width) / 5.5
+  );
+
+  // The spans must move one rectangle plus one gap per animation cycle
+  --_sbb-loading-indicator-window-element-animation-speed: calc(
+    var(--_sbb-loading-indicator-window-unit) * 6.5
+  );
+
+  // Defaults to S
+  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(18)};
+  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(55)};
 
   display: inline-block;
   line-height: 0;
@@ -18,166 +41,71 @@
   --sbb-loading-indicator-color: var(--sbb-color-white);
 }
 
-:host([variant='circle']) {
-  --sbb-loading-indicator-padding: var(--sbb-border-width-2x);
-  --sbb-loading-indicator-duration: var(--sbb-disable-animation-zero-time, 1.5s);
-  --sbb-loading-indicator-background-color: var(--sbb-color-white);
-  --sbb-loading-indicator-circle-background: conic-gradient(
-    from 90deg,
-    var(--sbb-loading-indicator-background-color),
-    var(--sbb-loading-indicator-color)
-  );
-  --sbb-loading-indicator-circle-animated-width: 0.1875em;
-  --sbb-loading-indicator-circle-animated-height: 0.1875em;
-  --sbb-loading-indicator-circle-animated-border-radius: 50%;
+:host([size='l']) {
+  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(32)};
+  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(100)};
 }
 
-:host([color='white'][variant='circle']) {
-  --sbb-loading-indicator-background-color: var(--sbb-color-iron);
+:host([size='xl']) {
+  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(51)};
+  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(140)};
 }
 
-:host([variant='circle']) .sbb-loading-indicator {
-  display: inline-flex;
-  height: auto;
-  width: auto;
-  padding-inline: var(--sbb-loading-indicator-padding);
-  padding-block: var(--sbb-loading-indicator-padding);
-  vertical-align: middle;
-  line-height: 1;
+:host([size='xxl']) {
+  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(98)};
+  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(250)};
 }
 
-:host([variant='circle']) .sbb-loading-indicator__animated-element {
-  width: 1.25em;
-  height: 1.25em;
-  display: inline-block;
-  color: transparent;
-  position: relative;
-  margin: 0 auto;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--sbb-loading-indicator-circle-background);
-  // stylelint-disable-next-line property-no-vendor-prefix
-  -webkit-mask: radial-gradient(
-    circle 0.4375em,
-    #0000 98%,
-    var(--sbb-loading-indicator-background-color)
-  );
-  mask: radial-gradient(circle 0.4375em, #0000 98%, var(--sbb-loading-indicator-background-color));
-  animation: rotation var(--sbb-loading-indicator-duration) infinite linear;
-
-  &::after {
-    content: '';
-    width: var(--sbb-loading-indicator-circle-animated-width);
-    height: var(--sbb-loading-indicator-circle-animated-height);
-    background: var(--sbb-loading-indicator-color);
-    border-radius: var(--sbb-loading-indicator-circle-animated-border-radius);
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    overflow: hidden;
-    margin: auto;
-    @include sbb.if-forced-colors {
-      --sbb-loading-indicator-color: CanvasText;
-      --sbb-loading-indicator-circle-animated-width: 50%;
-      --sbb-loading-indicator-circle-animated-height: 100%;
-      --sbb-loading-indicator-circle-animated-border-radius: 0;
-    }
-  }
-
-  @include sbb.if-forced-colors {
-    --sbb-loading-indicator-circle-background: transparent;
-  }
+:host([size='xxxl']) {
+  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(147)};
+  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(360)};
 }
 
-:host([color='white'][variant='circle']) .sbb-loading-indicator__animated-element::after {
-  @include sbb.if-forced-colors {
-    --sbb-loading-indicator-color: var(--sbb-color-white);
-  }
-}
-
-:host([variant='window']) {
-  --sbb-loading-indicator-padding: 0;
-  --sbb-loading-indicator-duration: var(
-    --sbb-disable-animation-zero-time,
-    var(--sbb-animation-duration-6x)
-  );
-}
-
-:host([variant='window'][size='s']) {
-  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(26.66666)};
-  --sbb-loading-indicator-window-padding-block-start: #{sbb.px-to-rem-build(10.66666)};
-  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(55.46666)};
-  --sbb-loading-indicator-window-element-height: #{sbb.px-to-rem-build(5.33333)};
-  --sbb-loading-indicator-window-element-perspective: #{sbb.px-to-rem-build(96)};
-  --sbb-loading-indicator-window-element-animation-name: loading-container-small;
-  --sbb-loading-indicator-window-last-span-width: #{sbb.px-to-rem-build(8.53333)};
-  --sbb-loading-indicator-window-last-span-height: #{sbb.px-to-rem-build(5.33333)};
-  --sbb-loading-indicator-window-last-span-margin: #{sbb.px-to-rem-build(3.2)};
-  --sbb-loading-indicator-window-last-span-transform: translate3d(
-    #{sbb.px-to-rem-build(-1.6)},
-    0,
-    0
-  );
-}
-
-:host([variant='window'][size='l']) {
-  --sbb-loading-indicator-window-height: #{sbb.px-to-rem-build(48)};
-  --sbb-loading-indicator-window-padding-block-start: #{sbb.px-to-rem-build(19.2)};
-  --sbb-loading-indicator-window-element-width: #{sbb.px-to-rem-build(92.7969)};
-  --sbb-loading-indicator-window-element-height: #{sbb.px-to-rem-build(9.59375)};
-  --sbb-loading-indicator-window-element-perspective: #{sbb.px-to-rem-build(128)};
-  --sbb-loading-indicator-window-element-animation-name: loading-container-large;
-  --sbb-loading-indicator-window-last-span-width: #{sbb.px-to-rem-build(16)};
-  --sbb-loading-indicator-window-last-span-height: #{sbb.px-to-rem-build(9.59375)};
-  --sbb-loading-indicator-window-last-span-margin: #{sbb.px-to-rem-build(3.2)};
-}
-
-:host([variant='window']) span {
+span {
   display: inline-block;
 }
 
-:host([variant='window']) .sbb-loading-indicator {
+.sbb-loading-indicator {
   display: flex;
   height: var(--sbb-loading-indicator-window-height);
-  padding-block-start: var(--sbb-loading-indicator-window-padding-block-start);
+  align-items: center;
+
+  @include sbb.zero-width-space;
 }
 
-:host([variant='window']) .sbb-loading-indicator__animated-element {
+.sbb-loading-indicator__animated-element {
+  position: relative;
+  justify-content: center;
+  display: flex;
   margin: 0 auto;
   transform-origin: center;
-  transform: translate3d(-2em, 0, 0);
+  translate: 25%;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
   width: var(--sbb-loading-indicator-window-element-width);
-  height: var(--sbb-loading-indicator-window-element-height);
-  perspective: var(--sbb-loading-indicator-window-element-perspective);
+  perspective: var(--sbb-loading-indicator-window-height);
 }
 
-:host([variant='window']) .sbb-loading-indicator__animated-element > span {
+.sbb-loading-indicator__animated-element > span {
   position: relative;
-  transform: rotateY(50deg) translateZ(1em);
-  transform-origin: right;
+  align-self: center;
+  transform-origin: left;
+  rotate: y var(--sbb-loading-indicator-window-element-rotation);
   backface-visibility: hidden;
 }
 
-:host([variant='window']) .sbb-loading-indicator__animated-element > span > span {
+.sbb-loading-indicator__animated-element > span > span {
   position: relative;
   display: flex;
-  animation-name: var(--sbb-loading-indicator-window-element-animation-name);
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-duration: var(--sbb-loading-indicator-duration);
+  animation: loading-container var(--sbb-loading-indicator-duration) linear infinite;
 }
 
-:host([variant='window']) .sbb-loading-indicator__animated-element > span > span > span {
+.sbb-loading-indicator__animated-element > span > span > span {
   background: var(--sbb-loading-indicator-color);
   backface-visibility: hidden;
-  outline: var(--sbb-border-width-1x) solid rgb(0 0 0 / 0%);
-  width: var(--sbb-loading-indicator-window-last-span-width);
-  height: var(--sbb-loading-indicator-window-last-span-height);
-  margin-right: var(--sbb-loading-indicator-window-last-span-margin);
-  transform: var(--sbb-loading-indicator-window-last-span-transform);
+  outline: var(--sbb-border-width-1x) solid transparent;
+  width: var(--_sbb-loading-indicator-window-first-span-width);
+  height: var(--sbb-loading-indicator-window-height);
+  margin-inline-end: var(--_sbb-loading-indicator-window-unit);
 
   &:nth-child(1) {
     animation: loading-rectangle1 var(--sbb-loading-indicator-duration) linear infinite;
@@ -200,27 +128,17 @@
   }
 
   &:last-child {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
 }
 
-@keyframes loading-container-small {
+@keyframes loading-container {
   0% {
-    transform: translateX(0.73333em);
+    translate: var(--_sbb-loading-indicator-window-element-animation-speed);
   }
 
   100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes loading-container-large {
-  0% {
-    transform: translateX(1.2em);
-  }
-
-  100% {
-    transform: translateX(0);
+    translate: 0;
   }
 }
 
@@ -271,15 +189,5 @@
 
   100% {
     opacity: 0.25;
-  }
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(359deg);
   }
 }

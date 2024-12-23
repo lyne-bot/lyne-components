@@ -3,11 +3,10 @@ import { customElement, property } from 'lit/decorators.js';
 import { html } from 'lit/static-html.js';
 
 import { SbbLinkBaseElement } from '../core/base-elements.js';
-import { slotState } from '../core/decorators.js';
+import { forceType, omitEmptyConverter, slotState } from '../core/decorators.js';
 
 import style from './teaser-hero.scss?lit&inline';
 
-import '../image.js';
 import '../link/block-link-static.js';
 
 /**
@@ -16,29 +15,25 @@ import '../link/block-link-static.js';
  * @slot - Use the unnamed slot to add text content to the panel
  * @slot link-content - Link content of the panel
  * @slot image - The background image that can be a `sbb-image`
- * @slot chip - The `sbb-chip` component that will be displayed on top-left corner
+ * @slot chip - The `sbb-chip-label` component that will be displayed on top-left corner
  */
+export
 @customElement('sbb-teaser-hero')
 @slotState()
-export class SbbTeaserHeroElement extends SbbLinkBaseElement {
+class SbbTeaserHeroElement extends SbbLinkBaseElement {
   public static override styles: CSSResultGroup = style;
 
   /** Panel link text. */
-  @property({ attribute: 'link-content', reflect: true }) public linkContent?: string;
+  @forceType()
+  @property({ attribute: 'link-content', reflect: true, converter: omitEmptyConverter })
+  public accessor linkContent: string = '';
 
-  /** Image src will be passed to `sbb-image`. */
-  @property({ attribute: 'image-src' }) public imageSrc?: string;
-
-  /** Image alt text will be passed to `sbb-image`. */
-  @property({ attribute: 'image-alt' }) public imageAlt?: string;
-
-  private _chipSlotChanged(): void {
-    this.querySelector('sbb-chip')?.setAttribute('color', 'charcoal');
+  private _imageSlotChanged(): void {
+    Array.from(this.querySelectorAll('sbb-chip-label')).forEach((c) => (c.color = 'charcoal'));
   }
 
   protected override renderTemplate(): TemplateResult {
     return html`
-      <slot name="chip" @slotchange=${() => this._chipSlotChanged()}></slot>
       <span class="sbb-teaser-hero__panel">
         <p class="sbb-teaser-hero__panel-text">
           <slot></slot>
@@ -55,11 +50,7 @@ export class SbbTeaserHeroElement extends SbbLinkBaseElement {
             </sbb-block-link-static>`
           : nothing}
       </span>
-      <slot name="image">
-        ${this.imageSrc
-          ? html`<sbb-image image-src=${this.imageSrc} alt=${this.imageAlt ?? nothing}></sbb-image>`
-          : nothing}
-      </slot>
+      <slot name="image" @slotchange=${this._imageSlotChanged}></slot>
     `;
   }
 }

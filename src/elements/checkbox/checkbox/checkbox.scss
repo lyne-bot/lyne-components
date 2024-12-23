@@ -2,7 +2,7 @@
 
 :host {
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
   display: inline-block;
 }

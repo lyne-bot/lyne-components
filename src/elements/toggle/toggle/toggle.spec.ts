@@ -3,7 +3,7 @@ import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbToggleOptionElement } from '../toggle-option.js';
 
 import { SbbToggleElement } from './toggle.js';
@@ -239,8 +239,8 @@ describe(`sbb-toggle`, () => {
 
       secondOption.click();
       await waitForLitRender(firstOption);
-      await waitForCondition(() => changeSpy.events.length === 1);
-      await waitForCondition(() => inputSpy.events.length === 1);
+      await changeSpy.calledOnce();
+      await inputSpy.calledOnce();
       expect(valueInEvent).to.equal('Value two');
 
       // Checking value in events of EventSpy is too late to check the real use case,
@@ -253,8 +253,8 @@ describe(`sbb-toggle`, () => {
 
       firstOption.click();
       await waitForLitRender(firstOption);
-      await waitForCondition(() => changeSpy.events.length === 2);
-      await waitForCondition(() => inputSpy.events.length === 2);
+      await changeSpy.calledTimes(2);
+      await inputSpy.calledTimes(2);
 
       expect(firstOption).to.have.attribute('checked');
       expect(valueInEvent).to.equal('Value one');
@@ -287,8 +287,8 @@ describe(`sbb-toggle`, () => {
       await waitForLitRender(element);
 
       expect(secondOption).to.have.attribute('checked');
-      await waitForCondition(() => changeSpy.events.length === 1);
-      await waitForCondition(() => inputSpy.events.length === 1);
+      await changeSpy.calledOnce();
+      await inputSpy.calledOnce();
 
       firstOption.click();
       await waitForLitRender(firstOption);
@@ -306,8 +306,8 @@ describe(`sbb-toggle`, () => {
       await waitForLitRender(element);
 
       expect(secondOption).to.have.attribute('checked');
-      await waitForCondition(() => changeSpy.events.length === 1);
-      await waitForCondition(() => inputSpy.events.length === 1);
+      await changeSpy.calledOnce();
+      await inputSpy.calledOnce();
 
       firstOption.click();
       await waitForLitRender(firstOption);

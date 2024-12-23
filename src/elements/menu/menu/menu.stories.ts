@@ -65,12 +65,12 @@ const userInfoStyle: Args = {
 };
 
 const triggerButton = (id: string): TemplateResult => html`
-  <sbb-button data-testid="menu-trigger" id=${id} size="m"> Menu trigger </sbb-button>
+  <sbb-button id=${id} size="m"> Menu trigger </sbb-button>
 `;
 
 const DefaultTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('menu-trigger-1')}
-  <sbb-menu trigger="menu-trigger-1" data-testid="menu">
+  <sbb-menu trigger="menu-trigger-1">
     <sbb-menu-link icon-name=${args['icon-name']} href="https://www.sbb.ch/en">
       View
     </sbb-menu-link>
@@ -85,7 +85,7 @@ const DefaultTemplate = (args: Args): TemplateResult => html`
 
 const ListTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('menu-trigger-1')}
-  <sbb-menu trigger="menu-trigger-1" data-testid="menu">
+  <sbb-menu trigger="menu-trigger-1">
     <sbb-menu-link icon-name=${args['icon-name']} href="https://www.sbb.ch/en">
       View
     </sbb-menu-link>
@@ -99,7 +99,7 @@ const ListTemplate = (args: Args): TemplateResult => html`
 
 const CustomContentTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('menu-trigger-2')}
-  <sbb-menu trigger="menu-trigger-2" data-testid="menu">
+  <sbb-menu trigger="menu-trigger-2">
     <div style=${styleMap(userNameStyle)}>Christina Müller</div>
     <span style=${styleMap(userInfoStyle)}>UIS9057</span>
     <sbb-block-link href="https://www.sbb.ch/en" negative size="xs"> Profile </sbb-block-link>
@@ -118,7 +118,7 @@ const CustomContentTemplate = (args: Args): TemplateResult => html`
 
 const LongContentTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('menu-trigger-3')}
-  <sbb-menu trigger="menu-trigger-3" data-testid="menu">
+  <sbb-menu trigger="menu-trigger-3">
     <sbb-menu-button
       icon-name=${args['icon-name']}
       ?disabled=${args.disabled}
@@ -155,7 +155,7 @@ const LongContentTemplate = (args: Args): TemplateResult => html`
 
 const EllipsisTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('menu-trigger-4')}
-  <sbb-menu trigger="menu-trigger-4" data-testid="menu">
+  <sbb-menu trigger="menu-trigger-4">
     <div style=${styleMap(userNameStyle)}>Christina Müller</div>
     <span style=${styleMap(userInfoStyle)}>UIS9057</span>
     <sbb-block-link href="https://www.sbb.ch/en" negative size="xs"> Profile </sbb-block-link>

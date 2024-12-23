@@ -2,6 +2,8 @@ import type { CSSResultGroup, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+import { isLean } from '../../core/dom.js';
+
 import style from './card.scss?lit&inline';
 
 /**
@@ -11,15 +13,26 @@ import style from './card.scss?lit&inline';
  * @slot badge - Use this slot to render a `sbb-card-badge` component.
  * @slot action - Use this slot to render a `sbb-card-button` or a `sbb-card-link` component.
  */
+export
 @customElement('sbb-card')
-export class SbbCardElement extends LitElement {
+class SbbCardElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
-  /** Size variant, either xs, s, m, l, xl, xxl or xxxl. */
-  @property({ reflect: true }) public size: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl' = 'm';
+  /**
+   * Size variant, either xs, s, m, l, xl, xxl or xxxl.
+   * @default 'm' / 'xs' (lean)
+   */
+  @property({ reflect: true }) public accessor size:
+    | 'xs'
+    | 's'
+    | 'm'
+    | 'l'
+    | 'xl'
+    | 'xxl'
+    | 'xxxl' = isLean() ? 'xs' : 'm';
 
   /** Option to set the component's background color. */
-  @property({ reflect: true }) public color:
+  @property({ reflect: true }) public accessor color:
     | 'white'
     | 'milk'
     | 'transparent-bordered'

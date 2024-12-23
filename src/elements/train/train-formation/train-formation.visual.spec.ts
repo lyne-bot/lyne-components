@@ -1,6 +1,7 @@
 import { html } from 'lit';
 
 import { describeViewports, visualDiffDefault } from '../../core/testing/private.js';
+import { waitForLitRender } from '../../core/testing.js';
 
 import '../train.js';
 import '../train-wagon.js';
@@ -8,8 +9,6 @@ import '../train-blocked-passage.js';
 import './train-formation.js';
 
 describe(`sbb-train-formation`, () => {
-  const hideWagonLabelCases = [false, true];
-
   const train1 = html`<sbb-train
     direction-label="Direction of travel"
     station="Bern"
@@ -34,11 +33,10 @@ describe(`sbb-train-formation`, () => {
     <sbb-train-wagon type="wagon" label="39" occupancy="none" wagon-class="1" sector="B">
       <sbb-icon name="sa-nf"></sbb-icon>
     </sbb-train-wagon>
-    <sbb-train-wagon type="wagon" label="40" occupancy="high" wagon-class="2" sector="B">
-      <sbb-icon name="sa-wr"></sbb-icon>
+    <sbb-train-wagon type="restaurant" label="40" sector="B">
       <sbb-icon name="sa-rs"></sbb-icon>
     </sbb-train-wagon>
-    <sbb-train-wagon type="wagon" label="41" occupancy="medium" wagon-class="2" sector="B">
+    <sbb-train-wagon type="wagon" label="41" occupancy="high" wagon-class="2" sector="B">
       <sbb-icon name="sa-nf"></sbb-icon>
     </sbb-train-wagon>
     <sbb-train-wagon
@@ -82,118 +80,170 @@ describe(`sbb-train-formation`, () => {
       wagon-class="2"
       sector="D"
     ></sbb-train-wagon>
+    <sbb-train-wagon type="couchette" label="46" sector="D"></sbb-train-wagon>
+    <sbb-train-wagon type="sleeping" label="47" sector="D" blocked-passage="next"></sbb-train-wagon>
+    <sbb-train-blocked-passage></sbb-train-blocked-passage>
+  </sbb-train>`;
+
+  const train2 = html`<sbb-train
+    direction-label="Direction of travel"
+    station="Luzern"
+    direction="left"
+  >
+    <sbb-train-wagon
+      type="wagon-end-left"
+      blocked-passage="previous"
+      occupancy="none"
+      wagon-class="2"
+      sector="E"
+    ></sbb-train-wagon>
+    <sbb-train-wagon type="closed" label="49" sector="E"></sbb-train-wagon>
+    <sbb-train-blocked-passage></sbb-train-blocked-passage>
     <sbb-train-wagon
       type="wagon"
-      label="46"
+      label="50"
       occupancy="low"
       wagon-class="2"
-      sector="D"
+      blocked-passage="previous"
+      sector="E"
     ></sbb-train-wagon>
     <sbb-train-wagon
       type="wagon"
-      label="47"
+      label="51"
       occupancy="low"
       wagon-class="2"
-      sector="D"
+      sector="F"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="52"
+      occupancy="low"
+      wagon-class="2"
+      sector="F"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="53"
+      occupancy="low"
+      wagon-class="2"
+      sector="F"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="54"
+      occupancy="low"
+      wagon-class="2"
+      sector="G"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="55"
+      occupancy="low"
+      wagon-class="2"
+      sector="G"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="56"
+      occupancy="low"
+      wagon-class="2"
+      sector="G"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="57"
+      occupancy="low"
+      wagon-class="2"
+      sector="H"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon"
+      label="58"
+      occupancy="low"
+      wagon-class="2"
+      sector="H"
+    ></sbb-train-wagon>
+    <sbb-train-wagon
+      type="wagon-end-right"
+      label="59"
+      occupancy="low"
+      wagon-class="2"
+      sector="H"
     ></sbb-train-wagon>
   </sbb-train>`;
 
   describeViewports({ viewports: ['zero', 'medium', 'ultra'] }, () => {
-    describe('multiple trains', () => {
-      for (const hideWagonLabel of hideWagonLabelCases) {
-        it(
-          `hide-wagon-label=${hideWagonLabel}`,
-          visualDiffDefault.with(async (setup) => {
-            await setup.withFixture(
-              html`<sbb-train-formation ?hide-wagon-label=${hideWagonLabel}>
-                ${train1}
-                <sbb-train direction-label="Direction of travel" station="Luzern" direction="left">
-                  <sbb-train-wagon type="locomotive" sector="E"></sbb-train-wagon>
-                  <sbb-train-wagon type="closed" label="49" sector="E"></sbb-train-wagon>
-                  <sbb-train-blocked-passage></sbb-train-blocked-passage>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="50"
-                    occupancy="low"
-                    wagon-class="2"
-                    blocked-passage="previous"
-                    sector="E"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="51"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="F"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="52"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="F"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="53"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="F"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="54"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="G"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="55"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="G"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="56"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="G"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="57"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="H"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="58"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="H"
-                  ></sbb-train-wagon>
-                  <sbb-train-wagon
-                    type="wagon"
-                    label="59"
-                    occupancy="low"
-                    wagon-class="2"
-                    sector="H"
-                  ></sbb-train-wagon>
-                </sbb-train>
-              </sbb-train-formation>`,
-            );
-          }),
+    it(
+      `multiple trains`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train-formation>${train1} ${train2}</sbb-train-formation>`,
         );
-      }
-    });
+      }),
+    );
 
     it(
       `single train`,
       visualDiffDefault.with(async (setup) => {
         await setup.withFixture(html`<sbb-train-formation>${train1}</sbb-train-formation>`);
+      }),
+    );
+
+    it(
+      `padding`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train-formation
+            style="--sbb-train-formation-padding-inline:var(--sbb-spacing-fixed-4x)"
+          >
+            ${train1} ${train2}
+          </sbb-train-formation>`,
+        );
+      }),
+    );
+
+    it(
+      `no label`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train-formation> ${train1} ${train2} </sbb-train-formation>`,
+        );
+
+        Array.from(setup.snapshotElement.querySelectorAll('sbb-train-wagon')!).forEach(
+          (wagon) => (wagon.label = ''),
+        );
+
+        await waitForLitRender(setup.snapshotElement);
+      }),
+    );
+
+    it(
+      `no sectors`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train-formation> ${train1} ${train2} </sbb-train-formation>`,
+        );
+
+        Array.from(setup.snapshotElement.querySelectorAll('sbb-train-wagon')!).forEach(
+          (wagon) => (wagon.sector = ''),
+        );
+
+        await waitForLitRender(setup.snapshotElement);
+      }),
+    );
+
+    it(
+      `no direction label`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train-formation> ${train1} ${train2} </sbb-train-formation>`,
+        );
+
+        Array.from(setup.snapshotElement.querySelectorAll('sbb-train')!).forEach(
+          (wagon) => (wagon.directionLabel = ''),
+        );
+
+        await waitForLitRender(setup.snapshotElement);
       }),
     );
   });

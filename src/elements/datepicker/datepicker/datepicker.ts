@@ -9,10 +9,11 @@ import {
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { readConfig } from '../../core/config.js';
-import { SbbConnectedAbortController, SbbLanguageController } from '../../core/controllers.js';
+import { SbbLanguageController } from '../../core/controllers.js';
 import { type DateAdapter, defaultDateAdapter } from '../../core/datetime.js';
+import { forceType } from '../../core/decorators.js';
 import { findInput, findReferencedElement } from '../../core/dom.js';
-import { EventEmitter } from '../../core/eventing.js';
+import { EventEmitter, forwardEvent } from '../../core/eventing.js';
 import { i18nDateChangedTo, i18nDatePickerPlaceholder } from '../../core/i18n.js';
 import type { SbbDateLike, SbbValidationChangeEvent } from '../../core/interfaces.js';
 import type { SbbDatepickerButton } from '../common.js';
@@ -26,9 +27,6 @@ export interface SbbInputUpdateEvent {
   min?: string | number;
   max?: string | number;
 }
-
-// TODO(breaking-change): Inline deprecated functions in SbbDatepickerElement as public methods
-// where possible and use these methods where the functions are currently used.
 
 /**
  * Given a SbbDatepickerPreviousDayElement, a SbbDatepickerNextDayElement or a SbbDatepickerToggleElement component,
@@ -49,119 +47,6 @@ export function getDatePicker<T = Date>(
   return findReferencedElement<SbbDatepickerElement<T>>(trigger);
 }
 
-/**
- * Returns the first available date before or after a given one, considering the SbbDatepickerElement `dateFilter` property.
- * @param date The starting date for calculations.
- * @param delta The number of days to add/subtract from the starting one.
- * @param dateFilter The dateFilter function from the SbbDatepickerElement.
- * @param dateAdapter The adapter class.
- *
- * @deprecated Not intended as public API.
- */
-export function getAvailableDate<T = Date>(
-  date: T,
-  delta: number,
-  dateFilter: ((date: T) => boolean) | null,
-  dateAdapter: DateAdapter<T>,
-): T {
-  let availableDate = dateAdapter.addCalendarDays(date, delta);
-
-  if (dateFilter) {
-    while (!dateFilter(availableDate)) {
-      availableDate = dateAdapter.addCalendarDays(availableDate, delta);
-    }
-  }
-
-  return availableDate;
-}
-
-/**
- * Calculates the first available date before the given one,
- * considering the SbbDatepickerElement `dateFilter` property and `min` parameter (e.g. from the self-named input's attribute).
- * @param date The starting date for calculations.
- * @param dateFilter The dateFilter function from the SbbDatepickerElement.
- * @param dateAdapter The adapter class.
- * @param min The minimum value to consider in calculations.
- *
- * @deprecated Not intended as public API.
- */
-export function findPreviousAvailableDate<T = Date>(
-  date: T,
-  dateFilter: ((date: T) => boolean) | null,
-  dateAdapter: DateAdapter<T>,
-  min: string | number | null,
-): T {
-  const previousDate = getAvailableDate(date, -1, dateFilter, dateAdapter);
-  const dateMin = dateAdapter.deserialize(min);
-
-  if (
-    !dateMin ||
-    (dateAdapter.isValid(dateMin) && dateAdapter.compareDate(previousDate, dateMin) >= 0)
-  ) {
-    return previousDate;
-  }
-  return date;
-}
-
-/**
- * Calculates the first available date after the given one,
- * considering the SbbDatepickerElement `dateFilter` property and `max` parameter (e.g. from the self-named input's attribute).
- * @param date The starting date for calculations.
- * @param dateFilter The dateFilter function from the SbbDatepickerElement.
- * @param dateAdapter The adapter class.
- * @param max The maximum value to consider in calculations.
- *
- * @deprecated Not intended as public API.
- */
-export function findNextAvailableDate<T = Date>(
-  date: T,
-  dateFilter: ((date: T) => boolean) | null,
-  dateAdapter: DateAdapter<T>,
-  max: string | number | null,
-): T {
-  const nextDate = getAvailableDate(date, 1, dateFilter, dateAdapter);
-  const dateMax = dateAdapter.deserialize(max);
-
-  if (
-    !dateMax ||
-    (dateAdapter.isValid(dateMax) && dateAdapter.compareDate(nextDate, dateMax) <= 0)
-  ) {
-    return nextDate;
-  }
-  return date;
-}
-
-/**
- * Checks if the provided date is a valid one, considering the SbbDatepickerElement `dateFilter` property
- * and `min` and `max` parameters (e.g. from the self-named input's attributes).
- * @param date The starting date for calculations.
- * @param dateFilter The dateFilter function from the SbbDatepickerElement.
- * @param min The minimum value to consider in calculations.
- * @param max The maximum value to consider in calculations.
- *
- * @deprecated Not intended as public API.
- */
-export function isDateAvailable<T = Date>(
-  date: T,
-  dateFilter: ((date: T) => boolean) | null,
-  min: string | number | null | undefined,
-  max: string | number | null | undefined,
-): boolean {
-  // TODO: Get date adapter from config
-  const dateAdapter: DateAdapter<T> = readConfig().datetime?.dateAdapter ?? defaultDateAdapter;
-  const dateMin = dateAdapter.deserialize(min);
-  const dateMax = dateAdapter.deserialize(max);
-
-  if (
-    (dateAdapter.isValid(dateMin) && dateAdapter.compareDate(date, dateMin!) < 0) ||
-    (dateAdapter.isValid(dateMax) && dateAdapter.compareDate(date, dateMax!) > 0)
-  ) {
-    return false;
-  }
-
-  return dateFilter ? dateFilter(date) : true;
-}
-
 export const datepickerControlRegisteredEventFactory = (): CustomEvent =>
   new CustomEvent('datepickerControlRegistered', {
     bubbles: false,
@@ -171,21 +56,17 @@ export const datepickerControlRegisteredEventFactory = (): CustomEvent =>
 /**
  * Combined with a native input, it displays the input's value as a formatted date.
  *
- * @event {CustomEvent<void>} didChange - Deprecated. used for React. Will probably be removed once React 19 is available.
  * @event {CustomEvent<void>} change - Notifies that the connected input has changes.
+ * @event {CustomEvent<void>} input - Notifies that the connected input fired the input event.
  * @event {CustomEvent<SbbInputUpdateEvent>} inputUpdated - Notifies that the attributes of the input connected to the datepicker have changes.
  * @event {CustomEvent<void>} datePickerUpdated - Notifies that the attributes of the datepicker have changes.
  * @event {CustomEvent<SbbValidationChangeEvent>} validationChange - Emits whenever the internal validation state changes.
  */
+export
 @customElement('sbb-datepicker')
-export class SbbDatepickerElement<T = Date> extends LitElement {
-  /* eslint-disable @typescript-eslint/member-ordering --
-   * We deactivate member-ordering because of the @property decorated methods dateFilter, dateParser and format.
-   */
-
+class SbbDatepickerElement<T = Date> extends LitElement {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
-    didChange: 'didChange',
     change: 'change',
     inputUpdated: 'inputUpdated',
     datePickerUpdated: 'datePickerUpdated',
@@ -193,30 +74,20 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
   } as const;
 
   /** If set to true, two months are displayed. */
-  @property({ type: Boolean }) public wide = false;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor wide: boolean = false;
 
   /** A function used to filter out dates. */
-  @property({ attribute: false }) public dateFilter: (date: T | null) => boolean = () => true;
-
-  /**
-   * A function used to parse string value into dates.
-   * @deprecated No longer required.
-   */
-  @property({ attribute: false }) public dateParser?: (value: string) => T | undefined;
-
-  /**
-   * A function used to format dates into the preferred string format.
-   * @deprecated No longer required.
-   */
-  @property({ attribute: false }) public format?: (date: T) => string;
+  @property({ attribute: false }) public accessor dateFilter: (date: T | null) => boolean = () =>
+    true;
 
   /** Reference of the native input connected to the datepicker. */
-  @property() public input?: string | HTMLElement;
+  @property() public accessor input: string | HTMLElement | null = null;
 
-  // TODO: Change undefined to null as a breaking change.
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()
-  public set now(value: SbbDateLike<T> | undefined) {
+  public set now(value: SbbDateLike<T> | null) {
     this._now = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
   }
   public get now(): T {
@@ -238,14 +109,6 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
     return this._valueAsDate ?? null;
   }
   private _valueAsDate?: T | null;
-
-  /**
-   * @deprecated only used for React. Will probably be removed once React 19 is available.
-   */
-  private _didChange: EventEmitter = new EventEmitter(this, SbbDatepickerElement.events.didChange, {
-    bubbles: true,
-    cancelable: true,
-  });
 
   /** Notifies that the connected input has changes. */
   private _change: EventEmitter = new EventEmitter(this, SbbDatepickerElement.events.change, {
@@ -276,7 +139,7 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
   );
 
   @state()
-  private _inputElement: HTMLInputElement | null = null;
+  private accessor _inputElement: HTMLInputElement | null = null;
   private _inputElementPlaceholderMutable = false;
 
   private _datePickerController!: AbortController;
@@ -294,23 +157,24 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
 
   private _dateAdapter: DateAdapter<T> = readConfig().datetime?.dateAdapter ?? defaultDateAdapter;
 
-  private _abort = new SbbConnectedAbortController(this);
   private _language = new SbbLanguageController(this).withHandler(() => {
     if (this._inputElement) {
       if (this._inputElementPlaceholderMutable) {
         this._inputElement.placeholder = i18nDatePickerPlaceholder[this._language.current];
       }
       if (this.valueAsDate) {
-        this._inputElement.value = this._format(this.valueAsDate);
+        this._inputElement.value = this._dateAdapter.format(this.valueAsDate);
       }
     }
   });
 
+  public constructor() {
+    super();
+    this.addEventListener?.('datepickerControlRegistered', () => this._emitInputUpdated());
+  }
+
   public override connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener('datepickerControlRegistered', () => this._emitInputUpdated(), {
-      signal: this._abort.signal,
-    });
     this._attachInput();
     if (this._inputElement) {
       this._emitInputUpdated();
@@ -347,22 +211,6 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
   }
 
   /**
-   * Gets the input value with the correct date format.
-   * @deprecated Use property valueAsDate instead.
-   */
-  public getValueAsDate(): T | undefined {
-    return this.valueAsDate ?? undefined;
-  }
-
-  /**
-   * Set the input value to the correctly formatted value.
-   * @deprecated Use property valueAsDate instead.
-   */
-  public setValueAsDate(date: SbbDateLike<T>): void {
-    this.valueAsDate = date;
-  }
-
-  /**
    * @internal
    * Whether a custom now is configured.
    */
@@ -393,7 +241,14 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
       }
 
       const options: AddEventListenerOptions = { signal: this._datePickerController.signal };
-      input.addEventListener('input', () => this._parseInput(), options);
+      input.addEventListener(
+        'input',
+        (e) => {
+          forwardEvent(e, this);
+          this._parseInput();
+        },
+        options,
+      );
       input.addEventListener('change', () => this._handleInputChange(), options);
       this._parseInput(true);
       this._tryApplyFormatToInput();
@@ -413,7 +268,6 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
     this._validateDate();
     this._setAriaLiveMessage();
     this._change.emit();
-    this._didChange.emit();
   }
 
   private _tryApplyFormatToInput(): boolean {
@@ -421,9 +275,13 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
       return false;
     }
 
-    const formattedDate = this.valueAsDate ? this._format(this.valueAsDate!) : '';
+    const formattedDate = this.valueAsDate ? this._dateAdapter.format(this.valueAsDate!) : '';
     if (formattedDate && this._inputElement.value !== formattedDate) {
-      this._inputElement.value = formattedDate;
+      // In order to support React onChange event, we have to get the setter and call it.
+      // https://github.com/facebook/react/issues/11600#issuecomment-345813130
+      const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+      setValue.call(this._inputElement, formattedDate);
+
       this._inputElement.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
       this._inputElement.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
       return true;
@@ -437,15 +295,7 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
       return;
     }
 
-    const isEmptyOrValid =
-      !this._inputElement.value ||
-      (!!this.valueAsDate &&
-        isDateAvailable(
-          this.valueAsDate,
-          this.dateFilter,
-          this._inputElement?.min,
-          this._inputElement?.max,
-        ));
+    const isEmptyOrValid = !this._inputElement.value || this._isDateAvailable();
     const wasValid = !this._inputElement.hasAttribute('data-sbb-invalid');
     this._inputElement.toggleAttribute('data-sbb-invalid', !isEmptyOrValid);
     if (wasValid !== isEmptyOrValid) {
@@ -455,19 +305,16 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
 
   private _parseInput(deserializeAsFallback = false): void {
     const value = this._inputElement!.value;
-    const parse = this.dateParser ?? ((v: string) => this._dateAdapter.parse(v, this.now));
     // We are assigning directly to the private backing property of valueAsDate
     // as we don't want to trigger a blur event during this time.
-    this._valueAsDate = this._dateAdapter.getValidDateOrNull(parse(value));
+    this._valueAsDate = this._dateAdapter.getValidDateOrNull(
+      this._dateAdapter.parse(value, this.now),
+    );
     if (deserializeAsFallback && !this._valueAsDate) {
       this._valueAsDate = this._dateAdapter.getValidDateOrNull(
         this._dateAdapter.deserialize(value),
       );
     }
-  }
-
-  private _format(date: T): string {
-    return this.format ? this.format(date) : this._dateAdapter.format(date);
   }
 
   private _setAriaLiveMessage(): void {
@@ -487,7 +334,84 @@ export class SbbDatepickerElement<T = Date> extends LitElement {
   protected override render(): TemplateResult {
     return html`<p id="status-container" role="status"></p>`;
   }
-  /* eslint-enable @typescript-eslint/member-ordering */
+
+  /**
+   * Calculates the first available date before the given one,
+   * considering the SbbDatepickerElement `dateFilter` property and `min` parameter (e.g. from the self-named input's attribute).
+   * @param date The starting date for calculations.
+   */
+  public findPreviousAvailableDate(date: T): T {
+    const previousDate = this._findAvailableDate(date, -1);
+    const dateMin = this._dateAdapter.deserialize(this._inputElement?.min);
+
+    if (
+      !dateMin ||
+      (this._dateAdapter.isValid(dateMin) &&
+        this._dateAdapter.compareDate(previousDate, dateMin) >= 0)
+    ) {
+      return previousDate;
+    }
+    return date;
+  }
+
+  /**
+   * Calculates the first available date after the given one,
+   * considering the SbbDatepickerElement `dateFilter` property and `max` parameter (e.g. from the self-named input's attribute).
+   * @param date The starting date for calculations.
+   */
+  public findNextAvailableDate(date: T): T {
+    const nextDate = this._findAvailableDate(date, 1);
+    const dateMax = this._dateAdapter.deserialize(this._inputElement?.max);
+
+    if (
+      !dateMax ||
+      (this._dateAdapter.isValid(dateMax) && this._dateAdapter.compareDate(nextDate, dateMax) <= 0)
+    ) {
+      return nextDate;
+    }
+    return date;
+  }
+
+  /**
+   * Returns the first available date before or after a given one, considering the `dateFilter` property.
+   * @param date The starting date for calculations.
+   * @param delta The number of days to add/subtract from the starting one.
+   */
+  private _findAvailableDate(date: T, delta: number): T {
+    let availableDate = this._dateAdapter.addCalendarDays(date, delta);
+
+    if (this.dateFilter) {
+      while (!this.dateFilter(availableDate)) {
+        availableDate = this._dateAdapter.addCalendarDays(availableDate, delta);
+      }
+    }
+
+    return availableDate;
+  }
+
+  /**
+   * Checks if valueAsDate is valid, considering the SbbDatepickerElement `dateFilter` property
+   * and `min` and `max` parameters (e.g. from the self-named input's attributes).
+   */
+  private _isDateAvailable(): boolean {
+    if (!this.valueAsDate) {
+      return false;
+    }
+
+    const dateMin = this._dateAdapter.deserialize(this._inputElement?.min);
+    const dateMax = this._dateAdapter.deserialize(this._inputElement?.max);
+
+    if (
+      (this._dateAdapter.isValid(dateMin) &&
+        this._dateAdapter.compareDate(this.valueAsDate, dateMin!) < 0) ||
+      (this._dateAdapter.isValid(dateMax) &&
+        this._dateAdapter.compareDate(this.valueAsDate, dateMax!) > 0)
+    ) {
+      return false;
+    }
+
+    return this.dateFilter ? this.dateFilter(this.valueAsDate) : true;
+  }
 }
 
 declare global {

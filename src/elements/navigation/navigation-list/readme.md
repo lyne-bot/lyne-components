@@ -15,9 +15,9 @@ Optionally, a label can be provided via slot via the self-named property or the 
 
 ## Properties
 
-| Name    | Attribute | Privacy | Type                  | Default | Description                                   |
-| ------- | --------- | ------- | --------------------- | ------- | --------------------------------------------- |
-| `label` | `label`   | public  | `string \| undefined` |         | The label to be shown before the action list. |
+| Name    | Attribute | Privacy | Type     | Default | Description                                   |
+| ------- | --------- | ------- | -------- | ------- | --------------------------------------------- |
+| `label` | `label`   | public  | `string` | `''`    | The label to be shown before the action list. |
 
 ## Slots
 

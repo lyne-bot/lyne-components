@@ -14,7 +14,7 @@ const text: string = `Lorem ipsum dolor sit amet, consetetur sadipscing elitr, s
   no sea takimata sanctus est Lorem ipsum dolor sit amet.`;
 
 const Template = (args: Args): TemplateResult => {
-  let scrollbarClass = 'scrollbar';
+  let scrollbarClass = 'sbb-scrollbar';
   if (args.size === 'thick') {
     scrollbarClass += '-thick';
   }

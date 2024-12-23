@@ -8,8 +8,13 @@ import {
   setModalityOnNextFocus,
 } from '../../core/a11y.js';
 import { SbbLanguageController } from '../../core/controllers.js';
-import { hostAttributes, slotState } from '../../core/decorators.js';
-import { findReferencedElement, isBreakpoint, setOrRemoveAttribute } from '../../core/dom.js';
+import { forceType, hostAttributes, omitEmptyConverter, slotState } from '../../core/decorators.js';
+import {
+  findReferencedElement,
+  isBreakpoint,
+  isZeroAnimationDuration,
+  setOrRemoveAttribute,
+} from '../../core/dom.js';
 import { i18nGoBack } from '../../core/i18n.js';
 import type { SbbOpenedClosedState } from '../../core/interfaces.js';
 import { SbbUpdateSchedulerMixin } from '../../core/mixins.js';
@@ -33,18 +38,21 @@ let nextId = 0;
  *
  * @slot - Use the unnamed slot to add content into the `sbb-navigation-section`.
  */
+export
 @customElement('sbb-navigation-section')
 @hostAttributes({
   slot: 'navigation-section',
 })
 @slotState()
-export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElement) {
+class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /**
    * The label to be shown before the action list.
    */
-  @property({ attribute: 'title-content', reflect: true }) public titleContent?: string;
+  @forceType()
+  @property({ attribute: 'title-content', reflect: true, converter: omitEmptyConverter })
+  public accessor titleContent: string = '';
 
   /**
    * The element that will trigger the navigation section.
@@ -64,14 +72,16 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
   /**
    * This will be forwarded as aria-label to the nav element and is read as a title of the navigation-section.
    */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel: string | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = '';
 
   /**
    * This will be forwarded as aria-label to the back button element.
    */
-  @property({ attribute: 'accessibility-back-label' }) public accessibilityBackLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-back-label' })
+  public accessor accessibilityBackLabel: string = '';
 
   /**
    * The state of the navigation section.
@@ -92,6 +102,11 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
   private _windowEventsController!: AbortController;
   private _language = new SbbLanguageController(this);
 
+  public constructor() {
+    super();
+    this.addEventListener?.('keydown', (event) => this._handleNavigationSectionFocus(event));
+  }
+
   /**
    * Opens the navigation section on trigger click.
    */
@@ -106,6 +121,39 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
     this.startUpdate();
     this.inert = true;
     this._triggerElement?.setAttribute('aria-expanded', 'true');
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-navigation-section-animation-duration');
+  }
+
+  private _handleOpening(): void {
+    this._state = 'opened';
+    this.inert = false;
+    this._attachWindowEvents();
+    this._setNavigationInert();
+    this._setNavigationSectionFocus();
+    this._checkActiveAction();
+    this.completeUpdate();
+  }
+
+  private _handleClosing(): void {
+    this._state = 'closed';
+    this._navigationSectionContainerElement.scrollTo(0, 0);
+    this._windowEventsController?.abort();
+    this._resetLists();
+    this._setNavigationInert();
+    if (this._isZeroToLargeBreakpoint() && this._triggerElement) {
+      setModalityOnNextFocus(this._triggerElement);
+      this._triggerElement.focus();
+    }
+    this.completeUpdate();
   }
 
   private _setActiveNavigationAction(): void {
@@ -128,6 +176,12 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
     this.startUpdate();
     this.inert = true;
     this._triggerElement?.setAttribute('aria-expanded', 'false');
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
   }
 
   // Removes trigger click listener on trigger change.
@@ -163,9 +217,6 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
     this._triggerElement.addEventListener('click', () => this.open(), {
       signal: this._navigationSectionController.signal,
     });
-    this.addEventListener('keydown', (event) => this._handleNavigationSectionFocus(event), {
-      signal: this._navigationSectionController.signal,
-    });
   }
 
   private _setNavigationInert(): void {
@@ -183,24 +234,10 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
   // To avoid entering a corrupt state, exit when state is not expected.
   private _onAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this._state === 'opening') {
-      this._state = 'opened';
-      this.inert = false;
-      this._attachWindowEvents();
-      this._setNavigationInert();
-      this._setNavigationSectionFocus();
-      this._checkActiveAction();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this._state === 'closing') {
-      this._state = 'closed';
-      this._navigationSectionContainerElement.scrollTo(0, 0);
-      this._windowEventsController?.abort();
-      this._resetLists();
-      this._setNavigationInert();
-      if (this._isZeroToLargeBreakpoint() && this._triggerElement) {
-        setModalityOnNextFocus(this._triggerElement);
-        this._triggerElement.focus();
-      }
+      this._handleClosing();
     }
-    this.completeUpdate();
   }
 
   private _resetLists(): void {
@@ -242,7 +279,7 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
   }
 
   private _isZeroToLargeBreakpoint(): boolean {
-    return isBreakpoint('zero', 'large');
+    return isBreakpoint('zero', 'large') ?? false;
   }
 
   // Closes the navigation on "Esc" key pressed.
@@ -331,7 +368,7 @@ export class SbbNavigationSectionElement extends SbbUpdateSchedulerMixin(LitElem
         ${ref((el?: Element) => (this._navigationSectionContainerElement = el as HTMLElement))}
       >
         <nav
-          @animationend=${(event: AnimationEvent) => this._onAnimationEnd(event)}
+          @animationend=${this._onAnimationEnd}
           class="sbb-navigation-section"
           aria-labelledby=${!this.accessibilityLabel ? 'title' : nothing}
           aria-label=${this.accessibilityLabel ? this.accessibilityLabel : nothing}

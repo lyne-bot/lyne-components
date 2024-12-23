@@ -30,11 +30,7 @@ snapshots["sbb-flip-card-summary DOM"] =
   >
     Summary
   </sbb-title>
-  <sbb-image
-    aspect-ratio="16-9"
-    border-radius="default"
-    slot="image"
-  >
+  <sbb-image slot="image">
   </sbb-image>
 </sbb-flip-card-summary>
 `;

@@ -9,7 +9,7 @@ import {
 import { property, state } from 'lit/decorators.js';
 
 import type { SbbAutocompleteBaseElement } from '../../autocomplete.js';
-import { hostAttributes } from '../../core/decorators.js';
+import { forceType, hostAttributes } from '../../core/decorators.js';
 import { isSafari, setOrRemoveAttribute } from '../../core/dom.js';
 import { SbbDisabledMixin, SbbHydrationMixin } from '../../core/mixins.js';
 import type { SbbOptionBaseElement } from '../option.js';
@@ -25,18 +25,19 @@ import '../../divider.js';
  */
 const inertAriaGroups = isSafari;
 
+export
 @hostAttributes({ role: !inertAriaGroups ? 'group' : null })
-export abstract class SbbOptgroupBaseElement extends SbbDisabledMixin(
-  SbbHydrationMixin(LitElement),
-) {
+abstract class SbbOptgroupBaseElement extends SbbDisabledMixin(SbbHydrationMixin(LitElement)) {
   public static override styles: CSSResultGroup = style;
 
   /** Option group label. */
-  @property() public label!: string;
+  @forceType()
+  @property()
+  public accessor label: string = '';
 
-  @state() protected negative = false;
+  @state() protected accessor negative = false;
 
-  @state() private _inertAriaGroups = false;
+  @state() private accessor _inertAriaGroups = false;
 
   protected abstract get options(): SbbOptionBaseElement[];
 
@@ -71,7 +72,11 @@ export abstract class SbbOptgroupBaseElement extends SbbDisabledMixin(
 
     if (changedProperties.has('disabled')) {
       if (!this._inertAriaGroups) {
-        this.setAttribute('aria-disabled', this.disabled.toString());
+        if (this.disabled) {
+          this.setAttribute('aria-disabled', 'true');
+        } else {
+          this.removeAttribute('aria-disabled');
+        }
       }
 
       this.proxyDisabledToOptions();

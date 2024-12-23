@@ -9,6 +9,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { html, unsafeStatic } from 'lit/static-html.js';
 
 import { SbbLanguageController } from '../../core/controllers.js';
+import { forceType, omitEmptyConverter } from '../../core/decorators.js';
 import { EventEmitter } from '../../core/eventing.js';
 import { i18nTrain, i18nWagonsLabel } from '../../core/i18n.js';
 import { SbbNamedSlotListMixin, type WithListChildren } from '../../core/mixins.js';
@@ -25,8 +26,9 @@ import '../../icon.js';
  *
  * @slot - Use the unnamed slot to add 'sbb-train-wagon' elements to the `sbb-train`.
  */
+export
 @customElement('sbb-train')
-export class SbbTrainElement extends SbbNamedSlotListMixin<
+class SbbTrainElement extends SbbNamedSlotListMixin<
   SbbTrainWagonElement | SbbTrainBlockedPassageElement,
   typeof LitElement
 >(LitElement) {
@@ -40,19 +42,26 @@ export class SbbTrainElement extends SbbNamedSlotListMixin<
   ];
 
   /** General label for "driving direction". */
-  @property({ attribute: 'direction-label' }) public directionLabel!: string;
+  @forceType()
+  @property({ attribute: 'direction-label', reflect: true, converter: omitEmptyConverter })
+  public accessor directionLabel: string = '';
 
   /** Heading level of the direction label, used for screen readers. */
-  @property({ attribute: 'direction-label-level' }) public directionLabelLevel: SbbTitleLevel = '6';
+  @property({ attribute: 'direction-label-level' })
+  public accessor directionLabelLevel: SbbTitleLevel = '6';
 
   /** Label for the destination station of the train. */
-  @property() public station?: string;
+  @forceType()
+  @property()
+  public accessor station: string = '';
 
   /** Accessibility label for additional information regarding the leaving direction of the train. */
-  @property({ attribute: 'accessibility-label' }) public accessibilityLabel?: string;
+  @forceType()
+  @property({ attribute: 'accessibility-label' })
+  public accessor accessibilityLabel: string = '';
 
   /** Controls the direction indicator to show the arrow left or right. Default is left.  */
-  @property({ reflect: true }) public direction: 'left' | 'right' = 'left';
+  @property({ reflect: true }) public accessor direction: 'left' | 'right' = 'left';
 
   private _language = new SbbLanguageController(this);
 
@@ -103,33 +112,29 @@ export class SbbTrainElement extends SbbNamedSlotListMixin<
         <${unsafeStatic(TITLE_TAG_NAME)} class="sbb-train__direction-label-sr">
           ${this._getDirectionAriaLabel()}
         </${unsafeStatic(TITLE_TAG_NAME)}>
+        ${
+          this.directionLabel
+            ? html`<div class="sbb-train__direction-heading" aria-hidden="true">
+                <span class="sbb-train__direction-sticky-wrapper">
+                  ${this.direction === 'left'
+                    ? html`<sbb-icon name="chevron-small-left-small"></sbb-icon>`
+                    : nothing}
+
+                  <span class="sbb-train__direction-label">
+                    ${this.directionLabel} ${this.station}
+                  </span>
+
+                  ${this.direction === 'right'
+                    ? html`<sbb-icon name="chevron-small-right-small"></sbb-icon>`
+                    : nothing}
+                </span>
+              </div>`
+            : nothing
+        }
         ${this.renderList({
           class: 'sbb-train__wagons',
           ariaLabel: i18nWagonsLabel[this._language.current],
         })}
-
-        ${
-          this.directionLabel
-            ? html`<div class="sbb-train__direction" aria-hidden="true">
-                <div class="sbb-train__direction-heading">
-                  <span class="sbb-train__direction-label">${this.directionLabel}</span>
-                  ${this.station
-                    ? html`<span class="sbb-train__direction-station">${this.station}</span>`
-                    : nothing}
-                </div>
-                <div class="sbb-train__direction-indicator">
-                  <div class="sbb-train__sticky-wrapper">
-                    <sbb-icon
-                      class="sbb-train__direction-arrow"
-                      name=${this.direction === 'left'
-                        ? 'chevron-small-left-small'
-                        : 'chevron-small-right-small'}
-                    ></sbb-icon>
-                  </div>
-                </div>
-              </div>`
-            : nothing
-        }
       </div>
     `;
   }

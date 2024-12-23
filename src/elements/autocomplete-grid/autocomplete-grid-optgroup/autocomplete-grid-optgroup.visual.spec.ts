@@ -96,9 +96,7 @@ describe(`sbb-autocomplete-grid-optgroup`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(autocompleteTemplate(defaultArgs), { minHeight: '800px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-autocomplete-grid')!.open(),
-          );
+          setup.withPostSetupAction(() => setup.snapshotElement.querySelector('input')!.focus());
         }),
       );
     });

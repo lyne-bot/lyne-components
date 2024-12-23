@@ -173,9 +173,9 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   }
 
   /** Returns the right format for the `valueAsDate` property. */
-  public parse(value: string | null | undefined, now: Date): Date | undefined {
+  public parse(value: string | null | undefined, now: Date): Date | null {
     if (!value) {
-      return undefined;
+      return null;
     }
 
     const strippedValue = value.replace(/\D/g, ' ').trim();
@@ -188,7 +188,7 @@ export class NativeDateAdapter extends DateAdapter<Date> {
       match.some((e) => e === undefined) ||
       !this.isValid(this.createDate(+match[3], +match[2], +match[1]))
     ) {
-      return undefined;
+      return null;
     }
 
     let year = +match[3];

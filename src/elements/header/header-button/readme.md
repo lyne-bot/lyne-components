@@ -18,6 +18,23 @@ from which the label is displayed; below that, only the icon is visible.
 <sbb-header-button expand-from="medium">Text</sbb-header-button>
 ```
 
+### Style
+
+To indicate an active state, the CSS class `sbb-active` should be set.
+
+From accessibility perspective `aria-current="page"` should be set whenever the CSS class `sbb-active` is set.
+
+```html
+<sbb-header-button
+  icon-name="magnifying-glass-small"
+  href="#"
+  class="sbb-active"
+  aria-current="page"
+>
+  Overview
+</sbb-header-button>
+```
+
 ## Button properties
 
 The component is internally rendered as a button,
@@ -31,14 +48,14 @@ accepting its associated properties (`type`, `name`, `value` and `form`).
 
 ## Properties
 
-| Name         | Attribute     | Privacy | Type                  | Default    | Description                                                                                                                                                                              |
-| ------------ | ------------- | ------- | --------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `expandFrom` | `expand-from` | public  | `SbbHorizontalFrom`   | `'medium'` | Used to set the minimum breakpoint from which the text is displayed. E.g. if set to 'large', the text will be visible for breakpoints large, wide, ultra, and hidden for all the others. |
-| `form`       | `form`        | public  | `string \| undefined` |            | The <form> element to associate the button with.                                                                                                                                         |
-| `iconName`   | `icon-name`   | public  | `string \| undefined` |            | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch.                                                         |
-| `name`       | `name`        | public  | `string`              |            | The name of the button element.                                                                                                                                                          |
-| `type`       | `type`        | public  | `SbbButtonType`       | `'button'` | The type attribute to use for the button.                                                                                                                                                |
-| `value`      | `value`       | public  | `string`              |            | The value of the button element.                                                                                                                                                         |
+| Name         | Attribute     | Privacy | Type                      | Default    | Description                                                                                                                                                                              |
+| ------------ | ------------- | ------- | ------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `expandFrom` | `expand-from` | public  | `SbbHorizontalFrom`       | `'medium'` | Used to set the minimum breakpoint from which the text is displayed. E.g. if set to 'large', the text will be visible for breakpoints large, wide, ultra, and hidden for all the others. |
+| `form`       | `form`        | public  | `HTMLFormElement \| null` |            | The `<form>` element to associate the button with.                                                                                                                                       |
+| `iconName`   | `icon-name`   | public  | `string`                  | `''`       | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch.                                                         |
+| `name`       | `name`        | public  | `string`                  |            | Name of the form element. Will be read from name attribute.                                                                                                                              |
+| `type`       | `type`        | public  | `SbbButtonType`           | `'button'` | The type attribute to use for the button.                                                                                                                                                |
+| `value`      | `value`       | public  | `string \| null`          | `null`     | Value of the form element.                                                                                                                                                               |
 
 ## Slots
 

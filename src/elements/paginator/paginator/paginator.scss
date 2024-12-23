@@ -1,0 +1,213 @@
+@use '../../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  display: block;
+
+  --sbb-paginator-height: var(--sbb-size-element-m);
+  --sbb-paginator-page-color: var(--sbb-color-metal);
+  --sbb-paginator-page-background-color: transparent;
+  --sbb-paginator-page-border-width: 0;
+  --sbb-paginator-page-border-style: none;
+  --sbb-paginator-page-border-color: none;
+  --sbb-paginator-page-cursor: pointer;
+  --sbb-paginator-page-inset: 0;
+  --sbb-paginator-animation-easing: var(--sbb-animation-easing);
+  --sbb-paginator-animation-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-2x)
+  );
+  --sbb-paginator-justify-content: start;
+  --sbb-paginator-wrapping-group-wrap: wrap-reverse;
+  --sbb-paginator-wrap: wrap;
+}
+
+:host([size='s']) {
+  --sbb-paginator-height: var(--sbb-size-element-xs);
+}
+
+:host([negative]) {
+  --sbb-paginator-page-color: var(--sbb-color-smoke);
+  --sbb-focus-outline-color: var(--sbb-focus-outline-color-dark);
+}
+
+:host([pager-position='end']) {
+  --sbb-paginator-justify-content: end;
+  --sbb-paginator-wrapping-group-wrap: wrap;
+  --sbb-paginator-wrap: wrap-reverse;
+}
+
+.sbb-paginator,
+.sbb-paginator__wrapping-group {
+  display: flex;
+  gap: var(--sbb-spacing-fixed-3x) var(--sbb-spacing-fixed-6x);
+  justify-content: var(--sbb-paginator-justify-content);
+}
+
+.sbb-paginator {
+  flex-wrap: var(--sbb-paginator-wrap);
+  min-height: var(--sbb-paginator-height);
+}
+
+.sbb-paginator__wrapping-group {
+  flex-wrap: var(--sbb-paginator-wrapping-group-wrap);
+}
+
+.sbb-paginator__page-size-options {
+  @include sbb.text-s--regular;
+
+  display: flex;
+  align-items: center;
+  gap: var(--sbb-spacing-fixed-2x);
+  white-space: nowrap;
+  color: var(--sbb-paginator-page-color);
+}
+
+.sbb-paginator__pages {
+  @include sbb.list-reset;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sbb-spacing-fixed-1x);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sbb-paginator__page--ellipsis,
+.sbb-paginator__page--number {
+  @include sbb.text-s--regular;
+
+  position: relative;
+  color: var(--sbb-paginator-page-color);
+}
+
+.sbb-paginator__page--ellipsis-item,
+.sbb-paginator__page--number-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--sbb-size-element-xxs);
+  height: var(--sbb-size-element-xxs);
+}
+
+.sbb-paginator__page--number-item {
+  @include sbb.button-reset;
+  @include sbb.text-s--regular;
+
+  position: relative;
+  cursor: var(--sbb-paginator-page-cursor);
+  outline: none !important;
+  color: var(--sbb-paginator-page-color);
+  transition: color var(--sbb-paginator-animation-duration) var(--sbb-paginator-animation-easing);
+
+  &::before {
+    content: '';
+    position: absolute;
+    background-color: var(--sbb-paginator-page-background-color);
+    border: var(--sbb-paginator-page-border-width) var(--sbb-paginator-page-border-style)
+      var(--sbb-paginator-page-border-color);
+    border-radius: var(--sbb-border-radius-infinity);
+    inset: var(--sbb-paginator-page-inset);
+    transition: {
+      property: background-color, border, inset;
+      duration: var(--sbb-paginator-animation-duration);
+      timing-function: var(--sbb-paginator-animation-easing);
+    }
+  }
+
+  // Hide focus outline when focus origin is mouse or touch. This is being used as a workaround in various components.
+  &:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch']) {
+    &::before {
+      @include sbb.focus-outline;
+
+      outline-offset: var(--sbb-border-width-2x);
+    }
+  }
+
+  &[data-selected] {
+    @include sbb.text--bold;
+
+    --sbb-paginator-page-color: var(--sbb-color-charcoal);
+    --sbb-paginator-page-border-width: var(--sbb-border-width-2x);
+    --sbb-paginator-page-border-style: solid;
+    --sbb-paginator-page-border-color: var(--sbb-color-charcoal);
+
+    :host([negative]) & {
+      --sbb-paginator-page-color: var(--sbb-color-milk);
+      --sbb-paginator-page-border-color: var(--sbb-color-white);
+    }
+
+    @include sbb.if-forced-colors {
+      --sbb-paginator-page-border-color: Highlight !important;
+    }
+  }
+
+  &:disabled {
+    --sbb-paginator-page-color: var(--sbb-color-smoke);
+    --sbb-paginator-page-border-style: dashed;
+    --sbb-paginator-page-border-color: var(--sbb-color-smoke);
+    --sbb-paginator-page-background-color: var(--sbb-color-milk);
+    --sbb-paginator-page-cursor: default;
+
+    &:not([data-selected]) {
+      --sbb-paginator-page-border-width: var(--sbb-border-width-1x);
+    }
+
+    :host([negative]) & {
+      --sbb-paginator-page-color: var(--sbb-color-aluminium);
+      --sbb-paginator-page-background-color: var(--sbb-color-charcoal);
+    }
+
+    @include sbb.if-forced-colors {
+      --sbb-paginator-page-border-color: GrayText;
+      --sbb-paginator-page-color: GrayText;
+      --sbb-paginator-page-background-color: Canvas;
+    }
+  }
+
+  &:not(:disabled):hover {
+    @include sbb.hover-mq($hover: true) {
+      --sbb-paginator-page-background-color: var(--sbb-color-milk);
+      --sbb-paginator-page-inset: calc(var(--sbb-border-width-2x) * -1);
+      --sbb-paginator-translate-y-content-hover: #{sbb.px-to-rem-build(-1)};
+
+      :host([negative]) & {
+        --sbb-paginator-page-background-color: var(--sbb-color-charcoal);
+      }
+
+      @include sbb.if-forced-colors {
+        --sbb-paginator-page-background-color: Highlight !important;
+      }
+    }
+  }
+
+  &:not(:disabled):active {
+    --sbb-paginator-page-color: var(--sbb-color-charcoal);
+    --sbb-paginator-page-background-color: var(--sbb-color-cloud);
+    --sbb-paginator-page-inset: 0;
+    --sbb-paginator-translate-y-content-hover: 0;
+
+    :host([negative]) & {
+      --sbb-paginator-page-color: var(--sbb-color-milk);
+      --sbb-paginator-page-background-color: var(--sbb-color-iron);
+    }
+
+    @include sbb.if-forced-colors {
+      --sbb-paginator-page-background-color: Highlight !important;
+    }
+  }
+}
+
+.sbb-paginator__page--number-item-label {
+  transition: transform var(--sbb-paginator-animation-duration)
+    var(--sbb-paginator-animation-easing);
+  transform: translateY(var(--sbb-paginator-translate-y-content-hover, #{sbb.px-to-rem-build(0)}));
+}
+
+// Needed for the sbb-select
+.sbb-screen-reader-only {
+  @include sbb.screen-reader-only;
+}

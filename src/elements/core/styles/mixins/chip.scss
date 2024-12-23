@@ -2,45 +2,45 @@
 @use './helpers';
 @use './typo';
 
-@mixin chip-variables--color-milk {
-  --sbb-chip-color: var(--sbb-color-granite);
-  --sbb-chip-background-color: var(--sbb-color-milk);
+@mixin chip-label-variables--color-milk {
+  --sbb-chip-label-color: var(--sbb-color-granite);
+  --sbb-chip-label-background-color: var(--sbb-color-milk);
 }
 
-@mixin chip-variables--color-charcoal {
-  --sbb-chip-color: var(--sbb-color-white);
-  --sbb-chip-background-color: var(--sbb-color-charcoal);
+@mixin chip-label-variables--color-charcoal {
+  --sbb-chip-label-color: var(--sbb-color-white);
+  --sbb-chip-label-background-color: var(--sbb-color-charcoal);
 }
 
-@mixin chip-variables--color-white {
-  --sbb-chip-color: var(--sbb-color-granite);
-  --sbb-chip-background-color: var(--sbb-color-white);
+@mixin chip-label-variables--color-white {
+  --sbb-chip-label-color: var(--sbb-color-granite);
+  --sbb-chip-label-background-color: var(--sbb-color-white);
 }
 
-@mixin chip-variables--color-granite {
-  --sbb-chip-color: var(--sbb-color-white);
-  --sbb-chip-background-color: var(--sbb-color-granite);
+@mixin chip-label-variables--color-granite {
+  --sbb-chip-label-color: var(--sbb-color-white);
+  --sbb-chip-label-background-color: var(--sbb-color-granite);
 }
 
-@mixin chip-variables--size-xxs {
-  --sbb-chip-padding-block: 0em;
-  --sbb-chip-padding-inline: var(--sbb-spacing-fixed-2x);
+@mixin chip-label-variables--size-xxs {
+  --sbb-chip-label-padding-block: 0em;
+  --sbb-chip-label-padding-inline: var(--sbb-spacing-fixed-2x);
   --sbb-text-font-size: var(--sbb-font-size-text-xxs);
 }
 
-@mixin chip-variables--size-xs {
-  --sbb-chip-padding-block: var(--sbb-spacing-fixed-1x);
-  --sbb-chip-padding-inline: var(--sbb-spacing-fixed-3x);
+@mixin chip-label-variables--size-xs {
+  --sbb-chip-label-padding-block: var(--sbb-spacing-fixed-1x);
+  --sbb-chip-label-padding-inline: var(--sbb-spacing-fixed-3x);
   --sbb-text-font-size: var(--sbb-font-size-text-xs);
 }
 
-@mixin chip-variables--size-s {
-  --sbb-chip-padding-block: var(--sbb-spacing-fixed-1x);
-  --sbb-chip-padding-inline: var(--sbb-spacing-fixed-4x);
+@mixin chip-label-variables--size-s {
+  --sbb-chip-label-padding-block: var(--sbb-spacing-fixed-1x);
+  --sbb-chip-label-padding-inline: var(--sbb-spacing-fixed-4x);
   --sbb-text-font-size: var(--sbb-font-size-text-s);
 }
 
-@mixin chip-rules {
+@mixin chip-label-rules {
   @include typo.text;
 
   // We need an even value to make it work smoothly in Safari
@@ -50,12 +50,12 @@
   justify-content: center;
   height: calc(
     var(--sbb-typo-line-height-body-text) * var(--sbb-text-font-size) +
-      var(--sbb-chip-padding-block) * 2
+      var(--sbb-chip-label-padding-block) * 2
   );
-  background-color: var(--sbb-chip-background-color);
-  padding-inline: var(--sbb-chip-padding-inline);
+  background-color: var(--sbb-chip-label-background-color);
+  padding-inline: var(--sbb-chip-label-padding-inline);
   border-radius: var(--sbb-border-radius-infinity);
-  color: var(--sbb-chip-color);
+  color: var(--sbb-chip-label-color);
 
   // Overflow hidden needed because line-height can be taller than height which can cause weird layout shifting
   overflow: hidden;
@@ -66,7 +66,7 @@
   }
 }
 
-@mixin chip-rules-ellipsis {
+@mixin chip-label-rules-ellipsis {
   @include helpers.ellipsis;
 
   display: inline-block;
@@ -74,22 +74,22 @@
 
 @mixin chip($color: milk, $size: xxs) {
   @if $color == milk {
-    @include chip-variables--color-milk;
+    @include chip-label-variables--color-milk;
   } @else if $color == charcoal {
-    @include chip-variables--color-charcoal;
+    @include chip-label-variables--color-charcoal;
   } @else if $color == white {
-    @include chip-variables--color-white;
+    @include chip-label-variables--color-white;
   } @else if $color == granite {
-    @include chip-variables--color-granite;
+    @include chip-label-variables--color-granite;
   }
 
   @if $size == xxs {
-    @include chip-variables--size-xxs;
+    @include chip-label-variables--size-xxs;
   } @else if $size == xs {
-    @include chip-variables--size-xs;
+    @include chip-label-variables--size-xs;
   } @else if $size == s {
-    @include chip-variables--size-s;
+    @include chip-label-variables--size-s;
   }
 
-  @include chip-rules;
+  @include chip-label-rules;
 }

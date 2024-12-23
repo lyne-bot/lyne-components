@@ -13,7 +13,6 @@ snapshots["sbb-card-button renders DOM"] =
     active=""
     data-action=""
     data-button=""
-    role="button"
     slot="action"
     tabindex="0"
   >

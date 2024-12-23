@@ -18,7 +18,7 @@ snapshots["sbb-map-container renders Shadow DOM"] =
     </span>
     <slot>
     </slot>
-    <sbb-tertiary-button
+    <sbb-accent-button
       class="sbb-map-container__sidebar-button"
       data-action=""
       data-button=""
@@ -26,13 +26,12 @@ snapshots["sbb-map-container renders Shadow DOM"] =
       data-slot-names="unnamed"
       icon-name="location-pin-map-small"
       inert=""
-      role="button"
       size="l"
       tabindex="0"
       type="button"
     >
       Show map
-    </sbb-tertiary-button>
+    </sbb-accent-button>
   </div>
 </div>
 `;

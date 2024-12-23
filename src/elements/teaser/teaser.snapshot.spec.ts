@@ -62,7 +62,9 @@ describe(`sbb-teaser`, () => {
           accessibility-label="SBB teaser"
           alignment="below"
         >
-          <img slot="image" src=${images[0]} alt="400x300" />
+          <figure slot="image" class="sbb-figure">
+            <img src=${images[0]} alt="400x300" />
+          </figure>
           <span slot="chip">Chip</span>
           <span slot="title">TITLE</span>
           description

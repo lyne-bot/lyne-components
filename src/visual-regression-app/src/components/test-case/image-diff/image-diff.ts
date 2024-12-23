@@ -7,10 +7,11 @@ import type { ScreenshotFiles } from '../../../interfaces.js';
 
 import style from './image-diff.scss?lit&inline';
 
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import { SbbOverlayElement } from '@sbb-esta/lyne-elements/overlay/overlay.js';
 import type { SbbToggleCheckElement } from '@sbb-esta/lyne-elements/toggle-check/toggle-check.js';
 
-import '@sbb-esta/lyne-elements/chip.js';
+import '@sbb-esta/lyne-elements/chip-label.js';
 import '@sbb-esta/lyne-elements/status.js';
 import '@sbb-esta/lyne-elements/overlay.js';
 import '@sbb-esta/lyne-elements/toggle-check.js';
@@ -23,16 +24,19 @@ const getImageDimension = (img: HTMLImageElement): string =>
 /**
  * Displays two images to compare them.
  */
+export
 @customElement('app-image-diff')
-export class ImageDiff extends LitElement {
+class ImageDiff extends LitElement {
   public static override styles: CSSResultGroup = style;
 
-  @property() public screenshotFiles?: ScreenshotFiles;
+  @property({ attribute: false }) public accessor screenshotFiles: ScreenshotFiles | null = null;
 
-  @state() private _baselineDimension?: string;
-  @state() private _failedDimension?: string;
+  @state() private accessor _baselineDimension: string | null = null;
+  @state() private accessor _failedDimension: string | null = null;
 
-  @property() public showDiff: boolean = true;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor showDiff: boolean = true;
 
   private _toggleDiff(event: Event): void {
     this.showDiff = (event.target as SbbToggleCheckElement).checked;
@@ -73,17 +77,19 @@ export class ImageDiff extends LitElement {
     return html`<div class="app-container">
       <div class="app-info-bar">
         <div class="app-labels">
-          <sbb-chip size="xxs" color="white">${this.screenshotFiles.browserName}</sbb-chip>
-          <sbb-chip size="xxs" color="white">${this.screenshotFiles.viewport}</sbb-chip>
+          <sbb-chip-label size="xxs" color="white"
+            >${this.screenshotFiles.browserName}</sbb-chip-label
+          >
+          <sbb-chip-label size="xxs" color="white">${this.screenshotFiles.viewport}</sbb-chip-label>
           ${this._baselineDimension
-            ? html`<sbb-chip size="xxs" color="white">
+            ? html`<sbb-chip-label size="xxs" color="white">
                 Baseline: ${this._baselineDimension}
-              </sbb-chip>`
+              </sbb-chip-label>`
             : nothing}
           ${this._failedDimension
-            ? html`<sbb-chip size="xxs" color="white">
+            ? html`<sbb-chip-label size="xxs" color="white">
                 ${this.screenshotFiles.isNew ? 'New' : 'Failed'}: ${this._failedDimension}
-              </sbb-chip>`
+              </sbb-chip-label>`
             : nothing}
         </div>
         ${!this.screenshotFiles.isNew && this.screenshotFiles.diffFile

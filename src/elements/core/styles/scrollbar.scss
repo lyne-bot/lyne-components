@@ -1,0 +1,44 @@
+@use './mixins/scrollbar';
+
+.sbb-scrollbar,
+.sbb-scrollbar-negative,
+.sbb-scrollbar-thick,
+.sbb-scrollbar-thick-negative,
+.sbb-scrollbar-track-visible,
+.sbb-scrollbar-negative-track-visible,
+.sbb-scrollbar-thick-track-visible,
+.sbb-scrollbar-thick-negative-track-visible {
+  @include scrollbar.scrollbar-rules;
+}
+
+.sbb-scrollbar {
+  @include scrollbar.scrollbar-variables($size: thin, $negative: false, $track-visible: false);
+}
+
+.sbb-scrollbar-negative {
+  @include scrollbar.scrollbar-variables($size: thin, $negative: true, $track-visible: false);
+}
+
+.sbb-scrollbar-thick {
+  @include scrollbar.scrollbar-variables($size: thick, $negative: false, $track-visible: false);
+}
+
+.sbb-scrollbar-thick-negative {
+  @include scrollbar.scrollbar-variables($size: thick, $negative: true, $track-visible: false);
+}
+
+.sbb-scrollbar-track-visible {
+  @include scrollbar.scrollbar-variables($size: thin, $negative: false, $track-visible: true);
+}
+
+.sbb-scrollbar-negative-track-visible {
+  @include scrollbar.scrollbar-variables($size: thin, $negative: true, $track-visible: true);
+}
+
+.sbb-scrollbar-thick-track-visible {
+  @include scrollbar.scrollbar-variables($size: thick, $negative: false, $track-visible: true);
+}
+
+.sbb-scrollbar-thick-negative-track-visible {
+  @include scrollbar.scrollbar-variables($size: thick, $negative: true, $track-visible: true);
+}

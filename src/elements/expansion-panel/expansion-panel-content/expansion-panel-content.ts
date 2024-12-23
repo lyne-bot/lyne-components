@@ -11,12 +11,13 @@ import style from './expansion-panel-content.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-expansion-panel`.
  */
+export
 @customElement('sbb-expansion-panel-content')
 @hostAttributes({
   role: 'region',
   slot: 'content',
 })
-export class SbbExpansionPanelContentElement extends LitElement {
+class SbbExpansionPanelContentElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   protected override render(): TemplateResult {

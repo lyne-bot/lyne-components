@@ -20,7 +20,6 @@ snapshots["sbb-calendar renders Shadow DOM"] =
       data-sbb-button=""
       icon-name="chevron-small-left-small"
       id="sbb-calendar__controls-previous"
-      role="button"
       size="m"
       tabindex="0"
     >
@@ -28,8 +27,7 @@ snapshots["sbb-calendar renders Shadow DOM"] =
     <div class="sbb-calendar__controls-month">
       <button
         aria-label="Choose year and month January 2023"
-        class="sbb-calendar__controls-change-date"
-        id="sbb-calendar__date-selection"
+        class="sbb-calendar__controls-change-date sbb-calendar__date-selection"
         type="button"
       >
         January 2023
@@ -52,7 +50,6 @@ snapshots["sbb-calendar renders Shadow DOM"] =
       data-sbb-button=""
       icon-name="chevron-small-right-small"
       id="sbb-calendar__controls-next"
-      role="button"
       size="m"
       tabindex="0"
     >

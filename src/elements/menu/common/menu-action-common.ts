@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js';
 import { html } from 'lit/static-html.js';
 
 import type { SbbActionBaseElement } from '../../core/base-elements.js';
+import { forceType } from '../../core/decorators.js';
 import {
   SbbDisabledMixin,
   type AbstractConstructor,
@@ -16,8 +17,8 @@ export declare class SbbMenuActionCommonElementMixinType
   extends SbbDisabledMixinType
   implements Partial<SbbIconNameMixinType>
 {
-  public amount?: string;
-  public iconName?: string;
+  public accessor amount: string;
+  public accessor iconName: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,7 +34,9 @@ export const SbbMenuActionCommonElementMixin = <
     public static styles: CSSResultGroup = style;
 
     /** Value shown as badge at component end. */
-    @property() public amount: string | undefined;
+    @forceType()
+    @property()
+    public accessor amount: string = '';
 
     protected override renderTemplate(): TemplateResult {
       return html`

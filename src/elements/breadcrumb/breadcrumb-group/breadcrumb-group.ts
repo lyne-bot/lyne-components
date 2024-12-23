@@ -14,7 +14,7 @@ import {
   isArrowKeyPressed,
   sbbInputModalityDetector,
 } from '../../core/a11y.js';
-import { SbbConnectedAbortController, SbbLanguageController } from '../../core/controllers.js';
+import { SbbLanguageController } from '../../core/controllers.js';
 import { hostAttributes } from '../../core/decorators.js';
 import { setOrRemoveAttribute } from '../../core/dom.js';
 import { i18nBreadcrumbEllipsisButtonLabel } from '../../core/i18n.js';
@@ -32,11 +32,12 @@ const MIN_BREADCRUMBS_TO_COLLAPSE = 3;
  *
  * @slot - Use the unnamed slot to add `sbb-breadcrumb` elements.
  */
+export
 @customElement('sbb-breadcrumb-group')
 @hostAttributes({
   role: 'navigation',
 })
-export class SbbBreadcrumbGroupElement extends SbbNamedSlotListMixin<
+class SbbBreadcrumbGroupElement extends SbbNamedSlotListMixin<
   SbbBreadcrumbElement,
   typeof LitElement
 >(LitElement) {
@@ -57,9 +58,13 @@ export class SbbBreadcrumbGroupElement extends SbbNamedSlotListMixin<
     skipInitial: true,
     callback: () => this._evaluateCollapsedState(),
   });
-  private _abort = new SbbConnectedAbortController(this);
   private _language = new SbbLanguageController(this);
   private _markForFocus = false;
+
+  public constructor() {
+    super();
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
+  }
 
   private _handleKeyDown(evt: KeyboardEvent): void {
     if (
@@ -76,12 +81,6 @@ export class SbbBreadcrumbGroupElement extends SbbNamedSlotListMixin<
       }
       this._focusNext(evt);
     }
-  }
-
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
   }
 
   protected override firstUpdated(changedProperties: PropertyValues<this>): void {

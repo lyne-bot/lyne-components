@@ -29,11 +29,11 @@ Possible values are `ideal` (default), `minimal` and `none`.
 
 ## Properties
 
-| Name                 | Attribute             | Privacy | Type                             | Default   | Description                                                  |
-| -------------------- | --------------------- | ------- | -------------------------------- | --------- | ------------------------------------------------------------ |
-| `accessibilityLabel` | `accessibility-label` | public  | `string`                         | `'Logo'`  | Accessibility label which will be forwarded to the SVG logo. |
-| `negative`           | `negative`            | public  | `boolean`                        | `false`   | Negative coloring variant flag.                              |
-| `protectiveRoom`     | `protective-room`     | public  | `SbbProtectiveRoom \| undefined` | `'ideal'` | Visual protective room around logo.                          |
+| Name                 | Attribute             | Privacy | Type                | Default   | Description                                                  |
+| -------------------- | --------------------- | ------- | ------------------- | --------- | ------------------------------------------------------------ |
+| `accessibilityLabel` | `accessibility-label` | public  | `string`            | `'Logo'`  | Accessibility label which will be forwarded to the SVG logo. |
+| `negative`           | `negative`            | public  | `boolean`           | `false`   | Negative coloring variant flag.                              |
+| `protectiveRoom`     | `protective-room`     | public  | `SbbProtectiveRoom` | `'ideal'` | Visual protective room around logo.                          |
 
 ## CSS Properties
 

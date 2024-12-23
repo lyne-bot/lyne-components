@@ -98,7 +98,7 @@ since the focus must always stay on the connected `<input>`.
 | Name       | Attribute   | Privacy | Type                                       | Default | Description                                                                                                                      |
 | ---------- | ----------- | ------- | ------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `disabled` | `disabled`  | public  | `boolean`                                  | `false` | Whether the component is disabled.                                                                                               |
-| `iconName` | `icon-name` | public  | `string \| undefined`                      |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `iconName` | `icon-name` | public  | `string`                                   | `''`    | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
 | `negative` | `negative`  | public  | `boolean`                                  | `false` | Negative coloring variant flag.                                                                                                  |
 | `option`   | -           | public  | `SbbAutocompleteGridOptionElement \| null` |         | Gets the SbbAutocompleteGridOptionElement on the same row of the button.                                                         |
 

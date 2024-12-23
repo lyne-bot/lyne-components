@@ -118,7 +118,6 @@ snapshots["sbb-optgroup autocomplete renders disabled Safari Shadow DOM"] =
 
 snapshots["sbb-optgroup autocomplete renders Chrome-Firefox DOM"] = 
 `<sbb-optgroup
-  aria-disabled="false"
   aria-label="Label"
   data-variant="autocomplete"
   label="Label"

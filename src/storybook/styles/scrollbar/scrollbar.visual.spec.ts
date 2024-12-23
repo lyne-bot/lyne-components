@@ -21,7 +21,7 @@ describe(`scrollbar`, () => {
   describeViewports({ viewports: ['small'] }, () => {
     describeEach(cases, ({ thickness, negative, trackVisible }) => {
       beforeEach(async function () {
-        let scrollbarClass = 'scrollbar';
+        let scrollbarClass = 'sbb-scrollbar';
         if (thickness === 'thick') {
           scrollbarClass += '-thick';
         }

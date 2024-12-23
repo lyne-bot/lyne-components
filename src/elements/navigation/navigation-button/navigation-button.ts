@@ -8,8 +8,9 @@ import { SbbNavigationActionCommonElementMixin } from '../common.js';
  *
  * @slot - Use the unnamed slot to add content to the `sbb-navigation-button`.
  */
+export
 @customElement('sbb-navigation-button')
-export class SbbNavigationButtonElement extends SbbNavigationActionCommonElementMixin(
+class SbbNavigationButtonElement extends SbbNavigationActionCommonElementMixin(
   SbbButtonBaseElement,
 ) {}
 

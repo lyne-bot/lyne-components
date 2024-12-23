@@ -1,0 +1,28 @@
+@use '../../../elements/core/styles' as sbb;
+
+.lean-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sbb-grid-base-gutter-responsive);
+  padding-block: var(--sbb-spacing-fixed-4x);
+}
+
+.lean-wrapper {
+  display: flex;
+  gap: var(--sbb-spacing-fixed-4x);
+  grid-column: 1 / -1;
+
+  @include sbb.mq($to: medium) {
+    flex-direction: column;
+  }
+}
+
+.lean-wrapper-half {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sbb-spacing-fixed-4x);
+
+  @include sbb.mq($to: large) {
+    grid-column: 1/-1;
+  }
+}

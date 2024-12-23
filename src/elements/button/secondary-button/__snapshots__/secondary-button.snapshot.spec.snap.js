@@ -3,7 +3,6 @@ export const snapshots = {};
 
 snapshots["sbb-secondary-button renders a sbb-secondary-button without icon DOM"] = 
 `<sbb-secondary-button
-  aria-disabled="true"
   data-action=""
   data-button=""
   data-sbb-button=""
@@ -12,7 +11,6 @@ snapshots["sbb-secondary-button renders a sbb-secondary-button without icon DOM"
   form="formid"
   name="name"
   negative=""
-  role="button"
   size="m"
   type="button"
   value="value"
@@ -40,7 +38,6 @@ snapshots["sbb-secondary-button renders a sbb-secondary-button with slotted icon
   data-button=""
   data-sbb-button=""
   data-slot-names="icon unnamed"
-  role="button"
   size="l"
   tabindex="0"
 >

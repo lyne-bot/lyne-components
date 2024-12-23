@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbFlipCardDetailsElement } from '../flip-card-details.js';
 import type { SbbFlipCardSummaryElement } from '../flip-card-summary.js';
 
@@ -45,7 +45,7 @@ describe('sbb-flip-card', () => {
     element.shadowRoot?.querySelector('button')!.click();
     await waitForLitRender(element);
 
-    await waitForCondition(() => flipSpy.events.length === 1);
+    await flipSpy.calledOnce();
     expect(flipSpy.count).to.be.equal(1);
 
     expect(element).to.have.attribute('data-flipped');
@@ -67,7 +67,7 @@ describe('sbb-flip-card', () => {
     element.click();
     await waitForLitRender(element);
 
-    await waitForCondition(() => flipSpy.events.length === 1);
+    await flipSpy.calledOnce();
     expect(flipSpy.count).to.be.equal(1);
 
     expect(element).to.have.attribute('data-flipped');
@@ -89,7 +89,7 @@ describe('sbb-flip-card', () => {
     element.toggle();
     await waitForLitRender(element);
 
-    await waitForCondition(() => flipSpy.events.length === 1);
+    await flipSpy.calledOnce();
     expect(flipSpy.count).to.be.equal(1);
 
     expect(element).to.have.attribute('data-flipped');

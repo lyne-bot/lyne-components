@@ -22,13 +22,13 @@ as it is used for search engines and screen-reader users.
 
 ## Properties
 
-| Name     | Attribute | Privacy | Type                  | Default    | Description                                      |
-| -------- | --------- | ------- | --------------------- | ---------- | ------------------------------------------------ |
-| `active` | `active`  | public  | `boolean`             | `false`    | Whether the card is active.                      |
-| `form`   | `form`    | public  | `string \| undefined` |            | The <form> element to associate the button with. |
-| `name`   | `name`    | public  | `string`              |            | The name of the button element.                  |
-| `type`   | `type`    | public  | `SbbButtonType`       | `'button'` | The type attribute to use for the button.        |
-| `value`  | `value`   | public  | `string`              |            | The value of the button element.                 |
+| Name     | Attribute | Privacy | Type                      | Default    | Description                                                 |
+| -------- | --------- | ------- | ------------------------- | ---------- | ----------------------------------------------------------- |
+| `active` | `active`  | public  | `boolean`                 | `false`    | Whether the card is active.                                 |
+| `form`   | `form`    | public  | `HTMLFormElement \| null` |            | The `<form>` element to associate the button with.          |
+| `name`   | `name`    | public  | `string`                  |            | Name of the form element. Will be read from name attribute. |
+| `type`   | `type`    | public  | `SbbButtonType`           | `'button'` | The type attribute to use for the button.                   |
+| `value`  | `value`   | public  | `string \| null`          | `null`     | Value of the form element.                                  |
 
 ## Slots
 

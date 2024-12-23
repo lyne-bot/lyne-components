@@ -3,6 +3,11 @@ import { property } from 'lit/decorators.js';
 
 import { hostAttributes } from '../decorators.js';
 import { isEventPrevented } from '../eventing.js';
+import {
+  type FormRestoreReason,
+  type FormRestoreState,
+  SbbFormAssociatedMixin,
+} from '../mixins.js';
 
 import { SbbActionBaseElement } from './action-base-element.js';
 
@@ -10,48 +15,44 @@ import { SbbActionBaseElement } from './action-base-element.js';
 export type SbbButtonType = 'button' | 'reset' | 'submit';
 
 /** Button base class. */
+export
 @hostAttributes({
-  role: 'button',
   tabindex: '0',
   'data-button': '',
 })
-export abstract class SbbButtonBaseElement extends SbbActionBaseElement {
-  /** The type attribute to use for the button. */
-  @property() public type: SbbButtonType = 'button';
-
+abstract class SbbButtonBaseElement extends SbbFormAssociatedMixin(SbbActionBaseElement) {
   /**
-   * The name of the button element.
-   *
-   * @description Developer note: In this case updating the attribute must be synchronous.
-   * Due to this it is implemented as a getter/setter and the attributeChangedCallback() handles the diff check.
+   * The type attribute to use for the button.
+   * @default 'button'
    */
   @property()
-  public set name(name: string) {
-    this.setAttribute('name', `${name}`);
+  public override set type(name: SbbButtonType) {
+    this.setAttribute('type', `${name}`);
   }
-  public get name(): string {
-    return this.getAttribute('name') ?? '';
+  public override get type(): SbbButtonType {
+    return (this.getAttribute('type') as SbbButtonType) ?? 'button';
   }
 
-  /**
-   * The value of the button element.
-   *
-   * @description Developer note: In this case updating the attribute must be synchronous.
-   * Due to this it is implemented as a getter/setter and the attributeChangedCallback() handles the diff check.
-   */
+  /** The `<form>` element to associate the button with. */
   @property()
-  public set value(value: string) {
-    this.setAttribute('value', `${value}`);
+  public override set form(value: string) {
+    this._formId = value;
   }
-  public get value(): string {
-    return this.getAttribute('value') ?? '';
+  public override get form(): HTMLFormElement | null {
+    // Use querySelector with form and id selector, as the form property must
+    // reference a valid <form> element
+    return this._formId
+      ? ((this.ownerDocument?.querySelector?.(`form#${this._formId}`) as HTMLFormElement) ?? null)
+      : this.internals.form;
   }
-
-  /** The <form> element to associate the button with. */
-  @property() public form?: string;
+  private _formId: string = '';
 
   public constructor() {
     super();
+
+    /** @internal */
+    this.internals.role = 'button';
+
     if (!isServer) {
       this.setupBaseEventHandlers();
 
@@ -71,23 +72,28 @@ export abstract class SbbButtonBaseElement extends SbbActionBaseElement {
       );
     }
   }
-
   private _handleButtonClick = async (event: MouseEvent): Promise<void> => {
     if (this.type === 'button' || (await isEventPrevented(event))) {
       return;
     }
 
-    // Use querySelector with form and id selector, as the form property must
-    // reference a valid <form> element
-    const form = this.form
-      ? (this.ownerDocument.querySelector(`form#${this.form}`) as HTMLFormElement)
-      : this.closest('form');
+    const form = this.form;
     if (!form) {
       return;
     } else if (this.type === 'submit') {
       // `form.requestSubmit(element);` seems not to work for CustomElements, so the `element` parameter has been removed;
       // TODO: Check if solved in any way, see https://github.com/WICG/webcomponents/issues/814#issuecomment-1218452137
-      form.requestSubmit();
+      // We use the workaround described in the github issue by cloning the submit button and pass this one as an argument.
+
+      const submitButtonClone = document.createElement('button');
+      submitButtonClone.inert = true;
+      submitButtonClone.hidden = true;
+      submitButtonClone.name = this.name;
+      submitButtonClone.value = this.value ?? '';
+
+      form.append(submitButtonClone);
+      form.requestSubmit(submitButtonClone);
+      submitButtonClone.remove();
     } else if (this.type === 'reset') {
       form.reset();
     }
@@ -148,4 +154,26 @@ export abstract class SbbButtonBaseElement extends SbbActionBaseElement {
       super.attributeChangedCallback(name, old, value);
     }
   }
+
+  /**
+   * Intentionally empty, as buttons are not targeted by form reset
+   * @internal
+   */
+  public override formResetCallback(): void {}
+
+  /**
+   * Intentionally empty, as buttons are not targeted by form restore
+   * @internal
+   */
+  public override formStateRestoreCallback(
+    _state: FormRestoreState | null,
+    _reason: FormRestoreReason,
+  ): void {}
+
+  /**
+   * Intentionally empty, as button does not write its data in form.
+   * The data is only applied on submit button click as submitter of requestSubmit();
+   * @internal
+   */
+  protected updateFormValue(): void {}
 }

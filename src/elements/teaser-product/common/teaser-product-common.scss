@@ -39,7 +39,6 @@
 }
 
 .sbb-teaser-product__image-container {
-  display: block;
   overflow: hidden;
 
   // We have to remove the image bottom border-radius when stacked
@@ -50,21 +49,6 @@
     inset: 0;
     border-radius: var(--sbb-teaser-product-border-radius);
   }
-}
-
-::slotted(img) {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  aspect-ratio: 16 / 9;
-}
-
-// Reset sbb-image border radius in order to control it from teaser product.
-::slotted(sbb-image) {
-  --sbb-image-border-radius: 0;
-
-  height: 100%;
 }
 
 ::slotted(p.sbb-teaser-product--spacing) {
@@ -79,11 +63,13 @@
   margin-block-start: var(--sbb-spacing-responsive-xxs);
 }
 
-.sbb-action-base {
-  display: block;
-  position: relative;
-  text-decoration: none;
+::slotted([slot='image']) {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
 
+.sbb-teaser-product__root {
   @include sbb.if-forced-colors {
     // Apply a visual border for forced color mode
     &::after {
@@ -98,8 +84,13 @@
   }
 }
 
-.sbb-teaser-product__container {
+.sbb-action-base {
   display: block;
+  position: relative;
+  text-decoration: none;
+}
+
+.sbb-teaser-product__container {
   background: var(--sbb-teaser-product-background);
   border-radius: 0 0 var(--sbb-teaser-product-border-radius) var(--sbb-teaser-product-border-radius);
   padding: var(--sbb-spacing-responsive-s);
@@ -140,7 +131,6 @@
 
 .sbb-teaser-product__footnote {
   grid-area: footnote;
-  display: block;
   padding-block-start: var(--sbb-spacing-responsive-s);
   color: var(--sbb-teaser-product-footer-color);
 

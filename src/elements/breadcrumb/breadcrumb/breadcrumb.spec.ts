@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { waitForCondition, EventSpy, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 
 import { SbbBreadcrumbElement } from './breadcrumb.js';
 
@@ -21,7 +21,7 @@ describe(`sbb-breadcrumb`, () => {
     const changeSpy = new EventSpy('click');
 
     element.click();
-    await waitForCondition(() => changeSpy.events.length === 1);
+    await changeSpy.calledOnce();
     expect(changeSpy.count).to.be.equal(1);
   });
 

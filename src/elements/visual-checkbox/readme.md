@@ -26,10 +26,10 @@ The component has three `size`, named `xs`, `s` and `m` (default).
 
 ## Properties
 
-| Name            | Attribute       | Privacy | Type              | Default | Description                        |
-| --------------- | --------------- | ------- | ----------------- | ------- | ---------------------------------- |
-| `checked`       | `checked`       | public  | `boolean`         | `false` | Checked state.                     |
-| `disabled`      | `disabled`      | public  | `boolean`         | `false` | Whether the component is disabled. |
-| `indeterminate` | `indeterminate` | public  | `boolean`         | `false` | Indeterminate state.               |
-| `negative`      | `negative`      | public  | `boolean`         | `false` | Negative coloring variant flag.    |
-| `size`          | `size`          | public  | `SbbCheckboxSize` | `'m'`   | Size of the checkbox.              |
+| Name            | Attribute       | Privacy | Type              | Default             | Description                              |
+| --------------- | --------------- | ------- | ----------------- | ------------------- | ---------------------------------------- |
+| `checked`       | `checked`       | public  | `boolean`         | `false`             | Checked state.                           |
+| `disabled`      | `disabled`      | public  | `boolean`         | `false`             | Whether the component is disabled.       |
+| `indeterminate` | `indeterminate` | public  | `boolean`         | `false`             | Indeterminate state.                     |
+| `negative`      | `negative`      | public  | `boolean`         | `false`             | Negative coloring variant flag.          |
+| `size`          | `size`          | public  | `SbbCheckboxSize` | `'m' / 'xs' (lean)` | Size of the checkbox, either xs, s or m. |

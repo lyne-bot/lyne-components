@@ -63,10 +63,12 @@ export default defineConfig((config) =>
                   'animation.css',
                   'core.css',
                   'font-characters-extension.css',
-                  'standard-theme.css',
                   'layout.css',
                   'lists.css',
                   'normalize.css',
+                  'scrollbar.css',
+                  'standard-theme.css',
+                  'table.css',
                   'typography.css',
                 ]),
               },
@@ -91,7 +93,7 @@ export default defineConfig((config) =>
       rollupOptions: {
         external: (source: string, importer: string | undefined) => {
           if (
-            source.match(/(^lit$|^lit\/|^@lit\/|^@lit-labs\/)/) ||
+            source.match(/(^lit$|^lit\/|^@lit\/|^@lit-labs\/|^tslib$)/) ||
             (!!importer && source.startsWith('../') && !importer.includes('/node_modules/')) ||
             (!!importer && barrelExports.includes(importer) && source.match(/\.\/[a-z-]+/))
           ) {

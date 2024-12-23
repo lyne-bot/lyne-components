@@ -10,8 +10,10 @@ import { waitForImageReady } from '../core/testing.js';
 
 import '../alert.js';
 import '../breadcrumb.js';
+import '../chip-label.js';
 import '../image.js';
-import '../link/block-link/block-link.js';
+import '../link/block-link.js';
+import '../link/link.js';
 import '../notification.js';
 import '../title.js';
 import './lead-container.js';
@@ -22,21 +24,67 @@ const leadImageBase64 = await loadAssetAsBase64(leadImageUrl);
 describe(`sbb-lead-container`, () => {
   const wrapperStyles = { backgroundColor: `var(--sbb-color-milk)`, padding: '0' };
 
-  const leadContainerTemplate = (image: TemplateResult): TemplateResult => html`
+  const testCases = [
+    {
+      title: 'with sbb-image',
+      imgSelector: 'sbb-image',
+      imgTemplate: () => html`<sbb-image slot="image" image-src=${leadImageUrl}></sbb-image>`,
+    },
+    {
+      title: 'with img tag',
+      imgSelector: 'img',
+      imgTemplate: () => html`<img slot="image" src=${leadImageBase64} alt="" />`,
+    },
+    {
+      title: 'with figure_sbb-image',
+      imgSelector: 'sbb-image',
+      imgTemplate: () =>
+        html`<figure class="sbb-figure" slot="image">
+          <sbb-image image-src=${leadImageUrl}></sbb-image>
+          <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+        </figure>`,
+    },
+    {
+      title: 'with figure_img',
+      imgSelector: 'img',
+      imgTemplate: () =>
+        html`<figure class="sbb-figure" slot="image">
+          <img slot="image" src=${leadImageBase64} alt="" />
+          <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+        </figure>`,
+    },
+    {
+      title: 'with picture_sbb-image',
+      imgSelector: 'sbb-image',
+      imgTemplate: () =>
+        html`<picture class="sbb-figure" slot="image">
+          <sbb-image image-src=${leadImageUrl}></sbb-image>
+          <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+        </picture>`,
+    },
+    {
+      title: 'with picture_img',
+      imgSelector: 'img',
+      imgTemplate: () =>
+        html`<picture class="sbb-figure" slot="image">
+          <img slot="image" src=${leadImageBase64} alt="" />
+          <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+        </picture>`,
+    },
+  ];
+
+  const leadContainerTemplate = (image: () => TemplateResult): TemplateResult => html`
     <sbb-lead-container>
       <style>
         p.other-content {
           margin-block: 0;
         }
       </style>
-      ${image}
+      ${image()}
       <sbb-alert-group class="sbb-lead-container-spacing">
-        <sbb-alert
-          title-content="Interruption between Genève and Lausanne"
-          href="https://www.sbb.ch"
-          size="m"
-        >
+        <sbb-alert title-content="Interruption between Genève and Lausanne" size="m">
           The rail traffic between Allaman and Morges is interrupted. All trains are cancelled.
+          <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
         </sbb-alert>
       </sbb-alert-group>
       <sbb-breadcrumb-group class="sbb-lead-container-spacing">
@@ -73,36 +121,15 @@ describe(`sbb-lead-container`, () => {
   `;
 
   describeViewports(() => {
-    it(
-      'with sbb-image',
-      visualDiffDefault.with(async (setup) => {
-        await setup.withFixture(
-          leadContainerTemplate(
-            html`<sbb-image
-              slot="image"
-              image-src=${leadImageUrl}
-              alt="Station of Lucerne from outside"
-            ></sbb-image>`,
-          ),
-          wrapperStyles,
-        );
+    for (const testCase of testCases) {
+      it(
+        testCase.title,
+        visualDiffDefault.with(async (setup) => {
+          await setup.withFixture(leadContainerTemplate(testCase.imgTemplate), wrapperStyles);
 
-        await waitForImageReady(setup.snapshotElement.querySelector('sbb-image')!);
-      }),
-    );
-
-    it(
-      'with img tag',
-      visualDiffDefault.with(async (setup) => {
-        await setup.withFixture(
-          leadContainerTemplate(
-            html`<img slot="image" src=${leadImageBase64} alt="Station of Lucerne from outside" />`,
-          ),
-          wrapperStyles,
-        );
-
-        await waitForImageReady(setup.snapshotElement.querySelector('img')!);
-      }),
-    );
+          await waitForImageReady(setup.snapshotElement.querySelector(testCase.imgSelector)!);
+        }),
+      );
+    }
   });
 });

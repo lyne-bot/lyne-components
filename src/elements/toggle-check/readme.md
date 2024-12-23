@@ -60,32 +60,29 @@ you can not provide it and then use `aria-label` to specify an appropriate label
 <sbb-toggle-check aria-label="Subscribed to email message"></sbb-toggle-check>
 ```
 
-<!-- Override
-  @type value => string \| null
--->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name            | Attribute        | Privacy | Type                               | Default        | Description                                                    |
-| --------------- | ---------------- | ------- | ---------------------------------- | -------------- | -------------------------------------------------------------- |
-| `checked`       | `checked`        | public  | `boolean`                          | `false`        | Whether the checkbox is checked.                               |
-| `disabled`      | `disabled`       | public  | `boolean`                          | `false`        | Whether the component is disabled.                             |
-| `form`          | -                | public  | `HTMLFormElement \| null`          |                | Returns the form owner of the internals of the target element. |
-| `iconName`      | `icon-name`      | public  | `string \| undefined`              | `'tick-small'` | The svg name for the true state - default -> 'tick-small'      |
-| `labelPosition` | `label-position` | public  | `'before' \| 'after' \| undefined` | `'after'`      | The label position relative to the toggle. Defaults to 'after' |
-| `name`          | `name`           | public  | `string`                           |                | Name of the form element. Will be read from name attribute.    |
-| `required`      | `required`       | public  | `boolean`                          | `false`        | Whether the component is required.                             |
-| `size`          | `size`           | public  | `'xs' \| 's' \| 'm'`               | `'s'`          | Size variant, either m, s or xs.                               |
-| `value`         | `value`          | public  | `string \| null`                   | `null`         | Value of the form element.                                     |
+| Name            | Attribute        | Privacy | Type                      | Default             | Description                                                    |
+| --------------- | ---------------- | ------- | ------------------------- | ------------------- | -------------------------------------------------------------- |
+| `checked`       | `checked`        | public  | `boolean`                 | `false`             | Whether the checkbox is checked.                               |
+| `disabled`      | `disabled`       | public  | `boolean`                 | `false`             | Whether the component is disabled.                             |
+| `form`          | -                | public  | `HTMLFormElement \| null` |                     | Returns the form owner of the internals of the target element. |
+| `iconName`      | `icon-name`      | public  | `string`                  | `'tick-small'`      | The svg name for the true state - default -> 'tick-small'      |
+| `labelPosition` | `label-position` | public  | `'before' \| 'after'`     | `'after'`           | The label position relative to the toggle. Defaults to 'after' |
+| `name`          | `name`           | public  | `string`                  |                     | Name of the form element. Will be read from name attribute.    |
+| `required`      | `required`       | public  | `boolean`                 | `false`             | Whether the component is required.                             |
+| `size`          | `size`           | public  | `'xs' \| 's' \| 'm'`      | `'s' / 'xs' (lean)` | Size variant, either m, s or xs.                               |
+| `type`          | -                | public  | `string`                  | `'checkbox'`        | Form type of element.                                          |
+| `value`         | `value`          | public  | `string \| null`          | `null`              | Value of the form element.                                     |
 
 ## Events
 
-| Name        | Type                | Description                                                                      | Inherited From |
-| ----------- | ------------------- | -------------------------------------------------------------------------------- | -------------- |
-| `change`    | `Event`             | Event fired on change.                                                           |                |
-| `didChange` | `CustomEvent<void>` | Deprecated. used for React. Will probably be removed once React 19 is available. |                |
-| `input`     | `InputEvent`        | Event fired on input.                                                            |                |
+| Name     | Type         | Description            | Inherited From |
+| -------- | ------------ | ---------------------- | -------------- |
+| `change` | `Event`      | Event fired on change. |                |
+| `input`  | `InputEvent` | Event fired on input.  |                |
 
 ## Slots
 

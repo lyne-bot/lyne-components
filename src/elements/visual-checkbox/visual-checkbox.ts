@@ -3,6 +3,8 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import type { SbbCheckboxSize } from '../checkbox/common.js';
+import { forceType } from '../core/decorators.js';
+import { isLean } from '../core/dom.js';
 import { SbbDisabledMixin, SbbNegativeMixin } from '../core/mixins.js';
 
 import style from './visual-checkbox.scss?lit&inline';
@@ -10,18 +12,26 @@ import style from './visual-checkbox.scss?lit&inline';
 /**
  * It visually displays a non-interactive checkbox.
  */
+export
 @customElement('sbb-visual-checkbox')
-export class SbbVisualCheckboxElement extends SbbDisabledMixin(SbbNegativeMixin(LitElement)) {
+class SbbVisualCheckboxElement extends SbbDisabledMixin(SbbNegativeMixin(LitElement)) {
   public static override styles: CSSResultGroup = style;
 
   /** Checked state. */
-  @property({ reflect: true, type: Boolean }) public checked: boolean = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor checked: boolean = false;
 
   /** Indeterminate state. */
-  @property({ reflect: true, type: Boolean }) public indeterminate = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor indeterminate: boolean = false;
 
-  /** Size of the checkbox. */
-  @property({ reflect: true }) public size: SbbCheckboxSize = 'm';
+  /**
+   * Size of the checkbox, either xs, s or m.
+   * @default 'm' / 'xs' (lean)
+   */
+  @property({ reflect: true }) public accessor size: SbbCheckboxSize = isLean() ? 'xs' : 'm';
 
   protected override render(): TemplateResult {
     return html`

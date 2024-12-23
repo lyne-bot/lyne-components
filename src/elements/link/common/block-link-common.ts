@@ -5,6 +5,7 @@ import { html } from 'lit/static-html.js';
 import type { SbbActionBaseElement } from '../../core/base-elements.js';
 import type { SbbIconPlacement } from '../../core/interfaces.js';
 import type { AbstractConstructor } from '../../core/mixins.js';
+import type { SbbIconNameMixinType } from '../../icon.js';
 import { SbbIconNameMixin } from '../../icon.js';
 
 import { SbbLinkCommonElementMixin, type SbbLinkCommonElementMixinType } from './link-common.js';
@@ -12,9 +13,12 @@ import { SbbLinkCommonElementMixin, type SbbLinkCommonElementMixinType } from '.
 import blockStyle from './block-link.scss?lit&inline';
 import style from './link.scss?lit&inline';
 
-export declare class SbbBlockLinkCommonElementMixinType extends SbbLinkCommonElementMixinType {
-  public iconName?: string;
-  public iconPlacement?: SbbIconPlacement;
+export declare class SbbBlockLinkCommonElementMixinType
+  extends SbbLinkCommonElementMixinType
+  implements Partial<SbbIconNameMixinType>
+{
+  public accessor iconName: string;
+  public accessor iconPlacement: SbbIconPlacement;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,7 +33,7 @@ export const SbbBlockLinkCommonElementMixin = <T extends AbstractConstructor<Sbb
 
     /** Moves the icon to the end of the component if set to true. */
     @property({ attribute: 'icon-placement', reflect: true })
-    public iconPlacement?: SbbIconPlacement = 'start';
+    public accessor iconPlacement: SbbIconPlacement = 'start';
 
     protected override renderTemplate(): TemplateResult {
       return html`

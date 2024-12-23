@@ -12,11 +12,12 @@ import '@sbb-esta/lyne-elements/tag.js';
 /**
  * Shows filter for viewports and browsers
  */
+export
 @customElement('app-test-case-filter')
-export class TestCaseFilter extends LitElement {
+class TestCaseFilter extends LitElement {
   public static override styles: CSSResultGroup = style;
 
-  @property() public testCase?: ScreenshotTestCase;
+  @property() public accessor testCase: ScreenshotTestCase | null = null;
 
   /**
    * Activate `all`-tag of viewports and browsers.

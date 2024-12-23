@@ -7,34 +7,39 @@ import type { ScreenshotFiles } from '../../../../interfaces.js';
 
 import style from './fullscreen-diff.scss?lit&inline';
 
-import '@sbb-esta/lyne-elements/chip.js';
+import '@sbb-esta/lyne-elements/chip-label.js';
 import '@sbb-esta/lyne-elements/radio-button.js';
 import type { SbbRadioButtonGroupElement } from '@sbb-esta/lyne-elements/radio-button/radio-button-group/radio-button-group.js';
+
+export type DiffFileType = 'baselineFile' | 'failedFile' | 'diffFile';
 
 /**
  * Displays two images in fullscreen to overlay them.
  */
+export
 @customElement('app-fullscreen-diff')
-export class FullscreenDiff extends LitElement {
+class FullscreenDiff extends LitElement {
   public static override styles: CSSResultGroup = style;
 
-  @property() public screenshotFiles?: ScreenshotFiles;
+  @property() public accessor screenshotFiles: ScreenshotFiles | null = null;
 
-  @property() public selectedFile: 'baselineFile' | 'failedFile' | 'diffFile' = 'failedFile';
+  @property() public accessor selectedFile: DiffFileType = 'failedFile';
 
   public override render(): TemplateResult {
     if (!this.screenshotFiles) {
       return html``;
     }
     return html`<div class="app-labels">
-        <sbb-chip size="xxs" color="white">${this.screenshotFiles.browserName}</sbb-chip>
-        <sbb-chip size="xxs" color="white">${this.screenshotFiles.viewport}</sbb-chip>
+        <sbb-chip-label size="xxs" color="white"
+          >${this.screenshotFiles.browserName}</sbb-chip-label
+        >
+        <sbb-chip-label size="xxs" color="white">${this.screenshotFiles.viewport}</sbb-chip-label>
       </div>
       <sbb-radio-button-group
         class="app-radio-button-group"
         value=${this.selectedFile}
         @change=${(event: Event) =>
-          (this.selectedFile = (event.target as SbbRadioButtonGroupElement).value)}
+          (this.selectedFile = (event.target as SbbRadioButtonGroupElement).value as DiffFileType)}
       >
         ${!this.screenshotFiles.isNew
           ? html`<sbb-radio-button value="baselineFile">Baseline</sbb-radio-button>`

@@ -5,7 +5,6 @@ snapshots["sbb-popover-trigger renders DOM"] =
 `<sbb-popover-trigger
   data-action=""
   data-button=""
-  role="button"
   tabindex="0"
 >
 </sbb-popover-trigger>
@@ -31,7 +30,6 @@ snapshots["sbb-popover-trigger renders with custom content DOM"] =
 `<sbb-popover-trigger
   data-action=""
   data-button=""
-  role="button"
   tabindex="0"
 >
   Custom Content

@@ -5,8 +5,7 @@ import type { AbstractConstructor } from './constructor.js';
 import type { SbbFormAssociatedMixinType } from './form-associated-mixin.js';
 
 export declare class SbbRequiredMixinType {
-  public set required(value: boolean);
-  public get required(): boolean;
+  public accessor required: boolean;
   protected isRequiredExternally(): boolean;
 }
 
@@ -33,7 +32,7 @@ export const SbbRequiredMixin = <
     }
     private _required: boolean = false;
 
-    protected override async willUpdate(changedProperties: PropertyValues<this>): Promise<void> {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
       super.willUpdate(changedProperties);
 
       if (changedProperties.has('required')) {

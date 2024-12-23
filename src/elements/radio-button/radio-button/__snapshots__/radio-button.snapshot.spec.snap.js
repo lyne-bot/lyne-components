@@ -3,10 +3,9 @@ export const snapshots = {};
 
 snapshots["sbb-radio-button renders DOM"] = 
 `<sbb-radio-button
-  aria-checked="false"
-  aria-required="false"
-  role="radio"
+  name="radio"
   size="m"
+  tabindex="0"
   value="radio-value"
 >
 </sbb-radio-button>
@@ -15,13 +14,6 @@ snapshots["sbb-radio-button renders DOM"] =
 
 snapshots["sbb-radio-button renders Shadow DOM"] = 
 `<label class="sbb-radio-button">
-  <input
-    aria-hidden="true"
-    class="sbb-screen-reader-only"
-    tabindex="-1"
-    type="radio"
-    value="radio-value"
-  >
   <span class="sbb-radio-button__label-slot">
     <slot>
     </slot>
@@ -62,4 +54,140 @@ snapshots["sbb-radio-button renders A11y tree Firefox"] =
 </p>
 `;
 /* end snapshot sbb-radio-button renders A11y tree Firefox */
+
+snapshots["sbb-radio-button renders checked - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "checked": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders checked - A11y tree Chrome */
+
+snapshots["sbb-radio-button renders checked - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "checked": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders checked - A11y tree Firefox */
+
+snapshots["sbb-radio-button renders disabled - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "disabled": true,
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders disabled - A11y tree Chrome */
+
+snapshots["sbb-radio-button renders disabled - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "disabled": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders disabled - A11y tree Firefox */
+
+snapshots["sbb-radio-button native - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button native - A11y tree Chrome */
+
+snapshots["sbb-radio-button native - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": ""
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button native - A11y tree Firefox */
+
+snapshots["sbb-radio-button renders required - A11y tree Chrome"] = 
+`<p>
+  {
+  "role": "WebArea",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "checked": false
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders required - A11y tree Chrome */
+
+snapshots["sbb-radio-button renders required - A11y tree Firefox"] = 
+`<p>
+  {
+  "role": "document",
+  "name": "",
+  "children": [
+    {
+      "role": "radio",
+      "name": "",
+      "required": true
+    }
+  ]
+}
+</p>
+`;
+/* end snapshot sbb-radio-button renders required - A11y tree Firefox */
 

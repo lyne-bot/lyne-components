@@ -101,9 +101,7 @@ describe(`sbb-optgroup`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(autocompleteTemplate(defaultArgs), { minHeight: '600px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-autocomplete')!.open(),
-          );
+          setup.withPostSetupAction(() => setup.snapshotElement.querySelector('input')!.focus());
         }),
       );
     });
@@ -113,9 +111,11 @@ describe(`sbb-optgroup`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(selectTemplate(defaultArgs, false), { minHeight: '600px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-select')!.open(),
-          );
+          setup.withPostSetupAction(() => {
+            const select = setup.snapshotElement.querySelector('sbb-select')!;
+            select.focus();
+            select.open();
+          });
         }),
       );
 
@@ -123,9 +123,11 @@ describe(`sbb-optgroup`, () => {
         'multiple',
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(selectTemplate(defaultArgs, true), { minHeight: '600px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-select')!.open(),
-          );
+          setup.withPostSetupAction(() => {
+            const select = setup.snapshotElement.querySelector('sbb-select')!;
+            select.focus();
+            select.open();
+          });
         }),
       );
     });

@@ -3,15 +3,17 @@ import type { InputType } from '@storybook/types';
 import type { Args, ArgTypes, Meta, StoryObj, Decorator } from '@storybook/web-components';
 import type { TemplateResult } from 'lit';
 import { html, nothing } from 'lit';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import sampleImages from '../../core/images.js';
 
 import { SbbFlipCardElement } from './flip-card.js';
 import readme from './readme.md?raw';
 
-import '../../image/image.js';
-import '../../link/link/link.js';
-import '../../title/title.js';
+import '../../chip-label.js';
+import '../../image.js';
+import '../../link/link.js';
+import '../../title.js';
 import '../flip-card-details.js';
 import '../flip-card-summary.js';
 
@@ -52,20 +54,30 @@ const defaultArgs: Args = {
   'accessibility-label': undefined,
 };
 
+const imgTemplate = (): TemplateResult => html`
+  <sbb-image
+    slot="image"
+    image-src=${sampleImages[0]}
+    alt="Conductor controlling a ticket"
+  ></sbb-image>
+`;
+
+const imgWithChipTemplate = (): TemplateResult => html`
+  <figure class="sbb-figure" slot="image">
+    <sbb-image image-src=${sampleImages[0]} alt="Conductor controlling a ticket"></sbb-image>
+    <sbb-chip-label class="sbb-figure-overlap-start-end">AI generated</sbb-chip-label>
+  </figure>
+`;
+
 const cardSummary = (
   label: string,
   imageAlignment: any,
   showImage: boolean,
+  showChip?: boolean,
 ): TemplateResult => html`
   <sbb-flip-card-summary image-alignment=${imageAlignment}>
     <sbb-title level="4">${label}</sbb-title>
-    ${showImage
-      ? html`<sbb-image
-          slot="image"
-          image-src=${sampleImages[0]}
-          alt="Conductor controlling a ticket"
-        ></sbb-image>`
-      : nothing}
+    ${showImage ? (showChip ? imgWithChipTemplate() : imgTemplate()) : nothing}
   </sbb-flip-card-summary>
 `;
 
@@ -81,6 +93,11 @@ const cardDetails = (): TemplateResult => html`
 const DefaultTemplate = (args: Args): TemplateResult =>
   html`<sbb-flip-card accessibility-label=${args['accessibility-label']}>
     ${cardSummary(args.label, args.imageAlignment, true)} ${cardDetails()}
+  </sbb-flip-card>`;
+
+const WithChipTemplate = (args: Args): TemplateResult =>
+  html`<sbb-flip-card accessibility-label=${args['accessibility-label']}>
+    ${cardSummary(args.label, args.imageAlignment, true, true)} ${cardDetails()}
   </sbb-flip-card>`;
 
 const NoImageTemplate = (args: Args): TemplateResult =>
@@ -107,6 +124,39 @@ const LongContentTemplate = (args: Args): TemplateResult =>
     </sbb-flip-card-details>
   </sbb-flip-card>`;
 
+const GridTemplate = (args: Args): TemplateResult =>
+  html`<div
+    style=${styleMap({
+      display: 'grid',
+      gridTemplateRows: 'minmax(20rem, 1fr)',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gridColumnGap: '1rem',
+      gridRowGap: '1rem',
+    })}
+  >
+    <sbb-flip-card accessibility-label=${args['accessibility-label']}>
+      ${cardSummary(args.label, args.imageAlignment, true)} ${cardDetails()}
+    </sbb-flip-card>
+    <sbb-flip-card accessibility-label=${args['accessibility-label']}>
+      ${cardSummary(args.label, args.imageAlignment, true)}
+      <sbb-flip-card-details>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam luctus ornare condimentum.
+        Vivamus turpis elit, dapibus eget fringilla pellentesque, lobortis in nibh. Duis dapibus
+        vitae tortor ullamcorper maximus. In convallis consectetur felis. Lorem ipsum dolor sit
+        amet, consectetur adipiscing elit. Nam luctus ornare condimentum. Vivamus turpis elit,
+        dapibus eget fringilla pellentesque, lobortis in nibh. Duis dapibus vitae tortor ullamcorper
+        maximus. In convallis consectetur felis.
+        <sbb-link href="https://www.sbb.ch" negative>Link</sbb-link>
+      </sbb-flip-card-details>
+    </sbb-flip-card>
+    <sbb-flip-card accessibility-label=${args['accessibility-label']}>
+      ${cardSummary(args.label, args.imageAlignment, true)} ${cardDetails()}
+    </sbb-flip-card>
+    <sbb-flip-card accessibility-label=${args['accessibility-label']}>
+      ${cardSummary(args.label, args.imageAlignment, true)} ${cardDetails()}
+    </sbb-flip-card>
+  </div>`;
+
 export const ImageAfter: StoryObj = {
   render: DefaultTemplate,
   argTypes: defaultArgTypes,
@@ -117,6 +167,12 @@ export const ImageBelow: StoryObj = {
   render: DefaultTemplate,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, imageAlignment: imageAlignment.options![1] },
+};
+
+export const WithChipOnImage: StoryObj = {
+  render: WithChipTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs },
 };
 
 export const NoImage: StoryObj = {
@@ -138,6 +194,12 @@ export const LongTitle: StoryObj = {
     ...defaultArgs,
     label: 'This is a very long title that should break into multiple lines',
   },
+};
+
+export const Grid: StoryObj = {
+  render: GridTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs, imageAlignment: imageAlignment.options![1] },
 };
 
 const meta: Meta = {

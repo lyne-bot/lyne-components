@@ -28,7 +28,13 @@ export default defineConfig((config) =>
       outDir: new URL(`./react/${isProdBuild(config) ? '' : 'development/'}`, distDir).pathname,
       emptyOutDir: true,
       rollupOptions: {
-        external: [/^@sbb-esta\/lyne-elements\/?/, /^@lit\/react\/?/, /^lit\/?/, /^react/],
+        external: [
+          /^@sbb-esta\/lyne-elements\/?/,
+          /^@lit\/react\/?/,
+          /^lit\/?/,
+          /^react/,
+          /^tslib$/,
+        ],
       },
     },
   }),

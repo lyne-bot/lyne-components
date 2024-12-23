@@ -2,7 +2,6 @@ import { MutationController } from '@lit-labs/observers/mutation-controller.js';
 import { html, LitElement, nothing, type PropertyValues, type TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
-import { SbbConnectedAbortController } from '../../core/controllers.js';
 import { slotState } from '../../core/decorators.js';
 import { isAndroid, isSafari, setOrRemoveAttribute } from '../../core/dom.js';
 import type { EventEmitter } from '../../core/eventing.js';
@@ -25,8 +24,9 @@ const optionObserverConfig: MutationObserverInit = {
   attributeFilter: ['data-group-disabled', 'data-negative'],
 };
 
+export
 @slotState()
-export abstract class SbbOptionBaseElement extends SbbDisabledMixin(
+abstract class SbbOptionBaseElement extends SbbDisabledMixin(
   SbbIconNameMixin(SbbHydrationMixin(LitElement)),
 ) {
   protected abstract optionId: string;
@@ -45,14 +45,6 @@ export abstract class SbbOptionBaseElement extends SbbDisabledMixin(
     return this.getAttribute('value') ?? '';
   }
 
-  /**
-   * Whether the option is currently active.
-   * TODO: remove with next major version.
-   * @deprecated
-   * @internal
-   */
-  @property({ reflect: true, type: Boolean }) public active?: boolean;
-
   /** Whether the option is selected. */
   @property({ type: Boolean })
   public set selected(value: boolean) {
@@ -70,25 +62,26 @@ export abstract class SbbOptionBaseElement extends SbbDisabledMixin(
   protected abstract optionSelected: EventEmitter;
 
   /** Whether to apply the negative styling */
-  @state() protected negative = false;
+  @state() protected accessor negative = false;
 
   /** Whether the component must be set disabled due disabled attribute on sbb-optgroup. */
-  @state() protected disabledFromGroup = false;
+  @state() protected accessor disabledFromGroup = false;
 
-  @state() protected label?: string;
+  @state() protected accessor label!: string;
 
   /** Disable the highlight of the label. */
-  @state() protected disableLabelHighlight: boolean = false;
+  @state() protected accessor disableLabelHighlight: boolean = false;
 
   /** The portion of the highlighted label. */
-  @state() private _highlightString: string | null = null;
+  @state() private accessor _highlightString: string | null = null;
 
-  @state() private _inertAriaGroups = false;
-
-  private _abort = new SbbConnectedAbortController(this);
+  @state() private accessor _inertAriaGroups = false;
 
   public constructor() {
     super();
+    this.addEventListener?.('click', (e: MouseEvent) => this.selectByClick(e), {
+      passive: true,
+    });
 
     new MutationController(this, {
       config: optionObserverConfig,
@@ -178,19 +171,14 @@ export abstract class SbbOptionBaseElement extends SbbDisabledMixin(
 
   protected init(): void {
     this.setAttributeFromParent();
-    const signal = this._abort.signal;
-    this.addEventListener('click', (e: MouseEvent) => this.selectByClick(e), {
-      signal,
-      passive: true,
-    });
   }
 
   protected updateAriaDisabled(): void {
-    setOrRemoveAttribute(
-      this,
-      'aria-disabled',
-      this.disabled || this.disabledFromGroup ? 'true' : null,
-    );
+    if (this.disabled || this.disabledFromGroup) {
+      this.setAttribute('aria-disabled', 'true');
+    } else {
+      this.removeAttribute('aria-disabled');
+    }
   }
 
   private _updateAriaSelected(): void {
@@ -268,13 +256,19 @@ export abstract class SbbOptionBaseElement extends SbbDisabledMixin(
     return nothing;
   }
 
+  private _handleSlotChange(): void {
+    this.handleHighlightState();
+    /** @internal */
+    this.dispatchEvent(new Event('optionLabelChanged', { bubbles: true }));
+  }
+
   protected override render(): TemplateResult {
     return html`
       <div class="sbb-option__container">
         <div class="sbb-option">
           ${this.renderIcon()}
           <span class="sbb-option__label">
-            <slot @slotchange=${this.handleHighlightState}></slot>
+            <slot @slotchange=${this._handleSlotChange}></slot>
             ${this.renderLabel()}
             ${this._inertAriaGroups && this.getAttribute('data-group-label')
               ? html` <sbb-screen-reader-only>

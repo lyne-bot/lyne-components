@@ -62,7 +62,7 @@ const defaultArgTypes: ArgTypes = {
   'accessibility-label': accessibilityLabel,
   station,
   direction,
-  directionLabelLevel,
+  'direction-label-level': directionLabelLevel,
 };
 
 const defaultArgs: Args = {

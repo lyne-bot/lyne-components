@@ -27,17 +27,9 @@
   padding-block-end: var(--sbb-spacing-responsive-l);
 }
 
-::slotted(sbb-image[slot='image']) {
-  --sbb-image-aspect-ratio: var(--sbb-lead-container-image-ratio);
-  --sbb-image-border-radius: var(--sbb-lead-container-image-border-radius);
-}
-
-::slotted(:is(img[slot='image'], picture[slot='image'])) {
+::slotted([slot='image']) {
   display: block;
   width: 100%;
-  object-fit: cover;
-  aspect-ratio: var(--sbb-lead-container-image-ratio);
-  border-radius: var(--sbb-lead-container-image-border-radius);
 }
 
 ::slotted(:is(sbb-breadcrumb-group, sbb-block-link).sbb-lead-container-spacing) {

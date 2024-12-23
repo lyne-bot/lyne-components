@@ -107,9 +107,7 @@ describe(`sbb-option`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(autocompleteTemplate(defaultArgs), { minHeight: '400px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-autocomplete')!.open(),
-          );
+          setup.withPostSetupAction(() => setup.snapshotElement.querySelector('input')!.focus());
         }),
       );
     });
@@ -119,9 +117,11 @@ describe(`sbb-option`, () => {
         visualDiffDefault.name,
         visualDiffDefault.with(async (setup) => {
           await setup.withFixture(selectTemplate(defaultArgs), { minHeight: '400px' });
-          setup.withPostSetupAction(() =>
-            setup.snapshotElement.querySelector('sbb-select')!.open(),
-          );
+          setup.withPostSetupAction(() => {
+            const select = setup.snapshotElement.querySelector('sbb-select')!;
+            select.focus();
+            select.open();
+          });
         }),
       );
     });

@@ -20,8 +20,9 @@ import '@sbb-esta/lyne-elements/title.js';
 /**
  * Overview over all tests
  */
+export
 @customElement('app-overview')
-export class Overview extends LitElement {
+class Overview extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   public override render(): TemplateResult {

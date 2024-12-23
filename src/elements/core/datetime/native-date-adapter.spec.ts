@@ -194,9 +194,9 @@ describe('NativeDateAdapter', () => {
 
   it('parseDate should return the correct value', function () {
     const now = new Date(2023, 8, 15, 0, 0, 0, 0);
-    expect(nativeDateAdapter.parse(null, now)).to.be.undefined;
-    expect(nativeDateAdapter.parse('Test', now)).to.be.undefined;
-    expect(nativeDateAdapter.parse('1.1', now)).to.be.undefined;
+    expect(nativeDateAdapter.parse(null, now)).to.be.null;
+    expect(nativeDateAdapter.parse('Test', now)).to.be.null;
+    expect(nativeDateAdapter.parse('1.1', now)).to.be.null;
     let formattedDate = nativeDateAdapter.parse('1/1/2000', now)!;
     expect(formattedDate.getFullYear()).to.be.equal(2000);
     expect(formattedDate.getMonth()).to.be.equal(0);

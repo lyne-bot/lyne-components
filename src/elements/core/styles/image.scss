@@ -1,0 +1,66 @@
+@use './mixins/typo';
+@use './mixins/image';
+
+.sbb-figure {
+  @include image.figure;
+
+  :is(img, sbb-image, .sbb-image) {
+    @include image.figure-image;
+  }
+
+  :is(figcaption, .sbb-caption) {
+    @include image.figure-caption;
+  }
+
+  // Utility classes for placing elements over an image (eg. 'sbb-figure-overlap-start-start')
+  :is(
+    .sbb-figure-overlap-start-start,
+    .sbb-figure-overlap-start-end,
+    .sbb-figure-overlap-end-start,
+    .sbb-figure-overlap-end-end
+  ) {
+    @include image.figure-overlap-base;
+  }
+
+  $alignments: start, end;
+  @each $row-alignment in $alignments {
+    @each $column-alignment in $alignments {
+      .sbb-figure-overlap-#{$row-alignment}-#{$column-alignment} {
+        @include image.figure-overlap($row-alignment, $column-alignment);
+      }
+    }
+  }
+}
+
+// Utility classes for the aspect ratio (eg. 'sbb-image-16-9')
+$aspects-ratio: (
+  'free': 'auto',
+  '1-1': '1 / 1',
+  '1-2': '1 / 2',
+  '2-1': '2 / 1',
+  '2-3': '2 / 3',
+  '3-2': '3 / 2',
+  '3-4': '3 / 4',
+  '4-3': '4 / 3',
+  '4-5': '4 / 5',
+  '5-4': '5 / 4',
+  '9-16': '9 / 16',
+  '16-9': '16 / 9',
+);
+@each $name, $ratio in $aspects-ratio {
+  :is(sbb-image, img).sbb-image-#{$name} {
+    --sbb-image-aspect-ratio: #{$ratio};
+  }
+}
+
+// Utility classes for the border radius (eg. 'sbb-image-border-radius-none')
+$border-radius: (
+  'default': 'var(--sbb-border-radius-4x)',
+  'none': '0',
+  'round': 'var(--sbb-border-radius-infinity)',
+);
+@each $name, $radius in $border-radius {
+  :is(img, sbb-image).sbb-image-border-radius-#{$name} {
+    border-radius: #{$radius};
+  }
+}

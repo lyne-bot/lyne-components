@@ -12,6 +12,7 @@ import './teaser-product-static.js';
 import '../../action-group.js';
 import '../../button/button.js';
 import '../../button/secondary-button.js';
+import '../../chip-label.js';
 import '../../image.js';
 import '../../title.js';
 
@@ -60,7 +61,36 @@ const template = ({
   <sbb-teaser-product-static ?negative=${negative} image-alignment=${imageAlignment || nothing}>
     ${slottedImg
       ? html`<img slot="image" src=${imageBase64} alt="" />`
-      : html`<sbb-image slot="image" image-src=${imageUrl}></sbb-image>`}
+      : html`<sbb-image slot="image" image-src=${imageUrl} skip-lqip></sbb-image>`}
+    ${content(longContent)} ${showFooter ? footer() : nothing}
+  </sbb-teaser-product-static>
+`;
+
+const withChipTemplate = ({
+  negative,
+  imageAlignment,
+  showFooter,
+  slottedImg,
+  longContent,
+}: {
+  negative?: boolean;
+  imageAlignment?: string;
+  showFooter?: boolean;
+  slottedImg?: boolean;
+  longContent?: boolean;
+} = {}): TemplateResult => html`
+  <sbb-teaser-product-static ?negative=${negative} image-alignment=${imageAlignment || nothing}>
+    <figure class="sbb-figure" slot="image">
+      ${slottedImg
+        ? html`<img src=${imageBase64} alt="" />`
+        : html`<sbb-image image-src=${imageUrl} skip-lqip></sbb-image>`}
+      <sbb-chip-label
+        class=${imageAlignment === 'after'
+          ? 'sbb-figure-overlap-start-end'
+          : 'sbb-figure-overlap-start-start'}
+        >Label</sbb-chip-label
+      >
+    </figure>
     ${content(longContent)} ${showFooter ? footer() : nothing}
   </sbb-teaser-product-static>
 `;
@@ -78,6 +108,21 @@ describe('sbb-teaser-product-static', () => {
                   await setup.withFixture(template({ negative, showFooter: true, slottedImg }), {
                     backgroundColor: negative ? 'var(--sbb-color-black)' : undefined,
                   });
+                  await waitForImageReady(
+                    setup.snapshotElement.querySelector(slottedImg ? 'img' : 'sbb-image')!,
+                  );
+                }),
+              );
+
+              it(
+                `withChip_${visualState.name}`,
+                visualState.with(async (setup) => {
+                  await setup.withFixture(
+                    withChipTemplate({ negative, showFooter: true, slottedImg }),
+                    {
+                      backgroundColor: negative ? 'var(--sbb-color-black)' : undefined,
+                    },
+                  );
                   await waitForImageReady(
                     setup.snapshotElement.querySelector(slottedImg ? 'img' : 'sbb-image')!,
                   );

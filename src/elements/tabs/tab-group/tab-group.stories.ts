@@ -70,6 +70,7 @@ const tabPanelFour = (): TemplateResult => html`
   </sbb-tab>
 `;
 
+// TODO: check whether didChange can be replaced with change
 const DefaultTemplate = ({ size, label, ...args }: Args): TemplateResult => html`
   <sbb-card
     id="container"

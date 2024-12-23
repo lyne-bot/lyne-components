@@ -1,6 +1,10 @@
 import { html } from 'lit';
 
-import { describeViewports, visualDiffStandardStates } from '../../core/testing/private.js';
+import {
+  describeViewports,
+  visualDiffDefault,
+  visualDiffStandardStates,
+} from '../../core/testing/private.js';
 
 import './link-button.js';
 
@@ -26,5 +30,14 @@ describe(`sbb-link-button`, () => {
         );
       }
     }
+
+    it(
+      `disabledInteractive`,
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-link-button disabled-interactive>Show more.</sbb-link-button>`,
+        );
+      }),
+    );
   });
 });

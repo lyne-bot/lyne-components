@@ -12,7 +12,7 @@
 
 // Core variables, are always needed
 :root {
-  // Grab css vars defined by `@sbb-esta/lyne-design-tokens` package
+  // Grab CSS vars defined by `@sbb-esta/lyne-design-tokens` package
   @include sbb-css-tokens.lyne-design-tokens-css-variables;
 
   & {
@@ -152,4 +152,155 @@ input[data-sbb-time-input] {
   sbb-form-field[size='s'] & {
     max-width: var(--sbb-time-input-s-max-width);
   }
+}
+
+img {
+  aspect-ratio: var(--sbb-image-aspect-ratio);
+  object-fit: var(--sbb-image-object-fit);
+  object-position: var(--sbb-image-object-position);
+}
+
+// TODO: Move back to the sbb-container components when the global CSS refactoring happens
+sbb-container {
+  > [slot='image']:is(sbb-image, img),
+  > [slot='image'] :is(sbb-image, img) {
+    --sbb-image-object-fit: cover;
+
+    border-radius: var(--sbb-container-background-border-radius);
+    height: 100%;
+    position: absolute;
+  }
+}
+
+// TODO: Move back to the sbb-flip-card-summary components when the global CSS refactoring happens
+sbb-flip-card-summary {
+  > [slot='image']:is(sbb-image, img),
+  > [slot='image'] :is(sbb-image, img) {
+    --sbb-image-aspect-ratio: auto;
+    --sbb-image-object-fit: cover;
+
+    border-radius: 0;
+    display: block;
+    height: 100%;
+  }
+}
+
+// TODO: Move back to the sbb-lead-container components when the global CSS refactoring happens
+sbb-lead-container {
+  > [slot='image']:is(sbb-image, img, picture),
+  > [slot='image'] :is(sbb-image, img, picture) {
+    --sbb-image-aspect-ratio: var(--sbb-lead-container-image-ratio);
+    --sbb-image-object-fit: cover;
+
+    border-radius: var(--sbb-lead-container-image-border-radius);
+  }
+}
+
+// TODO: Move back to the sbb-message components when the global CSS refactoring happens
+sbb-message {
+  > [slot='image']:is(sbb-image, img),
+  > [slot='image'] :is(sbb-image, img) {
+    border-radius: var(--sbb-message-image-border-radius);
+  }
+}
+
+// Target the slotted `sbb-image` which are generally wrapped by a <figure> (therefore are not reachable with the :slotted)
+// Apply the brightness effect on mouse hover
+// TODO: Move back to the teaser components when the global CSS refactoring happens
+:is(sbb-teaser, sbb-teaser-hero, sbb-teaser-product) {
+  --sbb-teaser-image-brightness-hover: var(--sbb-hover-image-brightness);
+  --sbb-teaser-image-animation-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-4x)
+  );
+  --sbb-teaser-image-animation-easing: var(--sbb-animation-easing);
+
+  &:hover {
+    @include mediaqueries.hover-mq($hover: true) {
+      --sbb-teaser-image-brightness: var(--sbb-teaser-image-brightness-hover);
+    }
+  }
+
+  :is(sbb-image, img) {
+    will-change: filter;
+    filter: brightness(var(--sbb-teaser-image-brightness, 1));
+    transition: filter var(--sbb-teaser-image-animation-duration)
+      var(--sbb-teaser-image-animation-easing);
+  }
+}
+
+// TODO: Move back to the teaser components when the global CSS refactoring happens
+:is(sbb-teaser-product, sbb-teaser-product-static) {
+  :is(sbb-image, img) {
+    border-radius: 0; // Reset sbb-image border radius in order to control it from teaser product.
+
+    --sbb-image-object-fit: cover;
+    --sbb-image-aspect-ratio: 16 / 9;
+  }
+
+  img {
+    place-self: stretch;
+  }
+}
+
+// TODO: Move back to the teaser components when the global CSS refactoring happens
+sbb-teaser :is(sbb-image, img) {
+  --sbb-image-object-fit: cover;
+  --sbb-image-aspect-ratio: 4 / 3;
+
+  transition-property: filter, scale;
+  will-change: filter, scale;
+  scale: var(--sbb-teaser-scale, 1);
+}
+
+// TODO: Move back to the teaser-hero components when the global CSS refactoring happens
+:is(sbb-teaser-hero) {
+  :is(sbb-image, img) {
+    --sbb-image-aspect-ratio: 1 / 1;
+
+    border-radius: 0;
+
+    @include mediaqueries.mq($from: small) {
+      --sbb-image-aspect-ratio: 16 / 9;
+    }
+  }
+
+  img {
+    display: block;
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+// TODO: move to train formation after CSS refactoring
+sbb-train-formation:has(sbb-train[direction-label]) {
+  --sbb-train-formation-reserve-spacing-display: block;
+}
+
+// TODO: move to train formation after CSS refactoring
+sbb-train-formation:has(sbb-train-wagon[sector]) {
+  --sbb-train-formation-show-sectors-gap: 1;
+}
+
+// TODO: move to train formation after CSS refactoring
+sbb-train-formation:not(:has(sbb-train-wagon[label])) {
+  --sbb-train-formation-wagon-label-display: none;
+}
+
+// TODO: Move to sbb-train-wagon after CSS refactoring
+sbb-train-formation[view='side'] sbb-train-wagon {
+  --sbb-train-wagon-wagon-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M12.5,0.5 h55 a12,12 0 0 1 12,12 v15 a12,12 0 0 1 -12,12 h-55 a12,12 0 0 1 -12,-12 v-15 a12,12 0 0 1 12,-12 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E");
+  --sbb-train-wagon-wagon-closed-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Crect x='0.5' y='0.5' width='79' height='39' rx='11.5' stroke='%23000000'/%3E%3Cpath d='M76 4L4 36' stroke='%23000000'/%3E%3Cpath d='M76 36L4 4' stroke='%23000000'/%3E%3C/svg%3E");
+  --sbb-train-wagon-wagon-end-left-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M10.745 7.90416C13.5624 3.30431 18.5686 0.5 23.9627 0.5H68C74.3513 0.5 79.5 5.64873 79.5 12V28C79.5 34.3513 74.3513 39.5 68 39.5H11.922C2.93614 39.5 -2.57807 29.6562 2.11537 21.9934L10.745 7.90416Z' stroke='%23000000'/%3E%3C/svg%3E");
+  --sbb-train-wagon-locomotive-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M10.745 7.90416C13.5624 3.30431 18.5686 0.5 23.9627 0.5H56.0373C61.4314 0.5 66.4376 3.30432 69.255 7.90416L77.8846 21.9934C82.5781 29.6562 77.0639 39.5 68.078 39.5H11.922C2.93615 39.5 -2.57807 29.6562 2.11537 21.9934L10.745 7.90416Z' stroke='%23000000'/%3E%3C/svg%3E");
+  --sbb-train-wagon-wagon-end-right-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M0.5 12C0.5 5.64873 5.64873 0.5 12 0.5H56.0373C61.4314 0.5 66.4376 3.30432 69.255 7.90416L77.8846 21.9934C82.5781 29.6562 77.0638 39.5 68.0779 39.5H12C5.64873 39.5 0.5 34.3513 0.5 28V12Z' stroke='%23000000'/%3E%3C/svg%3E");
+}
+
+// TODO: Move to sbb-train-wagon after CSS refactoring
+sbb-train-formation[view='top'] sbb-train-wagon {
+  --sbb-train-wagon-wagon-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M8.5,0.5 h63 a8,8 0 0 1 8,8 v23 a8,8 0 0 1 -8,8 h-63 a8,8 0 0 1 -8,-8 v-23 a8,8 0 0 1 8,-8 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E%0A");
+  --sbb-train-wagon-wagon-closed-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Crect x='0.5' y='0.5' width='79' height='39' rx='7.5' stroke='%23000000'/%3E%3Cpath d='M77.5 2.5L2.5 37.5' stroke='%23000000'/%3E%3Cpath d='M77.5 37.5L2.5 2.5' stroke='%23000000'/%3E%3C/svg%3E");
+  --sbb-train-wagon-wagon-end-left-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath transform='translate(80,40) rotate(180)' d='M8.5,0.5 h51.5 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-51.5 a8,8 0 0 1 -8,-8 v-23 a8,8 0 0 1 8,-8 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E");
+  --sbb-train-wagon-locomotive-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M20,0.5 h40 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-40 a19.5,19.5 0 0 1 -19.5,-19.5 v0 a19.5,19.5 0 0 1 19.5,-19.5 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E%0A");
+  --sbb-train-wagon-wagon-end-right-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M8.5,0.5 h51.5 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-51.5 a8,8 0 0 1 -8,-8 v-23 a8,8 0 0 1 8,-8 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E");
 }

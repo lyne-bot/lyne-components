@@ -1,11 +1,10 @@
-import { assert, expect } from '@open-wc/testing';
+import { assert, aTimeout, expect } from '@open-wc/testing';
 import { sendKeys, sendMouse } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
 import { isSafari } from '../../core/dom.js';
-import { tabKey } from '../../core/testing/private/keys.js';
-import { fixture } from '../../core/testing/private.js';
-import { describeIf, EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { fixture, tabKey } from '../../core/testing/private.js';
+import { describeIf, EventSpy, waitForLitRender } from '../../core/testing.js';
 import { SbbFormFieldElement } from '../../form-field.js';
 import type { SbbAutocompleteGridButtonElement } from '../autocomplete-grid-button.js';
 import { SbbAutocompleteGridOptionElement } from '../autocomplete-grid-option.js';
@@ -26,9 +25,9 @@ describe(`sbb-autocomplete-grid`, () => {
         <input />
         <sbb-autocomplete-grid id="myAutocomplete">
           <sbb-autocomplete-grid-row>
-            <sbb-autocomplete-grid-option value="1" id="option-1"
-              >Option 1</sbb-autocomplete-grid-option
-            >
+            <sbb-autocomplete-grid-option value="1" id="option-1">
+              Option 1
+            </sbb-autocomplete-grid-option>
             <sbb-autocomplete-grid-cell>
               <sbb-autocomplete-grid-button
                 id="button-1"
@@ -37,9 +36,9 @@ describe(`sbb-autocomplete-grid`, () => {
             </sbb-autocomplete-grid-cell>
           </sbb-autocomplete-grid-row>
           <sbb-autocomplete-grid-row>
-            <sbb-autocomplete-grid-option value="2" id="option-2"
-              >Option 2</sbb-autocomplete-grid-option
-            >
+            <sbb-autocomplete-grid-option value="2" id="option-2">
+              Option 2
+            </sbb-autocomplete-grid-option>
             <sbb-autocomplete-grid-cell>
               <sbb-autocomplete-grid-button
                 id="button-2"
@@ -71,8 +70,8 @@ describe(`sbb-autocomplete-grid`, () => {
       expect(input).to.have.attribute('role', 'combobox');
       expect(input).to.have.attribute('aria-autocomplete', 'list');
       expect(input).to.have.attribute('aria-haspopup', 'grid');
-      expect(input).to.have.attribute('aria-controls', 'myAutocomplete');
-      expect(input).to.have.attribute('aria-owns', 'myAutocomplete');
+      expect(input).to.have.attribute('aria-controls', element.id);
+      expect(input).to.have.attribute('aria-owns', element.id);
       expect(input).to.have.attribute('aria-expanded', 'false');
     });
   });
@@ -84,109 +83,136 @@ describe(`sbb-autocomplete-grid`, () => {
 
       expect(element).not.to.have.attribute('autocomplete-origin-borderless');
 
+      const id = element.shadowRoot!.querySelector('.sbb-autocomplete__options')!.id;
+
       expect(input).to.have.attribute('autocomplete', 'off');
       expect(input).to.have.attribute('role', 'combobox');
       expect(input).to.have.attribute('aria-autocomplete', 'list');
       expect(input).to.have.attribute('aria-haspopup', 'grid');
-      expect(input).to.have.attribute('aria-controls', 'sbb-autocomplete-grid-11');
-      expect(input).to.have.attribute('aria-owns', 'sbb-autocomplete-grid-11');
+      expect(input).to.have.attribute('aria-controls', id);
+      expect(input).to.have.attribute('aria-owns', id);
       expect(input).to.have.attribute('aria-expanded', 'false');
     });
   });
 
   it('opens and closes with mouse and keyboard', async () => {
-    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen);
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
-    const willCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willClose);
-    const didCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didClose);
+    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen, element);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
+    const willCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willClose, element);
+    const didCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didClose, element);
 
-    input.click();
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
+    input.focus();
+
+    await willOpenEventSpy.calledOnce();
     expect(willOpenEventSpy.count).to.be.equal(1);
 
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
     expect(input).to.have.attribute('aria-expanded', 'true');
 
     await sendKeys({ press: 'Escape' });
-    await waitForCondition(() => willCloseEventSpy.events.length === 1);
+    await willCloseEventSpy.calledOnce();
     expect(willCloseEventSpy.count).to.be.equal(1);
-    await waitForCondition(() => didCloseEventSpy.events.length === 1);
+    await didCloseEventSpy.calledOnce();
     expect(didCloseEventSpy.count).to.be.equal(1);
     expect(input).to.have.attribute('aria-expanded', 'false');
 
     await sendKeys({ press: 'ArrowDown' });
-    await waitForCondition(() => willOpenEventSpy.events.length === 2);
+    await willOpenEventSpy.calledTimes(2);
     expect(willOpenEventSpy.count).to.be.equal(2);
-    await waitForCondition(() => didOpenEventSpy.events.length === 2);
+    await didOpenEventSpy.calledTimes(2);
     expect(didOpenEventSpy.count).to.be.equal(2);
     expect(input).to.have.attribute('aria-expanded', 'true');
 
     await sendKeys({ press: tabKey });
-    await waitForCondition(() => willCloseEventSpy.events.length === 2);
+    await willCloseEventSpy.calledTimes(2);
     expect(willCloseEventSpy.count).to.be.equal(2);
-    await waitForCondition(() => didCloseEventSpy.events.length === 2);
+    await didCloseEventSpy.calledTimes(2);
     expect(didCloseEventSpy.count).to.be.equal(2);
     expect(input).to.have.attribute('aria-expanded', 'false');
 
     input.click();
-    await waitForCondition(() => willOpenEventSpy.events.length === 3);
+    await willOpenEventSpy.calledTimes(3);
     expect(willOpenEventSpy.count).to.be.equal(3);
-    await waitForCondition(() => didOpenEventSpy.events.length === 3);
+    await didOpenEventSpy.calledTimes(3);
     expect(didOpenEventSpy.count).to.be.equal(3);
     expect(input).to.have.attribute('aria-expanded', 'true');
 
     // Simulate backdrop click
-    sendMouse({ type: 'click', position: [formField.offsetWidth + 25, 25] });
+    await sendMouse({ type: 'click', position: [formField.offsetWidth + 25, 25] });
 
-    await waitForCondition(() => willCloseEventSpy.events.length === 3);
+    await willCloseEventSpy.calledTimes(3);
     expect(willCloseEventSpy.count).to.be.equal(3);
-    await waitForCondition(() => didCloseEventSpy.events.length === 3);
+    await didCloseEventSpy.calledTimes(3);
     expect(didCloseEventSpy.count).to.be.equal(3);
     expect(input).to.have.attribute('aria-expanded', 'false');
   });
 
+  it('opens and closes with non-zero animation duration', async () => {
+    element.style.setProperty('--sbb-options-panel-animation-duration', '1ms');
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
+    const didCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didClose, element);
+
+    input.focus();
+
+    await didOpenEventSpy.calledOnce();
+    expect(input).to.have.attribute('aria-expanded', 'true');
+
+    await sendKeys({ press: 'Escape' });
+    await didCloseEventSpy.calledOnce();
+
+    expect(input).to.have.attribute('aria-expanded', 'false');
+  });
+
   it('select by mouse', async () => {
-    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen);
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
     const optionSelectedEventSpy = new EventSpy(
       SbbAutocompleteGridOptionElement.events.optionSelected,
     );
+    const inputEventSpy = new EventSpy('input', input);
+    const changeEventSpy = new EventSpy('change', input);
+    const optTwo = element.querySelector<SbbAutocompleteGridOptionElement>('#option-2')!;
 
     input.focus();
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
-    expect(willOpenEventSpy.count).to.be.equal(1);
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
-    expect(didOpenEventSpy.count).to.be.equal(1);
+    await didOpenEventSpy.calledOnce();
 
-    await sendKeys({ press: 'ArrowDown' });
-    await sendKeys({ press: 'ArrowDown' });
-    await sendKeys({ press: 'Enter' });
+    const positionRect = optTwo.getBoundingClientRect();
+
+    await sendMouse({
+      type: 'click',
+      position: [
+        Math.round(positionRect.x + window.scrollX + positionRect.width / 2),
+        Math.round(positionRect.y + window.scrollY + positionRect.height / 2),
+      ],
+    });
     await waitForLitRender(element);
 
+    expect(inputEventSpy.count).to.be.equal(1);
+    expect(changeEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.firstEvent!.target).to.have.property('id', 'option-2');
+    expect(document.activeElement).to.be.equal(input);
   });
 
   it('select button and get related option', async () => {
-    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen);
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
+    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen, element);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
     const clickSpy = new EventSpy('click');
 
     input.focus();
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
+    await willOpenEventSpy.calledOnce();
     expect(willOpenEventSpy.count).to.be.equal(1);
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
     const buttonOne = element.querySelector('#button-1') as SbbAutocompleteGridButtonElement;
     buttonOne.click();
     await waitForLitRender(element);
 
-    await waitForCondition(() => clickSpy.events.length === 1);
+    await clickSpy.calledOnce();
     expect(clickSpy.count).to.be.equal(1);
     expect(
-      (clickSpy.firstEvent!.target as SbbAutocompleteGridButtonElement).option!.textContent,
+      (clickSpy.firstEvent!.target as SbbAutocompleteGridButtonElement).option!.textContent!.trim(),
     ).to.be.equal('Option 1');
     expect(
       (clickSpy.firstEvent!.target as SbbAutocompleteGridButtonElement).option!.value,
@@ -194,7 +220,7 @@ describe(`sbb-autocomplete-grid`, () => {
   });
 
   it('keyboard navigation', async () => {
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
     const optOne = element.querySelector('#option-1');
     const buttonOne = element.querySelector('#button-1');
     const optTwo = element.querySelector('#option-2');
@@ -202,7 +228,7 @@ describe(`sbb-autocomplete-grid`, () => {
     const buttonThree = element.querySelector('#button-3');
     input.focus();
 
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
     await sendKeys({ press: 'ArrowDown' });
@@ -238,16 +264,20 @@ describe(`sbb-autocomplete-grid`, () => {
   });
 
   it('opens and select with keyboard', async () => {
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
-    const didCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didClose);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
+    const didCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didClose, element);
     const optionSelectedEventSpy = new EventSpy(
       SbbAutocompleteGridOptionElement.events.optionSelected,
     );
-    const optOne = element.querySelector('#option-1');
-    const optTwo = element.querySelector('#option-2');
+    const inputEventSpy = new EventSpy('input', input);
+    const changeEventSpy = new EventSpy('change', input);
+    const optOne = element.querySelector<SbbAutocompleteGridOptionElement>('#option-1');
+    const optTwo = element.querySelector<SbbAutocompleteGridOptionElement>('#option-2');
+    const keydownSpy = new EventSpy('keydown', input);
+
     input.focus();
 
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
     await sendKeys({ press: 'ArrowDown' });
@@ -260,25 +290,42 @@ describe(`sbb-autocomplete-grid`, () => {
     expect(input).to.have.attribute('aria-activedescendant', 'option-2');
 
     await sendKeys({ press: 'Enter' });
-    await waitForCondition(() => didCloseEventSpy.events.length === 1);
+    await didCloseEventSpy.calledOnce();
     expect(didCloseEventSpy.count).to.be.equal(1);
+    expect(keydownSpy.lastEvent?.defaultPrevented).to.be.true;
 
     expect(optTwo).not.to.have.attribute('data-active');
     expect(optTwo).to.have.attribute('selected');
+    expect(inputEventSpy.count).to.be.equal(1);
+    expect(changeEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.count).to.be.equal(1);
     expect(input).to.have.attribute('aria-expanded', 'false');
     expect(input).not.to.have.attribute('aria-activedescendant');
   });
 
+  it('should not close on disabled option click', async () => {
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
+    const optOne = element.querySelector<SbbAutocompleteGridOptionElement>('#option-1')!;
+    optOne.disabled = true;
+
+    input.focus();
+    await didOpenEventSpy.calledOnce();
+
+    optOne.click();
+
+    await aTimeout(0);
+    expect(element).to.have.attribute('data-state', 'opened');
+  });
+
   it('opens and select button with keyboard', async () => {
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
     const clickSpy = new EventSpy('click');
     const optOne = element.querySelector('#option-1');
     const buttonOne = element.querySelector('#button-1');
     const buttonTwo = element.querySelector('#button-2');
     input.focus();
 
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
     await sendKeys({ press: 'ArrowDown' });
@@ -290,7 +337,7 @@ describe(`sbb-autocomplete-grid`, () => {
     expect(buttonOne).to.have.attribute('data-focus-visible');
     expect(input).to.have.attribute('aria-activedescendant', 'button-1');
     await sendKeys({ press: 'Enter' });
-    await waitForCondition(() => clickSpy.events.length === 1);
+    await clickSpy.calledOnce();
     expect(clickSpy.count).to.be.equal(1);
 
     await sendKeys({ press: 'ArrowDown' });
@@ -301,12 +348,13 @@ describe(`sbb-autocomplete-grid`, () => {
     expect(buttonTwo).to.have.attribute('data-focus-visible');
     expect(input).to.have.attribute('aria-activedescendant', 'button-2');
     await sendKeys({ press: 'Enter' });
-    await waitForCondition(() => clickSpy.events.length === 2);
+    await clickSpy.calledTimes(2);
     expect(clickSpy.count).to.be.equal(2);
+    expect(element).to.have.attribute('data-state', 'opened');
   });
 
   it('should stay closed when disabled', async () => {
-    input.setAttribute('disabled', '');
+    input.toggleAttribute('disabled', true);
 
     input.focus();
     await waitForLitRender(element);
@@ -322,7 +370,7 @@ describe(`sbb-autocomplete-grid`, () => {
   });
 
   it('should stay closed when readonly', async () => {
-    input.setAttribute('readonly', '');
+    input.toggleAttribute('readonly', true);
 
     input.focus();
     await waitForLitRender(element);
@@ -338,14 +386,14 @@ describe(`sbb-autocomplete-grid`, () => {
   });
 
   it('does not open if prevented', async () => {
-    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen);
+    const willOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willOpen, element);
 
     element.addEventListener(SbbAutocompleteGridElement.events.willOpen, (ev) =>
       ev.preventDefault(),
     );
     element.open();
 
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
+    await willOpenEventSpy.calledOnce();
     expect(willOpenEventSpy.count).to.be.equal(1);
     await waitForLitRender(element);
 
@@ -353,11 +401,11 @@ describe(`sbb-autocomplete-grid`, () => {
   });
 
   it('does not close if prevented', async () => {
-    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen);
-    const willCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willClose);
+    const didOpenEventSpy = new EventSpy(SbbAutocompleteGridElement.events.didOpen, element);
+    const willCloseEventSpy = new EventSpy(SbbAutocompleteGridElement.events.willClose, element);
 
     element.open();
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     await waitForLitRender(element);
 
     element.addEventListener(SbbAutocompleteGridElement.events.willClose, (ev) =>
@@ -365,7 +413,7 @@ describe(`sbb-autocomplete-grid`, () => {
     );
     element.close();
 
-    await waitForCondition(() => willCloseEventSpy.events.length === 1);
+    await willCloseEventSpy.calledOnce();
     await waitForLitRender(element);
 
     expect(element).to.have.attribute('data-state', 'opened');

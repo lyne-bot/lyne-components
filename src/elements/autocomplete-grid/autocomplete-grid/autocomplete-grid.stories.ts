@@ -301,12 +301,10 @@ const Template = (args: Args): TemplateResult => html`
       ?borderless=${args.borderless}
       size=${args.size}
       ?floating-label=${args.floatingLabel}
-      data-testid="form-field"
     >
       <label>Label</label>
       <input
         placeholder="Placeholder"
-        data-testid="autocomplete-input"
         aria-label="Listed options have extra buttons, use arrow keys to reach them."
         ?disabled=${args.disabled}
         ?readonly=${args.readonly}
@@ -334,12 +332,10 @@ const OptionGroupTemplate = (args: Args): TemplateResult => html`
       ?borderless=${args.borderless}
       ?floating-label=${args.floatingLabel}
       size=${args.size}
-      data-testid="form-field"
     >
       <label>Label</label>
       <input
         placeholder="Placeholder"
-        data-testid="autocomplete-input"
         aria-label="Listed options have extra buttons, use arrow keys to reach them."
         ?disabled=${args.disabled}
         ?readonly=${args.readonly}

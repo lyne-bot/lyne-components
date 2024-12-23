@@ -5,6 +5,7 @@ import { html, unsafeStatic } from 'lit/static-html.js';
 
 import { SbbFocusVisibleWithinController } from '../../core/a11y.js';
 import { SbbLanguageController } from '../../core/controllers.js';
+import { forceType } from '../../core/decorators.js';
 import type { Breakpoint } from '../../core/dom.js';
 import { EventEmitter } from '../../core/eventing.js';
 import { i18nCloseDialog, i18nGoBack } from '../../core/i18n.js';
@@ -20,8 +21,9 @@ import '../../button/transparent-button.js';
  *
  * @event {CustomEvent<void>} requestBackAction - Emits whenever the back button is clicked.
  */
+export
 @customElement('sbb-dialog-title')
-export class SbbDialogTitleElement extends SbbTitleBase {
+class SbbDialogTitleElement extends SbbTitleBase {
   public static override styles: CSSResultGroup = [SbbTitleBase.styles, style];
   public static readonly events: Record<string, string> = {
     backClick: 'requestBackAction',
@@ -30,21 +32,23 @@ export class SbbDialogTitleElement extends SbbTitleBase {
   /**
    * Whether a back button is displayed next to the title.
    */
-  @property({ attribute: 'back-button', type: Boolean }) public backButton = false;
+  @forceType()
+  @property({ attribute: 'back-button', type: Boolean })
+  public accessor backButton: boolean = false;
 
   /**
    * This will be forwarded as aria-label to the close button element.
    */
-  @property({ attribute: 'accessibility-close-label' }) public accessibilityCloseLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-close-label' })
+  public accessor accessibilityCloseLabel: string = '';
 
   /**
    * This will be forwarded as aria-label to the back button element.
    */
-  @property({ attribute: 'accessibility-back-label' }) public accessibilityBackLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-back-label' })
+  public accessor accessibilityBackLabel: string = '';
 
   /**
    * Whether to hide the title up to a certain breakpoint.

@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { waitForCondition, waitForLitRender, EventSpy } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbExpansionPanelContentElement } from '../expansion-panel-content.js';
 import '../expansion-panel-content.js';
 import { SbbExpansionPanelHeaderElement } from '../expansion-panel-header.js';
@@ -65,35 +65,35 @@ describe(`sbb-expansion-panel`, () => {
     const toggleExpandedEventSpy = new EventSpy(
       SbbExpansionPanelHeaderElement.events.toggleExpanded,
     );
-    const willOpenEventSpy = new EventSpy(SbbExpansionPanelElement.events.willOpen);
-    const willCloseEventSpy = new EventSpy(SbbExpansionPanelElement.events.willClose);
-    const didOpenEventSpy = new EventSpy(SbbExpansionPanelElement.events.didOpen);
-    const didCloseEventSpy = new EventSpy(SbbExpansionPanelElement.events.didClose);
+    const willOpenEventSpy = new EventSpy(SbbExpansionPanelElement.events.willOpen, element);
+    const willCloseEventSpy = new EventSpy(SbbExpansionPanelElement.events.willClose, element);
+    const didOpenEventSpy = new EventSpy(SbbExpansionPanelElement.events.didOpen, element);
+    const didCloseEventSpy = new EventSpy(SbbExpansionPanelElement.events.didClose, element);
 
     await waitForLitRender(element);
 
     header.click();
-    await waitForCondition(() => toggleExpandedEventSpy.events.length === 1);
+    await toggleExpandedEventSpy.calledOnce();
     expect(toggleExpandedEventSpy.count).to.be.equal(1);
     await waitForLitRender(element);
     expect(element.expanded).to.be.equal(true);
     expect(header.getAttribute('aria-expanded')).to.be.equal('true');
     expect(content.getAttribute('aria-hidden')).to.be.equal('false');
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
+    await willOpenEventSpy.calledOnce();
     expect(willOpenEventSpy.count).to.be.equal(1);
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
     header.click();
-    await waitForCondition(() => toggleExpandedEventSpy.events.length === 2);
+    await toggleExpandedEventSpy.calledTimes(2);
     expect(toggleExpandedEventSpy.count).to.be.equal(2);
     await waitForLitRender(element);
     expect(element.expanded).to.be.equal(false);
     expect(header.getAttribute('aria-expanded')).to.be.equal('false');
     expect(content.getAttribute('aria-hidden')).to.be.equal('true');
-    await waitForCondition(() => willCloseEventSpy.events.length === 1);
+    await willCloseEventSpy.calledOnce();
     expect(willCloseEventSpy.count).to.be.equal(1);
-    await waitForCondition(() => didCloseEventSpy.events.length === 1);
+    await didCloseEventSpy.calledOnce();
     expect(didCloseEventSpy.count).to.be.equal(1);
   });
 
@@ -101,17 +101,14 @@ describe(`sbb-expansion-panel`, () => {
     const header: SbbExpansionPanelHeaderElement =
       element.querySelector<SbbExpansionPanelHeaderElement>('sbb-expansion-panel-header')!;
     expect(header.disabled).to.be.equal(false);
-    expect(header).not.to.have.attribute('aria-disabled');
 
     element.disabled = true;
     await waitForLitRender(element);
     expect(header.disabled).to.be.equal(true);
-    expect(header).to.have.attribute('aria-disabled', 'true');
 
     element.disabled = false;
     await waitForLitRender(element);
     expect(header.disabled).to.be.equal(false);
-    expect(header).not.to.have.attribute('aria-disabled');
   });
 
   it('size property is proxied to children', async () => {
@@ -131,5 +128,21 @@ describe(`sbb-expansion-panel`, () => {
     await waitForLitRender(element);
     expect(header).to.have.attribute('data-size', 'l');
     expect(content).to.have.attribute('data-size', 'l');
+  });
+
+  it('should fire animation events with non-zero animation duration', async () => {
+    element.style.setProperty('--sbb-expansion-panel-animation-duration', '1ms');
+
+    const didOpenSpy = new EventSpy(SbbExpansionPanelElement.events.didOpen, element);
+    const didCloseSpy = new EventSpy(SbbExpansionPanelElement.events.didClose, element);
+
+    element.expanded = true;
+
+    await didOpenSpy.calledOnce();
+
+    element.expanded = false;
+
+    await didCloseSpy.calledOnce();
+    expect(didCloseSpy.count).to.be.equal(1);
   });
 });

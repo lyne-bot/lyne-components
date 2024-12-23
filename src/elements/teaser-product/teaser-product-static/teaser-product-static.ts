@@ -13,8 +13,9 @@ import { SbbTeaserProductCommonElementMixin, teaserProductCommonStyle } from '..
  * @cssprop [--sbb-teaser-product-background-gradient-start=25%] - At which percentage the background should start getting transparent.
  * @cssprop [--sbb-teaser-product-background-gradient-end=75%] - At which percentage the background should be fully transparent.
  */
+export
 @customElement('sbb-teaser-product-static')
-export class SbbTeaserProductStaticElement extends SbbTeaserProductCommonElementMixin(
+class SbbTeaserProductStaticElement extends SbbTeaserProductCommonElementMixin(
   SbbActionBaseElement,
 ) {
   public static override styles: CSSResultGroup = [teaserProductCommonStyle];

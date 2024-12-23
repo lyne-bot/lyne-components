@@ -7,7 +7,7 @@
   --sbb-flip-card-details-opacity: 0;
   --sbb-flip-card-details-translate-y: var(--sbb-spacing-fixed-2x);
   --sbb-flip-card-details-transition-delay: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-5x)
   );
   --sbb-flip-card-details-padding: var(--sbb-spacing-responsive-s);
@@ -19,18 +19,16 @@
 }
 
 .sbb-flip-card-details--wrapper {
-  display: grid;
-  grid-template-rows: 0fr;
+  position: absolute;
   pointer-events: none;
   color: var(--sbb-color-milk);
   opacity: var(--sbb-flip-card-details-opacity);
   transform: translateY(var(--sbb-flip-card-details-translate-y));
-  transition-property: grid-template-rows, transform, opacity;
+  transition-property: transform, opacity;
   transition-duration: var(--sbb-flip-card-details-transition-duration);
 
   :host([data-flipped]) & {
-    grid-template-rows: 1fr;
-    transition-delay: 0s, var(--sbb-flip-card-details-transition-delay),
+    transition-delay: var(--sbb-flip-card-details-transition-delay),
       var(--sbb-flip-card-details-transition-delay);
   }
 }

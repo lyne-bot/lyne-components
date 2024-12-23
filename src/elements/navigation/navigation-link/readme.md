@@ -31,17 +31,17 @@ The component has three different sizes, which can be changed using the `size` p
 
 ## Properties
 
-| Name                 | Attribute             | Privacy | Type                                       | Default | Description                                                       |
-| -------------------- | --------------------- | ------- | ------------------------------------------ | ------- | ----------------------------------------------------------------- |
-| `accessibilityLabel` | `accessibility-label` | public  | `string \| undefined`                      |         | This will be forwarded as aria-label to the inner anchor element. |
-| `connectedSection`   | -                     | public  | `SbbNavigationSectionElement \| undefined` |         | The section that is beign controlled by the action, if any.       |
-| `download`           | `download`            | public  | `boolean \| undefined`                     |         | Whether the browser will show the download dialog on click.       |
-| `href`               | `href`                | public  | `string \| undefined`                      |         | The href value you want to link to.                               |
-| `marker`             | -                     | public  | `SbbNavigationMarkerElement \| null`       |         | The navigation marker in which the action is nested.              |
-| `rel`                | `rel`                 | public  | `string \| undefined`                      |         | The relationship of the linked URL as space-separated link types. |
-| `section`            | -                     | public  | `SbbNavigationSectionElement \| null`      |         | The section in which the action is nested.                        |
-| `size`               | `size`                | public  | `SbbNavigationActionSize \| undefined`     | `'l'`   | Action size variant.                                              |
-| `target`             | `target`              | public  | `LinkTargetType \| string \| undefined`    |         | Where to display the linked URL.                                  |
+| Name                 | Attribute             | Privacy | Type                                       | Default            | Description                                                       |
+| -------------------- | --------------------- | ------- | ------------------------------------------ | ------------------ | ----------------------------------------------------------------- |
+| `accessibilityLabel` | `accessibility-label` | public  | `string`                                   | `''`               | This will be forwarded as aria-label to the inner anchor element. |
+| `connectedSection`   | -                     | public  | `SbbNavigationSectionElement \| undefined` |                    | The section that is beign controlled by the action, if any.       |
+| `download`           | `download`            | public  | `boolean`                                  | `false`            | Whether the browser will show the download dialog on click.       |
+| `href`               | `href`                | public  | `string`                                   | `''`               | The href value you want to link to.                               |
+| `marker`             | -                     | public  | `SbbNavigationMarkerElement \| null`       |                    | The navigation marker in which the action is nested.              |
+| `rel`                | `rel`                 | public  | `string`                                   | `''`               | The relationship of the linked URL as space-separated link types. |
+| `section`            | -                     | public  | `SbbNavigationSectionElement \| null`      |                    | The section in which the action is nested.                        |
+| `size`               | `size`                | public  | `SbbNavigationActionSize`                  | `'l' / 's' (lean)` | Action size variant, either s, m or l.                            |
+| `target`             | `target`              | public  | `LinkTargetType \| string`                 | `''`               | Where to display the linked URL.                                  |
 
 ## Slots
 

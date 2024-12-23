@@ -48,6 +48,26 @@ describe(`sbb-tag`, () => {
       );
     });
 
+    describe(`disabledInteractive`, () => {
+      for (const checked of [false, true]) {
+        it(
+          `checked=${checked}`,
+          visualDiffDefault.with(async (setup) => {
+            await setup.withFixture(html`
+              <sbb-tag
+                ?checked=${checked}
+                disabled-interactive
+                icon-name="face-smiling-small"
+                amount="123"
+              >
+                Tag label
+              </sbb-tag>
+            `);
+          }),
+        );
+      }
+    });
+
     describeEach(visualCases, ({ icon, amount, size }) => {
       it(
         '',

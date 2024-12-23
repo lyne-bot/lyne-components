@@ -11,7 +11,8 @@ import { ref } from 'lit/directives/ref.js';
 
 import { SbbOpenCloseBaseElement } from '../core/base-elements.js';
 import { SbbConnectedAbortController } from '../core/controllers.js';
-import { findReferencedElement, isSafari } from '../core/dom.js';
+import { forceType } from '../core/decorators.js';
+import { findReferencedElement, isSafari, isZeroAnimationDuration } from '../core/dom.js';
 import { SbbNegativeMixin, SbbHydrationMixin } from '../core/mixins.js';
 import {
   isEventOnElement,
@@ -38,18 +39,19 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
    * The element where the autocomplete will attach; accepts both an element's id or an HTMLElement.
    * If not set, it will search for the first 'sbb-form-field' ancestor.
    */
-  @property() public origin?: string | HTMLElement;
+  @property() public accessor origin: string | HTMLElement | null = null;
 
   /**
    * The input element that will trigger the autocomplete opening; accepts both an element's id or an HTMLElement.
    * By default, the autocomplete will open on focus, click, input or `ArrowDown` keypress of the 'trigger' element.
    * If not set, will search for the first 'input' child of a 'sbb-form-field' ancestor.
    */
-  @property() public trigger?: string | HTMLInputElement;
+  @property() public accessor trigger: string | HTMLInputElement | null = null;
 
   /** Whether the icon space is preserved when no icon is set. */
+  @forceType()
   @property({ attribute: 'preserve-icon-space', reflect: true, type: Boolean })
-  public preserveIconSpace?: boolean;
+  public accessor preserveIconSpace: boolean = false;
 
   /** Returns the element where autocomplete overlay is attached to. */
   public get originElement(): HTMLElement {
@@ -68,6 +70,7 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
 
   protected abstract overlayId: string;
   protected abstract panelRole: string;
+  /** @deprecated No longer used internally. */
   protected abort = new SbbConnectedAbortController(this);
   private _overlay!: HTMLElement;
   private _optionContainer!: HTMLElement;
@@ -83,7 +86,6 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
   protected abstract selectByKeyboard(event: KeyboardEvent): void;
   protected abstract setNextActiveOption(event: KeyboardEvent): void;
   protected abstract resetActiveElement(): void;
-  protected abstract onOptionClick(event: MouseEvent): void;
 
   /** Opens the autocomplete. */
   public open(): void {
@@ -101,6 +103,12 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
 
     this.state = 'opening';
     this._setOverlayPosition();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
   }
 
   /** Closes the autocomplete. */
@@ -114,6 +122,16 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
 
     this.state = 'closing';
     this._openPanelEventsController.abort();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-options-panel-animation-duration');
   }
 
   public override connectedCallback(): void {
@@ -121,7 +139,6 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     if (ariaRoleOnHost) {
       this.id ||= this.overlayId;
     }
-    const signal = this.abort.signal;
     const formField = this.closest('sbb-form-field') ?? this.closest('[data-form-field]');
 
     if (formField) {
@@ -132,18 +149,16 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
       this._componentSetup();
     }
     this.syncNegative();
-
-    this.addEventListener('click', (e: MouseEvent) => this.onOptionClick(e), { signal });
   }
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
 
-    if (changedProperties.has('origin')) {
-      this._resetOriginClickListener(this.origin, changedProperties.get('origin'));
-    }
-    if (changedProperties.has('trigger')) {
-      this._resetTriggerClickListener(this.trigger, changedProperties.get('trigger'));
+    if (
+      (changedProperties.has('origin') && this.origin !== changedProperties.get('origin')) ||
+      (changedProperties.has('trigger') && this.trigger !== changedProperties.get('trigger'))
+    ) {
+      this._componentSetup();
     }
     if (changedProperties.has('negative')) {
       this.syncNegative();
@@ -177,11 +192,15 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
 
     if (this.triggerElement) {
       // Set the option value
-      this.triggerElement.value = target.value as string;
+      // In order to support React onChange event, we have to get the setter and call it.
+      // https://github.com/facebook/react/issues/11600#issuecomment-345813130
+      const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+      setValue.call(this.triggerElement, target.value);
 
       // Manually trigger the change events
       this.triggerElement.dispatchEvent(new Event('change', { bubbles: true }));
       this.triggerElement.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
+      this.triggerElement.focus();
     }
 
     this.close();
@@ -194,26 +213,6 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
   /** The autocomplete should inherit 'readonly' state from the trigger. */
   private _readonly(): boolean {
     return this.triggerElement?.hasAttribute('readonly') ?? false;
-  }
-
-  /** Removes trigger click listener on trigger change. */
-  private _resetOriginClickListener(
-    newValue?: string | HTMLElement,
-    oldValue?: string | HTMLElement,
-  ): void {
-    if (newValue !== oldValue) {
-      this._componentSetup();
-    }
-  }
-
-  /** Removes trigger click listener on trigger change. */
-  private _resetTriggerClickListener(
-    newValue?: string | HTMLElement,
-    oldValue?: string | HTMLElement,
-  ): void {
-    if (newValue !== oldValue) {
-      this._componentSetup();
-    }
   }
 
   private _componentSetup(): void {
@@ -324,26 +323,27 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     );
   }
 
-  /** On open/close animation end.
-   *  In rare cases it can be that the animationEnd event is triggered twice.
-   *  To avoid entering a corrupt state, exit when state is not expected.
+  /**
+   * On open/close animation end.
+   * In rare cases it can be that the animationEnd event is triggered twice.
+   * To avoid entering a corrupt state, exit when state is not expected.
    */
   private _onAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this.state === 'opening') {
-      this._onOpenAnimationEnd();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this.state === 'closing') {
-      this._onCloseAnimationEnd();
+      this._handleClosing();
     }
   }
 
-  private _onOpenAnimationEnd(): void {
+  private _handleOpening(): void {
     this.state = 'opened';
     this._attachOpenPanelEvents();
     this.triggerElement?.setAttribute('aria-expanded', 'true');
     this.didOpen.emit();
   }
 
-  private _onCloseAnimationEnd(): void {
+  private _handleClosing(): void {
     this.state = 'closed';
     this.triggerElement?.setAttribute('aria-expanded', 'false');
     this.resetActiveElement();
@@ -358,6 +358,9 @@ export abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     document.addEventListener('scroll', () => this._setOverlayPosition(), {
       passive: true,
       signal: this._openPanelEventsController.signal,
+      // Without capture, other scroll contexts would not bubble to this event listener.
+      // Capture allows us to react to all scroll contexts in this DOM.
+      capture: true,
     });
     window.addEventListener('resize', () => this._setOverlayPosition(), {
       passive: true,

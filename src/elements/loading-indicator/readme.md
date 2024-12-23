@@ -1,32 +1,12 @@
 The `sbb-loading-indicator` is a component which can be used to indicate progress status
 or an ongoing activity which require some time to complete.
 
-### Variants
-
-The component has two different variants.
-
-In `window` mode, the component completely covers the parent element, preventing interaction with it.
-
-```html
-<sbb-loading-indicator variant="window"></sbb-loading-indicator>
-```
-
-While the `circle` mode can be used inline within another component (e.g. button);
-in this case the component adjusts its size to the parent font size.
-
-```html
-<sbb-button>
-  <sbb-loading-indicator slot="icon" variant="circle"></sbb-loading-indicator>
-  Click me
-</sbb-button>
-```
-
 ### Style
 
-In `window` mode it's possible to define the `size` of the component, choosing between `s` (default) and `l`.
+It's possible to define the `size` of the component, choosing between `s` (default), `l`, `xl`, `xxl`, and `xxxl`.
 
 ```html
-<sbb-loading-indicator variant="window" size="l"></sbb-loading-indicator>
+<sbb-loading-indicator size="l"></sbb-loading-indicator>
 ```
 
 ## Accessibility
@@ -37,11 +17,7 @@ and then append the `sbb-loading-indicator` on it after giving it the correct `a
 
 ```html
 <div class="loader-container" aria-live="polite">
-  <sbb-loading-indicator
-    variant="window"
-    size="l"
-    aria-label="Loading, please wait"
-  ></sbb-loading-indicator>
+  <sbb-loading-indicator size="l" aria-label="Loading, please wait"></sbb-loading-indicator>
 </div>
 ```
 
@@ -49,8 +25,7 @@ and then append the `sbb-loading-indicator` on it after giving it the correct `a
 
 ## Properties
 
-| Name      | Attribute | Privacy | Type                                | Default     | Description                                                                                       |
-| --------- | --------- | ------- | ----------------------------------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| `color`   | `color`   | public  | `'default' \| 'smoke' \| 'white'`   | `'default'` | Color variant.                                                                                    |
-| `size`    | `size`    | public  | `'s' \| 'l'`                        | `'s'`       | Size variant, either s or m.                                                                      |
-| `variant` | `variant` | public  | `'window' \| 'circle' \| undefined` |             | Variant of the loading indicator; `circle` is meant to be used inline, while `window` as overlay. |
+| Name    | Attribute | Privacy | Type                                    | Default     | Description                  |
+| ------- | --------- | ------- | --------------------------------------- | ----------- | ---------------------------- |
+| `color` | `color`   | public  | `'default' \| 'smoke' \| 'white'`       | `'default'` | Color variant.               |
+| `size`  | `size`    | public  | `'s' \| 'l' \| 'xl' \| 'xxl' \| 'xxxl'` | `'s'`       | Size variant, either s or m. |

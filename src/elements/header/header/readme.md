@@ -2,12 +2,13 @@ The `sbb-header` component is a container for actions and a logo, and it is disp
 
 ## Slots
 
-It has two slots:
-the first one can contain one or more action ([sbb-header-button](/docs/elements-sbb-header-sbb-header-button--docs) or
-[sbb-header-link](/docs/elements-sbb-header-sbb-header-link--docs))
-or other action items like [sbb-button](/docs/elements-sbb-button--docs) or [sbb-link](/docs/elements-sbb-link--docs),
-and it is displayed at the left end of the component; the second slot is displayed at the right end,
-and it can contain a logo or a signet, which by default is the [sbb-logo](/docs/elements-sbb-logo--docs).
+The slot can contain:
+
+- one or more actions ([sbb-header-button](/docs/elements-sbb-header-sbb-header-button--docs) or [sbb-header-link](/docs/elements-sbb-header-sbb-header-link--docs))
+- other action items like [sbb-button](/docs/elements-sbb-button--docs) or [sbb-link](/docs/elements-sbb-link--docs)
+- a logo or a signet with the `.sbb-header-logo` class (see [sbb-logo](/docs/elements-sbb-logo--docs))
+
+Slotted elements are aligned to the left. Use `<div class="sbb-header-spacer">` to align elements after it to the right.
 
 ```html
 <sbb-header>
@@ -15,7 +16,8 @@ and it can contain a logo or a signet, which by default is the [sbb-logo](/docs/
     Menu
   </sbb-header-link>
   <sbb-header-button icon-name="magnifying-glass-small">Search</sbb-header-button>
-  <a slot="logo" aria-label="Homepage" href="/">
+  <div class="sbb-header-spacer"></div>
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
     <sbb-logo protective-room="none"></sbb-logo>
   </a>
 </sbb-header>
@@ -38,8 +40,33 @@ For the latter, the usage of the `sbb-signet` with `protective-room='panel'` is 
     Menu
   </sbb-header-link>
   <sbb-header-button icon-name="magnifying-glass-small">Search</sbb-header-button>
-  <a slot="logo" aria-label="Homepage" href="/">
-    <sbb-signet slot="logo" protective-room="panel"></sbb-signet>
+  <div class="sbb-header-spacer"></div>
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
+    <sbb-signet protective-room="panel"></sbb-signet>
+  </a>
+</sbb-header>
+```
+
+### Active state
+
+To indicate an active state of the `sbb-header-link` or `sbb-header-button`,
+the CSS class `sbb-active` should be set on the corresponding element.
+
+From accessibility perspective `aria-current="page"` should be set whenever the CSS class `sbb-active` is set.
+
+```html
+<sbb-header size="s">
+  <sbb-header-link
+    icon-name="magnifying-glass-small"
+    href="https://sbb.ch/somewhere"
+    class="sbb-active"
+    aria-current="page"
+  >
+    Overview
+  </sbb-header-link>
+  <div class="sbb-header-spacer"></div>
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
+    <sbb-signet protective-room="panel"></sbb-signet>
   </a>
 </sbb-header>
 ```
@@ -56,7 +83,8 @@ using the `scrollOrigin` property, which accepts an `HTMLElement` or the id of t
 ```html
 <sbb-header expanded hideOnScroll>
   <sbb-header-button icon-name="magnifying-glass-small">Search</sbb-header-button>
-  <a slot="logo" aria-label="Homepage" href="/">
+  <div class="sbb-header-spacer"></div>
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
     <sbb-logo protective-room="none"></sbb-logo>
   </a>
 </sbb-header>
@@ -69,18 +97,26 @@ by adding classes to `sbb-header-button`/`sbb-header-link` elements and then def
 
 [All the examples in Storybook](/story/elements-sbb-header-sbb-header--basic) have the following requirements:
 
-- four action items (with custom icons);
-- the first item is always left aligned and has `expand-from` set to `small`;
-- the other three items are left aligned in breakpoints zero to medium, and right aligned from large to ultra;
-- the last item is not visible in breakpoints zero to small.
+1. four action items (with custom icons);
+2. the first item is always left aligned and has `expand-from` set to `small`;
+3. the other three items are left aligned in breakpoints zero to medium, and right aligned from large to ultra;
+4. the last item is not visible in breakpoints zero to small;
+5. the logo is always aligned to the right.
 
-To achieve this result, a `div` tag with a CSS class named `sbb-header-spacer` was added between the first
-and the second `sbb-header-button` item, then a class named `last-element` was added to the last one.
+To achieve the alignment requirements, two `div` tags with a CSS class named `sbb-header-spacer` were added:
+
+- one after the first `sbb-header-button` item (that will be hidden on smaller screen sizes);
+- the second, before the logo. Since this spacer will only be shown on small screen sizes, we need a new class to target it (in this example `sbb-header-spacer-logo`);
+
+We also need a class (in this example `last-element`) on the last `sbb-header-button` to achieve requirement n° 4.
+
 Finally, the following custom CSS has been added(\*).
-The result can be seen in the [home](/story/pages-home--home) and [home-logged-in](/story/pages-home--home-logged-in) stories.
+
+The result can also be seen in the [home](/story/pages-home--home) and [home-logged-in](/story/pages-home--home-logged-in) stories.
 
 ```css
-.last-element {
+.last-element,
+.sbb-header-spacer-logo {
   display: none;
 }
 
@@ -94,7 +130,31 @@ The result can be seen in the [home](/story/pages-home--home) and [home-logged-i
   .sbb-header-spacer {
     display: none;
   }
+
+  .sbb-header-spacer-logo {
+    display: block;
+  }
 }
+```
+
+```html
+<sbb-header>
+  <sbb-header-button icon-name="..." expand-from="small"> ... </sbb-header-button>
+
+  <!-- Will be hidden on small screen sizes -->
+  <div class="sbb-header-spacer"></div>
+
+  <sbb-header-button icon-name="..."> ... </sbb-header-button>
+  <sbb-header-button icon-name="..."> ... </sbb-header-button>
+  <sbb-header-button icon-name="..." class="last-element"> ... </sbb-header-button>
+
+  <!-- Will only be shown on small screen sizes -->
+  <div class="sbb-header-spacer sbb-header-spacer-logo"></div>
+
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
+    <sbb-logo protective-room="none"></sbb-logo>
+  </a>
+</sbb-header>
 ```
 
 The `sbb-header` can be also customized by adding the application's name and version:
@@ -111,8 +171,10 @@ a helper class named `sbb-header-info` is provided to achieve the correct visual
     <span>V. 1.1</span>
   </span>
 
-  <a slot="logo" aria-label="Homepage" href="/">
-    <sbb-signet slot="logo" protective-room="panel"></sbb-signet>
+  <div class="sbb-header-spacer"></div>
+
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
+    <sbb-signet protective-room="panel"></sbb-signet>
   </a>
 </sbb-header>
 ```
@@ -130,7 +192,8 @@ set the CSS class `sbb-header-shrinkable` on the desired `sbb-header-button`/`sb
   <sbb-header-button class="sbb-header-shrinkable">
     Christina Müller has a long name
   </sbb-header-button>
-  <a slot="logo" aria-label="Homepage" href="/">
+  <div class="sbb-header-spacer"></div>
+  <a aria-label="Homepage" href="/" class="sbb-header-logo">
     <sbb-logo protective-room="none"></sbb-logo>
   </a>
 </sbb-header>
@@ -144,12 +207,12 @@ so they were wrapped into a `style` tag and added to the Storybook's configurati
 
 ## Properties
 
-| Name           | Attribute        | Privacy | Type                                | Default | Description                                                                                                          |
-| -------------- | ---------------- | ------- | ----------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
-| `expanded`     | `expanded`       | public  | `boolean`                           | `false` | Whether to allow the header content to stretch to full width. By default, the content has the appropriate page size. |
-| `hideOnScroll` | `hide-on-scroll` | public  | `boolean`                           | `false` | Whether the header should hide and show on scroll.                                                                   |
-| `scrollOrigin` | `scroll-origin`  | public  | `string \| HTMLElement \| Document` |         | The element's id or the element on which the scroll listener is attached.                                            |
-| `size`         | `size`           | public  | `'m' \| 's'`                        | `'m'`   | Size of the header.                                                                                                  |
+| Name           | Attribute        | Privacy | Type                                | Default            | Description                                                                                                          |
+| -------------- | ---------------- | ------- | ----------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `expanded`     | `expanded`       | public  | `boolean`                           | `false`            | Whether to allow the header content to stretch to full width. By default, the content has the appropriate page size. |
+| `hideOnScroll` | `hide-on-scroll` | public  | `boolean`                           | `false`            | Whether the header should hide and show on scroll.                                                                   |
+| `scrollOrigin` | `scroll-origin`  | public  | `string \| HTMLElement \| Document` |                    | The element's id or the element on which the scroll listener is attached.                                            |
+| `size`         | `size`           | public  | `'m' \| 's'`                        | `'m' / 's' (lean)` | Size of the header, either m or s.                                                                                   |
 
 ## CSS Properties
 
@@ -160,7 +223,6 @@ so they were wrapped into a `style` tag and added to the Storybook's configurati
 
 ## Slots
 
-| Name   | Description                                                           |
-| ------ | --------------------------------------------------------------------- |
-|        | Use the unnamed slot to add actions or content to the header.         |
-| `logo` | Slot used to render the logo on the right side (sbb-logo as default). |
+| Name | Description                                                          |
+| ---- | -------------------------------------------------------------------- |
+|      | Use the unnamed slot to add actions, content and logo to the header. |

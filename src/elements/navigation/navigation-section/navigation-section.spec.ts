@@ -54,4 +54,19 @@ describe(`sbb-navigation-section`, () => {
     await waitForCondition(() => element.getAttribute('data-state') === 'closed');
     expect(element).to.have.attribute('data-state', 'closed');
   });
+
+  it('opens and closes with non-zero animation duration', async () => {
+    element.style.setProperty('--sbb-navigation-section-animation-duration', '1ms');
+
+    element.open();
+    await waitForLitRender(element);
+    await waitForCondition(() => element.getAttribute('data-state') === 'opened');
+    expect(element).to.have.attribute('data-state', 'opened');
+
+    element.close();
+    await waitForLitRender(element);
+
+    await waitForCondition(() => element.getAttribute('data-state') === 'closed');
+    expect(element).to.have.attribute('data-state', 'closed');
+  });
 });

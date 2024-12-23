@@ -51,7 +51,6 @@ const defaultArgs: Args = {
 
 const popoverTrigger = (position: Record<string, string>): TemplateResult => html`
   <sbb-popover-trigger
-    data-testid="popover-trigger"
     style=${styleMap({
       'margin-inline': '2rem',
       position: 'absolute',
@@ -63,7 +62,7 @@ const popoverTrigger = (position: Record<string, string>): TemplateResult => htm
 `;
 
 const popover = (args: Args): TemplateResult => html`
-  <sbb-popover data-testid="popover" trigger="popover-trigger" ${sbbSpread(args)}>
+  <sbb-popover trigger="popover-trigger" ${sbbSpread(args)}>
     <sbb-title level="2" visual-level="6" style="margin-block-start: 0"> Title. </sbb-title>
     <p style="margin: 0" class="sbb-text-s">
       Some content.
@@ -80,7 +79,7 @@ const popover = (args: Args): TemplateResult => html`
 `;
 
 const simplePopover = (args: Args): TemplateResult => html`
-  <sbb-popover data-testid="popover" trigger="popover-trigger" ${sbbSpread(args)}>
+  <sbb-popover trigger="popover-trigger" ${sbbSpread(args)}>
     <sbb-title level="2" visual-level="6" style="margin-block-start: 0">
       Simple popover without any interactive content but a list.
     </sbb-title>
@@ -119,7 +118,7 @@ const EndAboveTemplate = (args: Args): TemplateResult => html`
 
 const LongContentTemplate = (args: Args): TemplateResult => html`
   ${popoverTrigger({ 'inset-inline-start': '2rem' })}
-  <sbb-popover data-testid="popover" trigger="popover-trigger" ${sbbSpread(args)}>
+  <sbb-popover trigger="popover-trigger" ${sbbSpread(args)}>
     <sbb-title level="2" visual-level="6" style="margin-block-start: 0">
       Popover with long content.
     </sbb-title>

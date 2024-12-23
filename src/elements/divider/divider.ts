@@ -11,15 +11,16 @@ import style from './divider.scss?lit&inline';
 /**
  * It displays a divider between sections.
  */
+export
 @customElement('sbb-divider')
 @hostAttributes({
   role: 'separator',
 })
-export class SbbDividerElement extends SbbNegativeMixin(LitElement) {
+class SbbDividerElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** Orientation property with possible values 'horizontal' | 'vertical'. Defaults to horizontal. */
-  @property({ reflect: true }) public orientation: SbbOrientation = 'horizontal';
+  @property({ reflect: true }) public accessor orientation: SbbOrientation = 'horizontal';
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);

@@ -5,6 +5,8 @@ import { ssrHydratedFixture } from '../core/testing/private.js';
 
 import { SbbAccordionElement } from './accordion.js';
 
+import '../expansion-panel.js';
+
 describe(`sbb-accordion ssr`, () => {
   let root: SbbAccordionElement;
 

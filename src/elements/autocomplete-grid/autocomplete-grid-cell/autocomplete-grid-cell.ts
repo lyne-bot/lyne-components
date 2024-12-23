@@ -10,11 +10,12 @@ import style from './autocomplete-grid-cell.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to add a `sbb-autocomplete-grid-button` element.
  */
+export
 @customElement('sbb-autocomplete-grid-cell')
 @hostAttributes({
   role: 'gridcell',
 })
-export class SbbAutocompleteGridCellElement extends LitElement {
+class SbbAutocompleteGridCellElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   protected override render(): TemplateResult {

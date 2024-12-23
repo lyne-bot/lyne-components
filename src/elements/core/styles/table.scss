@@ -59,3 +59,7 @@ sbb-table-wrapper[negative] .sbb-table,
 .sbb-table-caption {
   @include table.table-caption;
 }
+
+html.sbb-lean .sbb-table:not(.sbb-table-xs, .sbb-table-m) {
+  @include table.table--s;
+}

@@ -54,7 +54,7 @@
     border-block-start: var(--sbb-navigation-marker-border) solid var(--sbb-color-storm);
     margin-block: var(--sbb-navigation-marker-margin-block);
     transition: {
-      duration: var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-6x));
+      duration: var(--sbb-disable-animation-duration, var(--sbb-animation-duration-6x));
       timing-function: ease;
       property: opacity, inset-block-start;
     }

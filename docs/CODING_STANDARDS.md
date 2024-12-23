@@ -41,7 +41,7 @@ if (!this.getAttribute('tabindex')) {
 In TypeScript code, use JsDoc-style comments for descriptions (on classes, members, etc.) and
 use `//` style comments for everything else (explanations, background info, etc.).
 
-In SCSS code, always use `//` style comments.
+In Sass code, always use `//` style comments.
 
 In HTML code, use `<!-- ... -->` comments, which will be stripped when packaging a build.
 
@@ -504,7 +504,7 @@ Also define CSS variables in :host.
 }
 ```
 
-#### Use/Check existing CSS variables and SCSS mixins/functions
+#### Use/Check existing CSS variables and Sass mixins/functions
 
 The `@sbb-esta/lyne-design-tokens` package provides global design tokens/CSS variables,
 which are used/configured in our code base (see `src/elements/core/styles/core/variables.scss`).
@@ -523,7 +523,7 @@ If a global variable is missing, create an issue or pull request in
 #### Use the lowest specificity possible
 
 Always prioritize lower specificity over other factors. Most style definitions should consist of a
-single element or css selector plus necessary state modifiers. **Avoid SCSS nesting for the sake of
+single element or CSS selector plus necessary state modifiers. **Avoid Sass nesting for the sake of
 code organization.** This will allow users to much more easily override styles.
 
 For example, rather than doing this:

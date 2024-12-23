@@ -6,7 +6,6 @@ snapshots["sbb-expansion-panel-header renders DOM"] =
   data-action=""
   data-button=""
   data-slot-names="unnamed"
-  role="button"
   slot="header"
   tabindex="0"
 >
@@ -46,7 +45,6 @@ snapshots["sbb-expansion-panel-header renders with icon DOM"] =
   data-icon=""
   data-slot-names="unnamed"
   icon-name="pie-medium"
-  role="button"
   slot="header"
   tabindex="0"
 >
@@ -92,7 +90,6 @@ snapshots["sbb-expansion-panel-header renders with slotted icon DOM"] =
   data-button=""
   data-icon=""
   data-slot-names="icon unnamed"
-  role="button"
   slot="header"
   tabindex="0"
 >

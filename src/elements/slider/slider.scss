@@ -5,7 +5,7 @@
 
 :host {
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
   display: inline-block;
   min-width: #{sbb.px-to-rem-build(150)};
@@ -112,7 +112,7 @@
       var(--sbb-slider-value-fraction)
   );
   transition-property: width, height;
-  transition-duration: var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-1x));
+  transition-duration: var(--sbb-disable-animation-duration, var(--sbb-animation-duration-1x));
   transition-timing-function: ease-in;
   background-color: var(--sbb-slider-knob-color);
   border: var(--sbb-slider-knob-border-size) var(--sbb-slider-knob-border-style)

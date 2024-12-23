@@ -30,7 +30,7 @@ $open-anim-height-to: calc(
     var(--sbb-notification-base-radius) var(--sbb-notification-base-radius)
     calc(var(--sbb-notification-base-radius) / 2);
   --sbb-notification-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
   --sbb-notification-timing-function: ease-in;
@@ -102,7 +102,8 @@ $open-anim-height-to: calc(
           (var(--sbb-font-size-title-5) * var(--sbb-typo-line-height-body-text)) - var(
               --sbb-size-icon-ui-small
             )
-        ) / 2
+        ) /
+        2
     );
   }
 
@@ -157,7 +158,7 @@ $open-anim-height-to: calc(
       fill-mode: forwards;
       duration: var(--sbb-notification-animation-duration);
       timing-function: var(--sbb-notification-timing-function);
-      delay: 0s, var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-2x));
+      delay: 0s, var(--sbb-disable-animation-duration, var(--sbb-animation-duration-2x));
     }
   }
 }
@@ -175,7 +176,7 @@ $open-anim-height-to: calc(
   border-radius: var(--sbb-notification-border-radius);
   overflow: hidden;
 
-  // We apply SASS calculated background color as default/fallback for older browsers.
+  // We apply Sass calculated background color as default/fallback for older browsers.
   background-color: var(--sbb-notification-type-color-sass);
 
   // If supported, try to mix color with CSS

@@ -17,7 +17,6 @@ snapshots["sbb-autocomplete-grid-row renders DOM"] =
   </sbb-autocomplete-grid-option>
   <sbb-autocomplete-grid-cell role="gridcell">
     <sbb-autocomplete-grid-button
-      aria-disabled="false"
       data-action=""
       data-button=""
       icon-name="pie-small"

@@ -14,11 +14,12 @@ import style from './breadcrumb.scss?lit&inline';
  * @slot - Use the unnamed slot to add content to the breadcrumb.
  * @slot icon - Use this to display an icon as breadcrumb.
  */
+export
 @customElement('sbb-breadcrumb')
-export class SbbBreadcrumbElement extends SbbIconNameMixin(SbbHydrationMixin(SbbLinkBaseElement)) {
+class SbbBreadcrumbElement extends SbbIconNameMixin(SbbHydrationMixin(SbbLinkBaseElement)) {
   public static override styles: CSSResultGroup = style;
 
-  @state() private _hasText = false;
+  @state() private accessor _hasText = false;
 
   private _handleSlotchange(): void {
     this._hasText = Array.from(this.childNodes ?? []).some(

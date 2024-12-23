@@ -8,15 +8,16 @@ import type {
   StoryContext,
   StoryObj,
 } from '@storybook/web-components';
-import { nothing, type TemplateResult } from 'lit';
-import { html } from 'lit';
+import { html, nothing, type TemplateResult } from 'lit';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
 import sampleImages from '../../core/images.js';
 
 import readme from './readme.md?raw';
+
 import './teaser-product.js';
 import '../../button/button-static.js';
+import '../../chip-label.js';
 import '../../image.js';
 import '../../title.js';
 
@@ -78,7 +79,7 @@ const defaultArgs: Args = {
   withFooter: true,
   slottedImg: false,
   href: 'https://www.sbb.ch',
-  'accessibility-label': undefined,
+  'accessibility-label': 'Benefit from up to 70% discount, Follow the link to benefit.',
 };
 
 const content = (): TemplateResult => html`
@@ -111,6 +112,24 @@ const Template = ({ withFooter, slottedImg, ...args }: Args): TemplateResult => 
   </sbb-teaser-product>
 `;
 
+const WithChipTemplate = ({ withFooter, slottedImg, ...args }: Args): TemplateResult => html`
+  <sbb-teaser-product ${sbbSpread(args)}>
+    <figure slot="image" class="sbb-figure">
+      ${slottedImg
+        ? html`<img src=${sampleImages[4]} alt="" />`
+        : html`<sbb-image image-src=${sampleImages[4]}></sbb-image>`}
+      <sbb-chip-label
+        class=${args['image-alignment'] === 'after'
+          ? 'sbb-figure-overlap-start-end'
+          : 'sbb-figure-overlap-start-start'}
+      >
+        AI generated
+      </sbb-chip-label>
+    </figure>
+    ${content()} ${withFooter ? footer() : nothing}
+  </sbb-teaser-product>
+`;
+
 export const Default: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
@@ -139,6 +158,12 @@ export const SlottedImg: StoryObj = {
   render: Template,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, slottedImg: true },
+};
+
+export const WithChip: StoryObj = {
+  render: WithChipTemplate,
+  argTypes: defaultArgTypes,
+  args: { ...defaultArgs },
 };
 
 const meta: Meta = {

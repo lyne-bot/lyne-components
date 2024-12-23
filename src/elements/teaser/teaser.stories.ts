@@ -10,6 +10,7 @@ import images from '../core/images.js';
 
 import placeholderImage from './assets/placeholder.png';
 import readme from './readme.md?raw';
+import '../chip-label.js';
 import '../image.js';
 import './teaser.js';
 
@@ -89,7 +90,10 @@ const defaultArgs: Args = {
 const TemplateDefault = ({ description, ...remainingArgs }: Args): TemplateResult => {
   return html`
     <sbb-teaser ${sbbSpread(remainingArgs)}>
-      <img slot="image" src=${placeholderImage} alt="400x300" />
+      <figure slot="image" class="sbb-figure">
+        <img src=${placeholderImage} alt="400x300" />
+        <sbb-chip-label class="sbb-figure-overlap-start-start">AI Generated</sbb-chip-label>
+      </figure>
       ${description}
     </sbb-teaser>
   `;
@@ -98,7 +102,7 @@ const TemplateDefault = ({ description, ...remainingArgs }: Args): TemplateResul
 const TemplateDefaultFixedWidth = ({ description, ...remainingArgs }: Args): TemplateResult => {
   return html`
     <sbb-teaser ${sbbSpread(remainingArgs)} style="width:400px">
-      <img slot="image" src=${placeholderImage} alt="400x300" />
+      <img src=${placeholderImage} alt="400x300" slot="image" />
       ${description}
     </sbb-teaser>
   `;
@@ -108,10 +112,11 @@ const TemplateCustom = ({ description, ...remainingArgs }: Args): TemplateResult
   return html`
     <sbb-teaser ${sbbSpread(remainingArgs)}>
       <img
-        slot="image"
         src=${placeholderImage}
         alt="200x100"
-        style="width: 200px; aspect-ratio: 2/1;"
+        class="sbb-image-2-1"
+        style="width: 200px;"
+        slot="image"
       />
       ${description}
     </sbb-teaser>
@@ -126,7 +131,7 @@ const TemplateSlots = ({
 }: Args): TemplateResult => {
   return html`
     <sbb-teaser ${sbbSpread(remainingArgs)}>
-      <img slot="image" src=${placeholderImage} alt="400x300" />
+      <img src=${placeholderImage} alt="400x300" slot="image" />
       <span slot="chip">${chipContent}</span>
       <span slot="title">${titleContent}</span>
       ${description}
@@ -149,12 +154,9 @@ const TemplateGrid = ({ description, ...remainingArgs }: Args): TemplateResult =
       new Array(4),
       () => html`
         <sbb-teaser ${sbbSpread(remainingArgs)} style="--sbb-teaser-align-items: stretch;">
-          <sbb-image
-            slot="image"
-            image-src=${images[10]}
-            alt="400x300"
-            style="width: 100%;"
-          ></sbb-image>
+          <figure slot="image" class="sbb-figure" style="width: 100%;">
+            <sbb-image image-src=${images[10]} alt="400x300"></sbb-image>
+          </figure>
           ${description}
         </sbb-teaser>
       `,

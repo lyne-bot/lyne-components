@@ -14,7 +14,7 @@ import style from './card-action.scss?lit&inline';
 import '../../screen-reader-only.js';
 
 export declare class SbbCardActionCommonElementMixinType {
-  public active: boolean;
+  public accessor active: boolean;
   protected actionRole: 'link' | 'button';
 }
 

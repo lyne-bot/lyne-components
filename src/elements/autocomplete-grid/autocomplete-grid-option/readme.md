@@ -84,12 +84,12 @@ which is needed to correctly set the `aria-activedescendant` on the related `inp
 
 ## Properties
 
-| Name       | Attribute   | Privacy | Type                  | Default | Description                                                                                                                      |
-| ---------- | ----------- | ------- | --------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled` | `disabled`  | public  | `boolean`             | `false` | Whether the component is disabled.                                                                                               |
-| `iconName` | `icon-name` | public  | `string \| undefined` |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `selected` | `selected`  | public  | `boolean`             |         | Whether the option is selected.                                                                                                  |
-| `value`    | `value`     | public  | `string`              |         | Value of the option.                                                                                                             |
+| Name       | Attribute   | Privacy | Type      | Default | Description                                                                                                                      |
+| ---------- | ----------- | ------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled` | `disabled`  | public  | `boolean` | `false` | Whether the component is disabled.                                                                                               |
+| `iconName` | `icon-name` | public  | `string`  | `''`    | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `selected` | `selected`  | public  | `boolean` |         | Whether the option is selected.                                                                                                  |
+| `value`    | `value`     | public  | `string`  |         | Value of the option.                                                                                                             |
 
 ## Events
 

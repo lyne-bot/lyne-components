@@ -62,7 +62,12 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     return {
       ClassDeclaration(node) {
         if (isComponentClass(node)) {
-          jsDoc = context.getSourceCode().getCommentsBefore(node.decorators![0])[0];
+          for (const commentNode of [node.decorators![0], node, node.parent]) {
+            jsDoc = context.sourceCode.getCommentsBefore(commentNode)[0];
+            if (jsDoc) {
+              return;
+            }
+          }
         }
       },
       NewExpression(node) {

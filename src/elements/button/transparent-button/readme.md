@@ -55,7 +55,7 @@ The component can be displayed in `disabled` state using the self-named property
 ### Focus outline
 
 Please make sure that the focus outline appears in the correct color if the component is used on a dark background.
-You can set it by re-defining the css var on `sbb-transparent-button` or any parent element:
+You can set it by re-defining the CSS var on `sbb-transparent-button` or any parent element:
 
 ```css
 sbb-transparent-button {
@@ -84,17 +84,17 @@ guard against such cases in your component.
 
 ## Properties
 
-| Name                  | Attribute              | Privacy | Type                         | Default    | Description                                                                                                                      |
-| --------------------- | ---------------------- | ------- | ---------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `disabled`            | `disabled`             | public  | `boolean`                    | `false`    | Whether the component is disabled.                                                                                               |
-| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                    | `false`    | Whether disabled buttons should be interactive.                                                                                  |
-| `form`                | `form`                 | public  | `string \| undefined`        |            | The <form> element to associate the button with.                                                                                 |
-| `iconName`            | `icon-name`            | public  | `string \| undefined`        |            | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `name`                | `name`                 | public  | `string`                     |            | The name of the button element.                                                                                                  |
-| `negative`            | `negative`             | public  | `boolean`                    | `false`    | Negative coloring variant flag.                                                                                                  |
-| `size`                | `size`                 | public  | `SbbButtonSize \| undefined` | `'l'`      | Size variant, either l or m.                                                                                                     |
-| `type`                | `type`                 | public  | `SbbButtonType`              | `'button'` | The type attribute to use for the button.                                                                                        |
-| `value`               | `value`                | public  | `string`                     |            | The value of the button element.                                                                                                 |
+| Name                  | Attribute              | Privacy | Type                      | Default            | Description                                                                                                                      |
+| --------------------- | ---------------------- | ------- | ------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled`            | `disabled`             | public  | `boolean`                 | `false`            | Whether the component is disabled.                                                                                               |
+| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                 | `false`            | Whether the button should be aria-disabled but stay interactive.                                                                 |
+| `form`                | `form`                 | public  | `HTMLFormElement \| null` |                    | The `<form>` element to associate the button with.                                                                               |
+| `iconName`            | `icon-name`            | public  | `string`                  | `''`               | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `name`                | `name`                 | public  | `string`                  |                    | Name of the form element. Will be read from name attribute.                                                                      |
+| `negative`            | `negative`             | public  | `boolean`                 | `false`            | Negative coloring variant flag.                                                                                                  |
+| `size`                | `size`                 | public  | `SbbButtonSize`           | `'l' / 's' (lean)` | Size variant, either l, m or s.                                                                                                  |
+| `type`                | `type`                 | public  | `SbbButtonType`           | `'button'`         | The type attribute to use for the button.                                                                                        |
+| `value`               | `value`                | public  | `string \| null`          | `null`             | Value of the form element.                                                                                                       |
 
 ## Slots
 

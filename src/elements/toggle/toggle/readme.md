@@ -34,20 +34,19 @@ The component has two different sizes, `s` and `m` (default), which can be set u
 
 ## Properties
 
-| Name       | Attribute  | Privacy | Type                       | Default | Description                                                                                                                                      |
-| ---------- | ---------- | ------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `disabled` | `disabled` | public  | `boolean`                  | `false` | Whether the toggle is disabled.                                                                                                                  |
-| `even`     | `even`     | public  | `boolean`                  | `false` | If true, set the width of the component fixed; if false, the width is dynamic based on the label of the sbb-toggle-option.                       |
-| `options`  | -          | public  | `SbbToggleOptionElement[]` |         | The child instances of sbb-toggle-option as an array.                                                                                            |
-| `size`     | `size`     | public  | `'s' \| 'm' \| undefined`  | `'m'`   | Size variant, either m or s.                                                                                                                     |
-| `value`    | `value`    | public  | `string`                   | `null`  | The value of the toggle. It needs to be mutable since it is updated whenever a new option is selected (see the `onToggleOptionSelect()` method). |
+| Name       | Attribute  | Privacy | Type                       | Default            | Description                                                                                                                                      |
+| ---------- | ---------- | ------- | -------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `disabled` | `disabled` | public  | `boolean`                  | `false`            | Whether the toggle is disabled.                                                                                                                  |
+| `even`     | `even`     | public  | `boolean`                  | `false`            | If true, set the width of the component fixed; if false, the width is dynamic based on the label of the sbb-toggle-option.                       |
+| `options`  | -          | public  | `SbbToggleOptionElement[]` |                    | The child instances of sbb-toggle-option as an array.                                                                                            |
+| `size`     | `size`     | public  | `'s' \| 'm'`               | `'m' / 's' (lean)` | Size variant, either m or s.                                                                                                                     |
+| `value`    | `value`    | public  | `string`                   | `null`             | The value of the toggle. It needs to be mutable since it is updated whenever a new option is selected (see the `onToggleOptionSelect()` method). |
 
 ## Events
 
-| Name        | Type                | Description                                                                      | Inherited From |
-| ----------- | ------------------- | -------------------------------------------------------------------------------- | -------------- |
-| `change`    | `CustomEvent<void>` | Emits whenever the toggle value changes.                                         |                |
-| `didChange` | `CustomEvent<void>` | Deprecated. used for React. Will probably be removed once React 19 is available. |                |
+| Name     | Type                | Description                              | Inherited From |
+| -------- | ------------------- | ---------------------------------------- | -------------- |
+| `change` | `CustomEvent<void>` | Emits whenever the toggle value changes. |                |
 
 ## Slots
 

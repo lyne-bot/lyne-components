@@ -151,8 +151,6 @@ describe('sbb-autocomplete-grid', () => {
   `;
 
   const openAutocomplete = async (setup: VisualDiffSetupBuilder): Promise<void> => {
-    const ac = setup.snapshotElement.querySelector('sbb-autocomplete-grid')!;
-    ac.open();
     const input = setup.snapshotElement.querySelector('input')!;
     input.focus();
     await sendKeys({ press: 'O' });

@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 
 import { SbbAutocompleteGridButtonElement } from './autocomplete-grid-button.js';
 
@@ -24,7 +24,7 @@ describe(`sbb-autocomplete-grid-button`, () => {
       const clickSpy = new EventSpy('click');
 
       element.click();
-      await waitForCondition(() => clickSpy.events.length === 1);
+      await clickSpy.calledOnce();
       expect(clickSpy.count).to.be.equal(1);
     });
 

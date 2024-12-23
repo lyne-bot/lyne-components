@@ -47,16 +47,16 @@ guard against such cases in your component.
 
 ## Properties
 
-| Name                  | Attribute              | Privacy | Type                  | Default    | Description                                                                                                                |
-| --------------------- | ---------------------- | ------- | --------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `disabled`            | `disabled`             | public  | `boolean`             | `false`    | Whether the component is disabled.                                                                                         |
-| `disabledInteractive` | `disabled-interactive` | public  | `boolean`             | `false`    | Whether disabled buttons should be interactive.                                                                            |
-| `form`                | `form`                 | public  | `string \| undefined` |            | The <form> element to associate the button with.                                                                           |
-| `name`                | `name`                 | public  | `string`              |            | The name of the button element.                                                                                            |
-| `negative`            | `negative`             | public  | `boolean`             | `false`    | Negative coloring variant flag.                                                                                            |
-| `size`                | `size`                 | public  | `SbbLinkSize`         | `'s'`      | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used. |
-| `type`                | `type`                 | public  | `SbbButtonType`       | `'button'` | The type attribute to use for the button.                                                                                  |
-| `value`               | `value`                | public  | `string`              |            | The value of the button element.                                                                                           |
+| Name                  | Attribute              | Privacy | Type                      | Default             | Description                                                                                                                |
+| --------------------- | ---------------------- | ------- | ------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `disabled`            | `disabled`             | public  | `boolean`                 | `false`             | Whether the component is disabled.                                                                                         |
+| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                 | `false`             | Whether the button should be aria-disabled but stay interactive.                                                           |
+| `form`                | `form`                 | public  | `HTMLFormElement \| null` |                     | The `<form>` element to associate the button with.                                                                         |
+| `name`                | `name`                 | public  | `string`                  |                     | Name of the form element. Will be read from name attribute.                                                                |
+| `negative`            | `negative`             | public  | `boolean`                 | `false`             | Negative coloring variant flag.                                                                                            |
+| `size`                | `size`                 | public  | `SbbLinkSize`             | `'s' / 'xs' (lean)` | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used. |
+| `type`                | `type`                 | public  | `SbbButtonType`           | `'button'`          | The type attribute to use for the button.                                                                                  |
+| `value`               | `value`                | public  | `string \| null`          | `null`              | Value of the form element.                                                                                                 |
 
 ## Slots
 

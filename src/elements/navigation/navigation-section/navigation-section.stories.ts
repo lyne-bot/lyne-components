@@ -32,21 +32,12 @@ const basicArgs: Args = {
 };
 
 const triggerButton = (id: string): TemplateResult => html`
-  <sbb-secondary-button
-    data-testid="navigation-trigger"
-    id=${id}
-    size="l"
-    icon-name="hamburger-menu-small"
-  ></sbb-secondary-button>
+  <sbb-secondary-button id=${id} size="l" icon-name="hamburger-menu-small"></sbb-secondary-button>
 `;
 
 const navigationActionsL = (): TemplateResult => html`
-  <sbb-navigation-button id="nav-1" data-testid="navigation-section-trigger-1">
-    Label
-  </sbb-navigation-button>
-  <sbb-navigation-button id="nav-2" data-testid="navigation-section-trigger-2">
-    Label
-  </sbb-navigation-button>
+  <sbb-navigation-button id="nav-1">Label</sbb-navigation-button>
+  <sbb-navigation-button id="nav-2">Label</sbb-navigation-button>
   <sbb-navigation-button id="nav-3">Label</sbb-navigation-button>
 `;
 
@@ -60,12 +51,11 @@ const navigationList = (label: string): TemplateResult => html`
 
 const DefaultTemplate = (args: Args): TemplateResult => html`
   ${triggerButton('navigation-trigger-1')}
-  <sbb-navigation data-testid="navigation" id="navigation" trigger="navigation-trigger-1">
+  <sbb-navigation id="navigation" trigger="navigation-trigger-1">
     <sbb-navigation-marker id="nav-marker">${navigationActionsL()}</sbb-navigation-marker>
 
     <sbb-navigation-section
       title-content="Title one"
-      data-testid="navigation-section"
       id="navigation-section"
       trigger="nav-1"
       ${sbbSpread(args)}

@@ -8,16 +8,10 @@ import { sbbSpread } from '../../../storybook/helpers/spread.js';
 import readme from './readme.md?raw';
 import './header-button.js';
 
-const TemplateSingle = (args: Args): TemplateResult => html`
-  <sbb-header-button ${sbbSpread(args)}>${args.text}</sbb-header-button>
-`;
-
-const TemplateMultiple = (args: Args): TemplateResult => html`
-  <div style="display: flex; gap: 2rem;">
-    <sbb-header-button ${sbbSpread(args)}>${args.text} 1</sbb-header-button>
-    <sbb-header-button ${sbbSpread(args)}>${args.text} 2</sbb-header-button>
-    <sbb-header-button ${sbbSpread(args)}>${args.text} 3</sbb-header-button>
-  </div>
+const TemplateSingle = ({ active, text, ...args }: Args): TemplateResult => html`
+  <sbb-header-button ${sbbSpread(args)} class=${active ? 'sbb-active' : ''}>
+    ${text}
+  </sbb-header-button>
 `;
 
 const text: InputType = {
@@ -36,6 +30,12 @@ const expandFrom: InputType = {
 const iconName: InputType = {
   control: {
     type: 'text',
+  },
+};
+
+const active: InputType = {
+  control: {
+    type: 'boolean',
   },
 };
 
@@ -84,6 +84,7 @@ const basicArgTypes: ArgTypes = {
   text,
   'expand-from': expandFrom,
   'icon-name': iconName,
+  active,
   type,
   name,
   value,
@@ -95,6 +96,7 @@ const basicArgs: Args = {
   text: 'Menu',
   'expand-from': expandFrom.options![0],
   'icon-name': 'hamburger-menu-small',
+  active: false,
   type: type.options![0],
   name: 'header-button',
   value: 'value',
@@ -102,16 +104,27 @@ const basicArgs: Args = {
   'aria-label': undefined,
 };
 
-export const sbbHeaderActionButton: StoryObj = {
+export const Default: StoryObj = {
   render: TemplateSingle,
   argTypes: basicArgTypes,
   args: { ...basicArgs },
 };
 
-export const sbbHeaderActionButtonMultiple: StoryObj = {
-  render: TemplateMultiple,
+export const Active: StoryObj = {
+  render: TemplateSingle,
   argTypes: basicArgTypes,
-  args: { ...basicArgs },
+  args: { ...basicArgs, active: true, 'icon-name': 'magnifying-glass-small', text: 'Label' },
+};
+
+export const ExpandFromMedium: StoryObj = {
+  render: TemplateSingle,
+  argTypes: basicArgTypes,
+  args: {
+    ...basicArgs,
+    'icon-name': 'magnifying-glass-small',
+    text: 'Label',
+    'expand-from': 'medium',
+  },
 };
 
 const meta: Meta = {

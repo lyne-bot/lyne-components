@@ -9,8 +9,7 @@ snapshots["sbb-alert-group renders DOM"] =
 >
   <sbb-alert
     animation="all"
-    data-state="opening"
-    href="https://www.sbb.ch"
+    data-state="opened"
     size="m"
     title-content="Interruption between Genève and Lausanne"
   >
@@ -43,8 +42,7 @@ snapshots["sbb-alert-group renders with slotted DOM"] =
   </span>
   <sbb-alert
     animation="all"
-    data-state="opening"
-    href="https://www.sbb.ch"
+    data-state="opened"
     size="m"
     title-content="Interruption between Genève and Lausanne"
   >
@@ -84,11 +82,7 @@ snapshots["sbb-alert-group renders A11y tree Chrome"] =
     },
     {
       "role": "text",
-      "name": "The rail traffic between Allaman and Morges is interrupted. All trains are cancelled. "
-    },
-    {
-      "role": "link",
-      "name": "Find out more"
+      "name": "The rail traffic between Allaman and Morges is interrupted. All trains are cancelled."
     },
     {
       "role": "button",
@@ -119,11 +113,6 @@ snapshots["sbb-alert-group renders A11y tree Firefox"] =
     {
       "role": "text leaf",
       "name": "The rail traffic between Allaman and Morges is interrupted. All trains are cancelled. "
-    },
-    {
-      "role": "link",
-      "name": "Find out more",
-      "value": "https://www.sbb.ch/"
     },
     {
       "role": "button",

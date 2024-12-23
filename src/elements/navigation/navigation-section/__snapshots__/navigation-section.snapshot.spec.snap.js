@@ -30,7 +30,6 @@ snapshots["sbb-navigation-section renders Shadow DOM"] =
             icon-name="chevron-small-left-small"
             id="sbb-navigation-section-back-button"
             negative=""
-            role="button"
             sbb-navigation-section-close=""
             size="m"
             tabindex="0"

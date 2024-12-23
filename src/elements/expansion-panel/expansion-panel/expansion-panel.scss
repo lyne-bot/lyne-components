@@ -11,7 +11,7 @@ $open-anim-opacity-to: 1;
 
 :host {
   --sbb-expansion-panel-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-4x)
   );
   --sbb-expansion-panel-background-color: var(--sbb-color-white);

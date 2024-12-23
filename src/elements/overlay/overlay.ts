@@ -4,11 +4,14 @@ import { customElement, property } from 'lit/decorators.js';
 import { html, unsafeStatic } from 'lit/static-html.js';
 
 import { getFirstFocusableElement, setModalityOnNextFocus } from '../core/a11y.js';
-import { EventEmitter } from '../core/eventing.js';
+import { forceType } from '../core/decorators.js';
+import { isZeroAnimationDuration } from '../core/dom.js';
+import { EventEmitter, forwardEvent } from '../core/eventing.js';
 import { i18nCloseDialog, i18nGoBack } from '../core/i18n.js';
 
 import { overlayRefs, SbbOverlayBaseElement } from './overlay-base-element.js';
 import style from './overlay.scss?lit&inline';
+
 import '../button/secondary-button.js';
 import '../button/transparent-button.js';
 import '../container.js';
@@ -27,11 +30,12 @@ import '../screen-reader-only.js';
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-overlay')
-export class SbbOverlayElement extends SbbOverlayBaseElement {
+class SbbOverlayElement extends SbbOverlayBaseElement {
   public static override styles: CSSResultGroup = style;
 
-  // FIXME using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
+  // TODO: fix using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
   public static override readonly events = {
     willOpen: 'willOpen',
     didOpen: 'didOpen',
@@ -44,20 +48,24 @@ export class SbbOverlayElement extends SbbOverlayBaseElement {
    * Whether to allow the overlay content to stretch to full width.
    * By default, the content has the appropriate page size.
    */
-  @property({ reflect: true, type: Boolean }) public expanded = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor expanded: boolean = false;
 
   /** Whether a back button is displayed next to the title. */
-  @property({ attribute: 'back-button', type: Boolean }) public backButton = false;
+  @forceType()
+  @property({ attribute: 'back-button', type: Boolean })
+  public accessor backButton: boolean = false;
 
   /** This will be forwarded as aria-label to the close button element. */
-  @property({ attribute: 'accessibility-close-label' }) public accessibilityCloseLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-close-label' })
+  public accessor accessibilityCloseLabel: string = '';
 
   /** This will be forwarded as aria-label to the back button element. */
-  @property({ attribute: 'accessibility-back-label' }) public accessibilityBackLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-back-label' })
+  public accessor accessibilityBackLabel: string = '';
 
   protected closeAttribute: string = 'sbb-overlay-close';
 
@@ -89,6 +97,47 @@ export class SbbOverlayElement extends SbbOverlayBaseElement {
 
     // Disable scrolling for content below the overlay
     this.scrollHandler.disableScroll();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this.isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
+  }
+
+  protected isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-overlay-animation-duration');
+  }
+
+  private _handleOpening(): void {
+    this.state = 'opened';
+    this.inertController.activate();
+    this.attachOpenOverlayEvents();
+    this.setOverlayFocus();
+    // Use timeout to read label after focused element
+    setTimeout(() => this.setAriaLiveRefContent(this.accessibilityLabel));
+    this.focusHandler.trap(this);
+    this.didOpen.emit();
+  }
+
+  protected override handleClosing(): void {
+    this._overlayContentElement?.scrollTo(0, 0);
+    this.state = 'closed';
+    this.inertController.deactivate();
+    setModalityOnNextFocus(this.lastFocusedElement);
+    // Manually focus last focused element
+    this.lastFocusedElement?.focus();
+    this.openOverlayController?.abort();
+    this.focusHandler.disconnect();
+    this.removeInstanceFromGlobalCollection();
+    // Enable scrolling for content below the overlay if no overlay is open
+    if (!overlayRefs.length) {
+      this.scrollHandler.enableScroll();
+    }
+    this.didClose.emit({
+      returnValue: this.returnValue,
+      closeTarget: this.overlayCloseElement,
+    });
   }
 
   // Wait for overlay transition to complete.
@@ -96,32 +145,9 @@ export class SbbOverlayElement extends SbbOverlayBaseElement {
   // To avoid entering a corrupt state, exit when state is not expected.
   protected onOverlayAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this.state === 'opening') {
-      this.state = 'opened';
-      this.didOpen.emit();
-      this.inertController.activate();
-      this.attachOpenOverlayEvents();
-      this.setOverlayFocus();
-      // Use timeout to read label after focused element
-      setTimeout(() => this.setAriaLiveRefContent(this.accessibilityLabel));
-      this.focusHandler.trap(this);
+      this._handleOpening();
     } else if (event.animationName === 'close' && this.state === 'closing') {
-      this._overlayContentElement?.scrollTo(0, 0);
-      this.state = 'closed';
-      this.inertController.deactivate();
-      setModalityOnNextFocus(this.lastFocusedElement);
-      // Manually focus last focused element
-      this.lastFocusedElement?.focus();
-      this.openOverlayController?.abort();
-      this.focusHandler.disconnect();
-      this.removeInstanceFromGlobalCollection();
-      // Enable scrolling for content below the overlay if no overlay is open
-      if (!overlayRefs.length) {
-        this.scrollHandler.enableScroll();
-      }
-      this.didClose.emit({
-        returnValue: this.returnValue,
-        closeTarget: this.overlayCloseElement,
-      });
+      this.handleClosing();
     }
   }
 
@@ -166,10 +192,7 @@ export class SbbOverlayElement extends SbbOverlayBaseElement {
     /* eslint-enable lit/binding-positions */
 
     return html`
-      <div
-        class="sbb-overlay__container"
-        @animationend=${(event: AnimationEvent) => this.onOverlayAnimationEnd(event)}
-      >
+      <div class="sbb-overlay__container" @animationend=${this.onOverlayAnimationEnd}>
         <div class="sbb-overlay">
           <div
             @click=${(event: Event) => this.closeOnSbbOverlayCloseClick(event)}
@@ -178,7 +201,7 @@ export class SbbOverlayElement extends SbbOverlayBaseElement {
             <div class="sbb-overlay__header">
               ${this.backButton ? backButton : nothing} ${closeButton}
             </div>
-            <div class="sbb-overlay__content">
+            <div class="sbb-overlay__content" @scroll=${(e: Event) => forwardEvent(e, document)}>
               <sbb-container
                 class="sbb-overlay__content-container"
                 ?expanded=${this.expanded}

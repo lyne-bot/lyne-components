@@ -86,28 +86,24 @@ export const SbbFormAssociatedCheckboxMixin = <T extends Constructor<LitElement>
     public get checked(): boolean {
       return this._checked;
     }
-    private _checked = false;
+    private _checked: boolean = false;
+
+    /**
+     * Form type of element.
+     * @default 'checkbox'
+     */
+    public override get type(): string {
+      return 'checkbox';
+    }
 
     protected constructor() {
       super();
       /** @internal */
       this.internals.role = 'checkbox';
-    }
 
-    public override connectedCallback(): void {
-      super.connectedCallback();
-
-      this.addEventListener('click', this._handleUserInteraction);
-      this.addEventListener('keydown', preventScrollOnSpacebarPress);
-      this.addEventListener('keyup', this._handleKeyboardInteraction);
-    }
-
-    public override disconnectedCallback(): void {
-      super.disconnectedCallback();
-
-      this.removeEventListener('click', this._handleUserInteraction);
-      this.removeEventListener('keydown', preventScrollOnSpacebarPress);
-      this.removeEventListener('keyup', this._handleKeyboardInteraction);
+      this.addEventListener?.('click', this._handleUserInteraction);
+      this.addEventListener?.('keydown', preventScrollOnSpacebarPress);
+      this.addEventListener?.('keyup', this._handleKeyboardInteraction);
     }
 
     public override attributeChangedCallback(
@@ -181,7 +177,6 @@ export const SbbFormAssociatedCheckboxMixin = <T extends Constructor<LitElement>
 
       this.dispatchEvent(new InputEvent('input', { composed: true, bubbles: true }));
       this.dispatchEvent(new Event('change', { bubbles: true }));
-      this.dispatchEvent(new CustomEvent('didChange', { bubbles: true }));
     };
   }
 

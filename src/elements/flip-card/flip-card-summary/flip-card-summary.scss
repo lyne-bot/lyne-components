@@ -12,13 +12,13 @@
 
 .sbb-flip-card-summary {
   display: grid;
-  position: absolute;
+  min-height: var(--sbb-flip-card-min-height);
   pointer-events: var(--sbb-flip-card-summary-pointer-events);
   opacity: var(--sbb-flip-card-summary-opacity);
   border-radius: var(--sbb-flip-card-border-radius);
   overflow: hidden;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   width: 100%;
   height: 100%;
   transition: all var(--sbb-flip-card-summary-transition-duration) ease-out;
@@ -26,12 +26,12 @@
 
   :host([image-alignment='after']) & {
     @include sbb.mq($from: small) {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       grid-template-rows: 1fr;
     }
 
     @include sbb.mq($from: medium) {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: 1fr;
     }
   }
@@ -56,12 +56,11 @@
 
 ::slotted(*:not([slot='image'])) {
   transform: translateY(var(--sbb-flip-card-translate-title-y-hover, #{sbb.px-to-rem-build(0)}));
-  transition: transform var(--sbb-disable-animation-zero-time, var(--sbb-animation-duration-2x))
+  transition: transform var(--sbb-disable-animation-duration, var(--sbb-animation-duration-2x))
     var(--sbb-animation-easing);
 }
 
 .sbb-flip-card-summary--image-wrapper {
-  max-height: var(--sbb-flip-card-min-height);
   grid-area: 2 / 1 / 3 / 2;
 
   :host([image-alignment='after']) & {
@@ -75,16 +74,7 @@
   }
 }
 
-::slotted(img) {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-::slotted(sbb-image) {
-  --sbb-image-border-radius: 0;
-  --sbb-image-aspect-ratio: auto;
-
+::slotted([slot='image']) {
   width: 100%;
   height: 100%;
 }

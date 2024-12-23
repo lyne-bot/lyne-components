@@ -25,7 +25,6 @@ describe('sbb-breadcrumb', () => {
             <sbb-breadcrumb
               href="https://www.sbb.ch"
               target="_blank"
-              download="false"
               icon-name=${singleCase.icon || nothing}
               >${singleCase.text || nothing}</sbb-breadcrumb
             >
@@ -46,7 +45,7 @@ describe('sbb-breadcrumb', () => {
     describe('slotted icon', () => {
       beforeEach(async function () {
         root = await visualRegressionFixture(html`
-          <sbb-breadcrumb href="https://www.sbb.ch" target="_blank" download="false">
+          <sbb-breadcrumb href="https://www.sbb.ch" target="_blank">
             Slotted icon
             <sbb-icon slot="icon" name="dog-small"></sbb-icon
           ></sbb-breadcrumb>
@@ -67,12 +66,7 @@ describe('sbb-breadcrumb', () => {
       beforeEach(async function () {
         root = await visualRegressionFixture(html`
           <div style="max-width: 200px;">
-            <sbb-breadcrumb
-              href="https://www.sbb.ch"
-              target="_blank"
-              download="false"
-              icon-name="house-small"
-            >
+            <sbb-breadcrumb href="https://www.sbb.ch" target="_blank" icon-name="house-small">
               This label name is so long that it needs ellipsis to fit
             </sbb-breadcrumb>
           </div>

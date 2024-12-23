@@ -11,15 +11,7 @@ import {
 } from 'fs';
 import { pathToFileURL } from 'node:url';
 
-import type {
-  Package,
-  Export,
-  CustomElementDeclaration,
-  Module,
-  ClassField,
-  ClassDeclaration,
-  Declaration,
-} from 'custom-elements-manifest';
+import type { Package, Export, CustomElementDeclaration, Module } from 'custom-elements-manifest';
 import type { PluginOption } from 'vite';
 
 import { distDir } from './build-meta.js';
@@ -52,9 +44,6 @@ export function generateReactWrappers(
     name: 'generate-react-wrappers',
     config(config) {
       const packageRoot = pathToFileURL(config.root!);
-      const declarations = manifest.modules
-        .filter((m) => m.kind === 'javascript-module' && m.declarations?.length)
-        .reduce((current, next) => current.concat(next.declarations ?? []), [] as Declaration[]);
       const exports = manifest.modules.reduce(
         (current, next) => current.concat(next.exports ?? []),
         [] as Export[],
@@ -70,7 +59,6 @@ export function generateReactWrappers(
           createDir(new URL('.', targetPath));
           const reactTemplate = renderTemplate(
             declaration,
-            declarations,
             module,
             exports,
             library,
@@ -122,26 +110,15 @@ export function generateReactWrappers(
 
 function renderTemplate(
   declaration: CustomElementDeclaration,
-  declarations: Declaration[],
   module: Module,
   exports: Export[],
   library: string,
   isMainLibrary: boolean,
 ): string {
-  const extensions = findExtensionUsage(declaration, declarations);
   const dirDepth = module.path.split('/').length - 1;
   const coreImportPath = isMainLibrary
     ? `${!dirDepth ? './' : '../'.repeat(dirDepth)}core.js`
     : `@sbb-esta/lyne-react/core.js`;
-  const extensionImport = !extensions.size
-    ? ''
-    : `
-
-  import { ${Array.from(extensions.keys()).join(', ')} } from '${coreImportPath}';`;
-  const extension = [...extensions.values()].reduce(
-    (current, next) => (v) => current(next(v)),
-    (v: string) => v,
-  );
   const componentsImports = new Map<string, string[]>().set(module.path, [declaration.name]);
   const customEventTypes =
     declaration.events
@@ -153,11 +130,11 @@ function renderTemplate(
       .map((e) => e.type.text.substring(12).slice(0, -1))
       .sort()
       .filter((v, i, a) => a.indexOf(v) === i && v.length > 1) ?? [];
-  // If a type or interface needs to be imported, the custom elements analyzer will not
-  // detect/extract these and therefore we need to have a manual list of required
-  // types/interfaces.
+  // If a type or interface needs to be imported, the custom elements analyzer will not detect/extract these,
+  // and therefore we need to have a manual list of required types/interfaces.
   const interfaces = new Map<string, string>()
     .set('SbbOverlayCloseEventDetails', 'core/interfaces.js')
+    .set('SbbPaginatorPageEventDetails', 'core/interfaces.js')
     .set('SbbValidationChangeEvent', 'core/interfaces.js');
   for (const customEventType of customEventTypes) {
     const exportModule = exports.find((e) => e.name === customEventType);
@@ -183,10 +160,10 @@ function renderTemplate(
   ${Array.from(componentsImports)
     .map(([key, imports]) => `import { ${imports.join(', ')} } from '${library}/${key}';`)
     .join('\n')}
-  import react from 'react';${extensionImport}
+  import react from 'react';
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  export const ${declaration.name.replace(/Element$/, '')} = ${extension(`createComponent({
+  export const ${declaration.name.replace(/Element$/, '')} = createComponent({
     tagName: '${
       // eslint-disable-next-line lyne/local-name-rule
       declaration.tagName
@@ -208,67 +185,7 @@ function renderTemplate(
   `
         : ''
     }
-  })`)};
+  });
   `;
   return reactTemplate;
-}
-
-function findExtensionUsage(
-  declaration: ClassDeclaration,
-  declarations: Declaration[],
-): Map<string, (_: string) => string> {
-  const extensions = new Map<string, (_: string) => string>();
-  if (usesSsrSlotState(declaration, declarations)) {
-    extensions.set('withSsrDataSlotNames', (v) => `withSsrDataSlotNames(${v})`);
-  }
-  const childTypes = namedSlotListElements(declaration);
-  if (childTypes.length) {
-    extensions.set(
-      'withSsrDataChildCount',
-      (v) => `withSsrDataChildCount([${childTypes.map((t) => `'${t}'`).join(', ')}], ${v})`,
-    );
-  }
-  return extensions;
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-type ClassDeclarationSSR = ClassDeclaration & { _ssrslotstate?: boolean };
-const ssrSlotStateKey = '_ssrslotstate';
-function usesSsrSlotState(
-  declaration: ClassDeclarationSSR | undefined,
-  declarations: Declaration[],
-): boolean {
-  while (declaration) {
-    if (
-      declaration[ssrSlotStateKey] ||
-      declaration.mixins?.some((m) =>
-        declarations.find((d) => d.name === m.name && (d as ClassDeclarationSSR)[ssrSlotStateKey]),
-      )
-    ) {
-      return true;
-    }
-
-    declaration = declarations.find(
-      (d): d is ClassDeclarationSSR => d.name === declaration!.superclass?.name,
-    );
-  }
-
-  return false;
-}
-
-function namedSlotListElements(declaration: ClassDeclaration): string[] {
-  return (
-    declaration.members
-      ?.find(
-        (m): m is ClassField =>
-          m.inheritedFrom?.name === 'NamedSlotListElement' && m.name === 'listChildLocalNames',
-      )
-      ?.default?.match(/([\w-]+)/g)
-      ?.map((m) =>
-        m
-          .split('-')
-          .map((s) => s[0] + s.substring(1).toLowerCase())
-          .join(''),
-      ) ?? []
-  );
 }

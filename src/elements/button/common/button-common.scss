@@ -4,12 +4,14 @@
 @include sbb.box-sizing;
 
 $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=unnamed])';
+$disabled: '[disabled], :disabled, [disabled-interactive]';
+$active: ':active, [data-active]';
 
 :host {
   display: inline-block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   --sbb-button-icon-size: var(--sbb-size-icon-ui-small);
@@ -29,7 +31,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
   --sbb-button-border-radius: var(--sbb-border-radius-infinity);
   --sbb-button-min-height: var(--sbb-size-element-m);
   --sbb-button-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-button-transition-easing-function: var(--sbb-animation-easing);
@@ -87,7 +89,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
 }
 
 :host([negative]) {
-  --sbb-button-color-disabled-background: var(--sbb-color-anthracite);
+  --sbb-button-color-disabled-background: var(--sbb-color-charcoal);
   --sbb-button-color-disabled-text: var(--sbb-color-aluminium);
 }
 
@@ -114,7 +116,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
   --sbb-button-padding-inline: 0;
 }
 
-:host(:not([disabled], :active, [data-active]):hover) {
+:host(:not(#{$disabled}, #{$active}):hover) {
   @include sbb.hover-mq($hover: true) {
     --sbb-button-translate-y-content-hover: #{sbb.px-to-rem-build(-1)};
     --sbb-button-shadow-1-offset-y: calc(
@@ -183,7 +185,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
   // Setting the outline-offset is needed to avoid animation glitch
   outline-offset: var(--sbb-focus-outline-offset);
 
-  :host([disabled]) & {
+  :host(:is(#{$disabled})) & {
     box-shadow: none;
     border: var(--sbb-button-border-disabled-width) var(--sbb-button-border-disabled-style)
       var(--_border-color);
@@ -202,7 +204,7 @@ $icon-only: ':where([data-slot-names~=icon], [icon-name]):not([data-slot-names~=
     justify-content: center;
   }
 
-  :host([disabled]) & {
+  :host(:is(#{$disabled})) & {
     cursor: default;
     pointer-events: none;
   }

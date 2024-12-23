@@ -13,10 +13,11 @@ type MaybeDisabled = {
   disabledInteractive?: boolean;
 };
 
+export
 @hostAttributes({
   'data-action': '',
 })
-export abstract class SbbActionBaseElement extends LitElement {
+abstract class SbbActionBaseElement extends LitElement {
   protected get maybeDisabled(): boolean | undefined {
     const maybeDisabled = this as MaybeDisabled;
     return maybeDisabled.disabled || maybeDisabled.formDisabled;
@@ -63,6 +64,6 @@ export abstract class SbbActionBaseElement extends LitElement {
 
   /** Default render method for button-like components. */
   protected override render(): TemplateResult {
-    return html` <span class="sbb-action-base ${this.localName}">${this.renderTemplate()}</span> `;
+    return html`<span class="sbb-action-base ${this.localName}">${this.renderTemplate()}</span>`;
   }
 }

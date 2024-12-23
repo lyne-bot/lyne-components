@@ -33,5 +33,19 @@ describe(`sbb-train`, () => {
         }),
       );
     });
+
+    it(
+      'display ellipsis with long label',
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`<sbb-train
+            direction="right"
+            station="Berne"
+            direction-label="Direction of travel"
+          ></sbb-train>`,
+          { maxWidth: '200px' },
+        );
+      }),
+    );
   });
 });

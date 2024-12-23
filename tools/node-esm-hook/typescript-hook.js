@@ -9,11 +9,13 @@
  */
 
 import { existsSync, readFileSync } from 'node:fs';
+import { EOL } from 'node:os';
+import { basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { transform } from 'esbuild';
+import * as ts from 'typescript';
 
-import { createAliasResolver, root, tsconfigRaw } from './tsconfig-utility.js';
+import { createAliasResolver, root } from './tsconfig-utility.js';
 
 const aliasResolver = createAliasResolver();
 const assertTypeScriptFilePath = (/** @type {string?} */ url) => {
@@ -22,15 +24,45 @@ const assertTypeScriptFilePath = (/** @type {string?} */ url) => {
     ? tsUrl
     : null;
 };
+const compilerConfigCache = new Map();
 
 /**
- * @param {string} specifier - The specifier of the resource to resolve.
- * @param {object} context - The context in which the resolve function is called.
- * @param {function} nextResolve - The function to call if nothing is done.
- * @returns {Promise} - A Promise that resolves with an object containing the format, shortCircuit flag, and url of the resource,
- * or rejects with an error.
+ * @param {Map<string, ts.CompilerOptions>} cache
+ * @param {string} file
+ * @returns {ts.CompilerOptions}
  */
-export async function resolve(specifier, context, nextResolve) {
+export function prepareCompilerOptions(cache, file) {
+  const key = dirname(file);
+
+  let compilerOptions = cache.get(key);
+  if (compilerOptions) {
+    return compilerOptions;
+  }
+
+  const tsconfigPath = ts.findConfigFile(file, ts.sys.fileExists);
+  if (!tsconfigPath) {
+    throw new Error(`Could not find TypeScript configuration for ${file}`);
+  }
+
+  const { config, error } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+  if (error) {
+    throw error;
+  }
+
+  compilerOptions = ts.parseJsonConfigFileContent(
+    config,
+    ts.sys,
+    dirname(tsconfigPath),
+    undefined,
+    basename(tsconfigPath),
+  ).options;
+  cache.set(key, compilerOptions);
+
+  return compilerOptions;
+}
+
+/** @type {import('node:module').ResolveHook} */
+export const resolve = (specifier, context, nextResolve) => {
   let url = null;
   if (
     (specifier.startsWith('.') || specifier.startsWith(root)) &&
@@ -42,32 +74,53 @@ export async function resolve(specifier, context, nextResolve) {
     url = assertTypeScriptFilePath(aliasResolver(specifier));
   }
   return url ? { format: 'module', shortCircuit: true, url } : nextResolve(specifier, context);
-}
+};
 
-/**
- * @param {string} url - The URL of the resource to load as a string.
- * @param {object} context - The context in which the load function is called.
- * @param {function} nextLoad - The function to call if this loader does nothing.
- * @returns {Promise} - A Promise that resolves with an object containing the format, shortCircuit flag, and source of the resource,
- * or rejects with an error.
- */
-export async function load(url, context, nextLoad) {
+/** @type {import('node:module').LoadHook} */
+export const load = (url, context, nextLoad) => {
   if (url.startsWith(root) && !url.includes('/node_modules/') && url.endsWith('.ts')) {
-    const sourcefile = fileURLToPath(url);
-    const content = readFileSync(sourcefile, 'utf8');
+    const file = fileURLToPath(url);
+    const code = readFileSync(file, 'utf8');
 
-    const result = await transform(content, {
-      loader: 'ts',
-      define: {
-        'import.meta.env.DEV': 'true',
-        'import.meta.env.PROD': 'false',
-      },
-      tsconfigRaw,
-      sourcefile: fileURLToPath(url),
-      sourcemap: 'inline',
-      sourcesContent: false,
-    });
-    return { format: 'module', shortCircuit: true, source: result.code };
+    try {
+      const compilerOptions = prepareCompilerOptions(compilerConfigCache, file);
+      const transpileResult = ts.transpileModule(code, {
+        compilerOptions: { ...compilerOptions, sourceMap: true, inlineSourceMap: true },
+        fileName: file,
+        transformers: {
+          after: [
+            // We want to replace import.meta.env usages with constants.
+            // @ts-expect-error The typings are not fully correct, but it is the intended usage.
+            (context) => (sourceFile) => {
+              const visitor = (/** @type {ts.Node} */ node) => {
+                if (
+                  ts.isPropertyAccessExpression(node) &&
+                  ts.isPropertyAccessExpression(node.expression) &&
+                  ts.isMetaProperty(node.expression.expression) &&
+                  ts.isIdentifier(node.expression.name) &&
+                  node.expression.name.escapedText === 'env'
+                ) {
+                  return node.name.escapedText === 'DEV'
+                    ? context.factory.createTrue()
+                    : context.factory.createFalse();
+                }
+
+                return ts.visitEachChild(node, visitor, context);
+              };
+
+              return ts.visitNode(sourceFile, visitor);
+            },
+          ],
+        },
+      });
+
+      return { format: 'module', shortCircuit: true, source: transpileResult.outputText };
+    } catch (error) {
+      throw typeof error === 'string' || error instanceof Error
+        ? error
+        : // @ts-expect-error In this scenario, error can only be the expected type.
+          ts.flattenDiagnosticMessageText(error, EOL);
+    }
   }
   return nextLoad(url, context);
-}
+};

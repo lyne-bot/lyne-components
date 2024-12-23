@@ -4,8 +4,6 @@ export const snapshots = {};
 snapshots["sbb-lead-container DOM"] = 
 `<sbb-lead-container>
   <sbb-image
-    aspect-ratio="16-9"
-    border-radius="default"
     data-loaded=""
     slot="image"
   >

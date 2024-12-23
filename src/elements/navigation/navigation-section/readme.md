@@ -28,9 +28,9 @@ Similarly, if a navigation action is marked to indicate a selected option (e.g.,
 
 | Name                     | Attribute                  | Privacy | Type                            | Default | Description                                                                                                        |
 | ------------------------ | -------------------------- | ------- | ------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| `accessibilityBackLabel` | `accessibility-back-label` | public  | `\| string     \| undefined`    |         | This will be forwarded as aria-label to the back button element.                                                   |
-| `accessibilityLabel`     | `accessibility-label`      | public  | `string \| undefined`           |         | This will be forwarded as aria-label to the nav element and is read as a title of the navigation-section.          |
-| `titleContent`           | `title-content`            | public  | `string \| undefined`           |         | The label to be shown before the action list.                                                                      |
+| `accessibilityBackLabel` | `accessibility-back-label` | public  | `string`                        | `''`    | This will be forwarded as aria-label to the back button element.                                                   |
+| `accessibilityLabel`     | `accessibility-label`      | public  | `string`                        | `''`    | This will be forwarded as aria-label to the nav element and is read as a title of the navigation-section.          |
+| `titleContent`           | `title-content`            | public  | `string`                        | `''`    | The label to be shown before the action list.                                                                      |
 | `trigger`                | `trigger`                  | public  | `string \| HTMLElement \| null` | `null`  | The element that will trigger the navigation section. Accepts both a string (id of an element) or an HTML element. |
 
 ## Methods

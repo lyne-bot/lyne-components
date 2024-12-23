@@ -1,23 +1,49 @@
 import type { InputType } from '@storybook/types';
 import type { Args, ArgTypes, StoryObj } from '@storybook/web-components';
-import type { TemplateResult } from 'lit';
+import { nothing, type TemplateResult } from 'lit';
 import { html, unsafeStatic } from 'lit/static-html.js';
+
+import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import { commonDefaultArgs, commonDefaultArgTypes } from './common-stories.js';
 
+import '../../action-group.js';
+import '../../form-field.js';
+
 /* eslint-disable lit/binding-positions, @typescript-eslint/naming-convention */
-const RequestSubmitTemplate = ({ tag, text }: Args): TemplateResult => html`
-  <form id="my-fake-form" action="/submit" method="post" target="_blank">
-    <label
-      for="input"
-      style="display: flex; flex-direction: column; align-items: flex-start; padding-block-end: 2rem;"
-    >
-      Input required; submit with empty value is impossible due to 'requestSubmit' API validation.
-      <input required id="input" />
-    </label>
-    <${unsafeStatic(tag)} type="submit" form="my-fake-form" name="input" value="input"> ${text} </${unsafeStatic(tag)}>
-  </form>
-`;
+const FormTemplate = ({
+  tag,
+  name,
+  value,
+  type: _type,
+  reset: _reset,
+  ...args
+}: Args): TemplateResult => html`
+<form style="display: flex; gap: 1rem; flex-direction: column;"
+      @submit=${(e: SubmitEvent) => {
+        e.preventDefault();
+        const form = (e.target as HTMLFormElement)!;
+        form.querySelector('#form-data')!.innerHTML = JSON.stringify(
+          Object.fromEntries(new FormData(form, e.submitter)),
+        );
+      }}>
+  <p>Input required; submit with empty value is impossible due to 'requestSubmit' API validation.</p>
+  <sbb-form-field>
+    <input name="test" value="" required>
+  </sbb-form-field>
+  <fieldset>
+    <sbb-action-group>
+    <${unsafeStatic(tag)} ${sbbSpread(args)} type="reset">
+      Reset
+    </${unsafeStatic(tag)}>
+    <${unsafeStatic(tag)} ${sbbSpread(args)} value=${value ?? nothing} name=${name ?? nothing} type="submit">
+      Submit
+    </${unsafeStatic(tag)}>
+    </sbb-action-group>
+  </fieldset>
+  <div id="form-data"></div>
+</form>`;
+
 /* eslint-enable lit/binding-positions, @typescript-eslint/naming-convention */
 
 const type: InputType = {
@@ -104,6 +130,6 @@ export const buttonDefaultArgs: Args = {
 };
 
 export const requestSubmit: StoryObj = {
-  render: RequestSubmitTemplate,
-  args: { text: 'Submit form' },
+  render: FormTemplate,
+  args: { text: undefined, type: undefined, value: 'submit button' },
 };

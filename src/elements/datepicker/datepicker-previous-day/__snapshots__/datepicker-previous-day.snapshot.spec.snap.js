@@ -8,7 +8,6 @@ snapshots["sbb-datepicker-previous-day renders DOM"] =
   data-action=""
   data-button=""
   data-disabled=""
-  role="button"
   slot="prefix"
 >
 </sbb-datepicker-previous-day>
@@ -34,7 +33,6 @@ snapshots["sbb-datepicker-previous-day renders with connected datepicker DOM"] =
   data-action=""
   data-button=""
   date-picker="datepicker"
-  role="button"
   slot="prefix"
   tabindex="0"
 >

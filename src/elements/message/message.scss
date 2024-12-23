@@ -6,6 +6,7 @@
 :host {
   --sbb-message-subtitle-color: var(--sbb-color-granite);
   --sbb-message-image-margin-block: 0 var(--sbb-spacing-responsive-s);
+  --sbb-message-image-border-radius: var(--sbb-border-radius-4x);
   --sbb-message-legend-margin-block: var(--sbb-spacing-responsive-xxxs) 0;
   --sbb-message-action-margin-block: var(--sbb-spacing-responsive-xxxs) 0;
 
@@ -26,7 +27,9 @@
 }
 
 ::slotted([slot='image']) {
-  margin-block: var(--sbb-message-image-margin-block);
+  display: block;
+  margin-inline: auto !important; // overrides '.sbb-figure' margin
+  margin-block: var(--sbb-message-image-margin-block) !important; // overrides '.sbb-figure' margin
   width: 100%;
 }
 

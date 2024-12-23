@@ -1,3 +1,4 @@
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import type { CSSResultGroup, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -28,17 +29,19 @@ export interface PearlChainVerticalItemAttributes {
  * @slot left - Content of the left side of the item
  * @slot right - Content of the right side of the item
  */
+export
 @customElement('sbb-pearl-chain-vertical-item')
-export class SbbPearlChainVerticalItemElement extends LitElement {
+class SbbPearlChainVerticalItemElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** The pearlChainVerticalItemAttributes Prop for styling the bullets and line.*/
   @property({ attribute: 'pearl-chain-vertical-item-attributes', type: Object })
-  public pearlChainVerticalItemAttributes!: PearlChainVerticalItemAttributes;
+  public accessor pearlChainVerticalItemAttributes: PearlChainVerticalItemAttributes = null!;
 
   /** If true, the position won't be animated. */
+  @forceType()
   @property({ attribute: 'disable-animation', reflect: true, type: Boolean })
-  public disableAnimation?: boolean;
+  public accessor disableAnimation: boolean = false;
 
   protected override render(): TemplateResult {
     const { bulletType, lineType, lineColor, hideLine, minHeight, bulletSize, position } =

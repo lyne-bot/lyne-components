@@ -9,8 +9,9 @@ import { SbbCardActionCommonElementMixin } from '../common.js';
  * @slot - Use the unnamed slot to add a descriptive label / title of the link (important!).
  *   This is relevant for SEO and screen readers.
  */
+export
 @customElement('sbb-card-link')
-export class SbbCardLinkElement extends SbbCardActionCommonElementMixin(SbbLinkBaseElement) {
+class SbbCardLinkElement extends SbbCardActionCommonElementMixin(SbbLinkBaseElement) {
   protected override actionRole: 'link' | 'button' = 'link';
 }
 

@@ -1,0 +1,27 @@
+name: Docker Slim
+description: Create slim versions of an existing container images
+
+inputs:
+  target:
+    description: The target image
+    required: true
+  tag:
+    description: The new tag
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup docker slim
+      run: |
+        mkdir -p /tmp/ds
+        cd /tmp/ds
+        if [ ! -f /tmp/ds/slim ]; then
+          rm -f ds.tar.gz
+          curl -L -o ds.tar.gz https://github.com/slimtoolkit/slim/releases/download/1.40.11/dist_linux.tar.gz
+          tar -xvf ds.tar.gz --strip-components 1
+        fi
+        echo "/tmp/ds" >> $GITHUB_PATH
+      shell: bash
+    - name: Run docker slim
+      run: slim build --target ${{ inputs.target }} --tag ${{ inputs.tag }} --preserve-path /usr/share/nginx/html
+      shell: bash

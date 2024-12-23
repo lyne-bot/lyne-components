@@ -56,43 +56,11 @@ current value (e.g. from `event.target.valueAsDate`) or to set the value program
 When the `valueAsDate` property is programmatically assigned, a `blur` event is fired on the input
 to ensure compatibility with any framework that relies on that event to update the current state.
 
-## Custom date formats
+## Custom current date
 
 To simulate the current date, you can use the `now` property,
 which accepts a `Date` or a timestamp in seconds (as number or string).
 This is helpful if you need a specific state of the component.
-
-Using a combination of the `dateParser` and `format` properties, it's possible to configure the datepicker
-to accept date formats other than the default `EE, dd.mm.yyyy`.
-In the following example the datepicker is set to accept dates in the format `yyyy-mm-dd`.
-In particular, `dateParser` is the function that the component uses internally to decode strings and parse them into `Date` objects,
-while the `format` function is the one that the component uses internally to display a given `Date` object as a string.
-
-```ts
-// datePicker is a SbbDatepickerElement element
-datePicker.dateParser = (value: string) => {
-  // You should implement some kind of input validation
-  if (!value || !isValid(value)) {
-    return undefined;
-  }
-
-  return new Date(value);
-};
-
-datePicker.format = (value: Date) => {
-  if (!value) {
-    return '';
-  }
-
-  const offset = value.getTimezoneOffset();
-  value = new Date(yourDate.getTime() - offset * 60 * 1000);
-  return yourDate.toISOString().split('T')[0];
-};
-```
-
-Usually these functions need to be changed together, although in simple cases where the default `dateParser` might still work properly
-(e.g., in case we wanted to accept the format `dd.mm.yyyy`), it's possible to provide just the `format` function.
-For custom `format` functions is recommended to use the `Intl.DateTimeFormat` API, as it's done in the default implementation.
 
 <!-- TODO: add date adapter configuration documentation -->
 
@@ -104,22 +72,20 @@ Whenever the validation state changes (e.g., a valid value becomes invalid or vi
 
 ## Properties
 
-| Name          | Attribute | Privacy | Type                                             | Default | Description                                                                                                          |
-| ------------- | --------- | ------- | ------------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------- |
-| `dateFilter`  | -         | public  | `(date: T \| null) => boolean`                   |         | A function used to filter out dates.                                                                                 |
-| `dateParser`  | -         | public  | `(value: string) => T \| undefined \| undefined` |         | A function used to parse string value into dates.                                                                    |
-| `format`      | -         | public  | `(date: T) => string \| undefined`               |         | A function used to format dates into the preferred string format.                                                    |
-| `input`       | `input`   | public  | `string \| HTMLElement \| undefined`             |         | Reference of the native input connected to the datepicker.                                                           |
-| `now`         | `now`     | public  | `T`                                              |         | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
-| `valueAsDate` | -         | public  | `T \| null`                                      |         | The currently selected date as a Date or custom date provider instance.                                              |
-| `wide`        | `wide`    | public  | `boolean`                                        | `false` | If set to true, two months are displayed.                                                                            |
+| Name          | Attribute | Privacy | Type                            | Default | Description                                                                                                          |
+| ------------- | --------- | ------- | ------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| `dateFilter`  | -         | public  | `(date: T \| null) => boolean`  |         | A function used to filter out dates.                                                                                 |
+| `input`       | `input`   | public  | `string \| HTMLElement \| null` | `null`  | Reference of the native input connected to the datepicker.                                                           |
+| `now`         | `now`     | public  | `T`                             |         | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
+| `valueAsDate` | -         | public  | `T \| null`                     |         | The currently selected date as a Date or custom date provider instance.                                              |
+| `wide`        | `wide`    | public  | `boolean`                       | `false` | If set to true, two months are displayed.                                                                            |
 
 ## Methods
 
-| Name             | Privacy | Description                                           | Parameters             | Return           | Inherited From |
-| ---------------- | ------- | ----------------------------------------------------- | ---------------------- | ---------------- | -------------- |
-| `getValueAsDate` | public  | Gets the input value with the correct date format.    |                        | `T \| undefined` |                |
-| `setValueAsDate` | public  | Set the input value to the correctly formatted value. | `date: SbbDateLike<T>` | `void`           |                |
+| Name                        | Privacy | Description                                                                                                                                                                            | Parameters | Return | Inherited From |
+| --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ | -------------- |
+| `findNextAvailableDate`     | public  | Calculates the first available date after the given one, considering the SbbDatepickerElement `dateFilter` property and `max` parameter (e.g. from the self-named input's attribute).  | `date: T`  | `T`    |                |
+| `findPreviousAvailableDate` | public  | Calculates the first available date before the given one, considering the SbbDatepickerElement `dateFilter` property and `min` parameter (e.g. from the self-named input's attribute). | `date: T`  | `T`    |                |
 
 ## Events
 
@@ -127,6 +93,6 @@ Whenever the validation state changes (e.g., a valid value becomes invalid or vi
 | ------------------- | --------------------------------------- | ----------------------------------------------------------------------------------- | -------------- |
 | `change`            | `CustomEvent<void>`                     | Notifies that the connected input has changes.                                      |                |
 | `datePickerUpdated` | `CustomEvent<void>`                     | Notifies that the attributes of the datepicker have changes.                        |                |
-| `didChange`         | `CustomEvent<void>`                     | Deprecated. used for React. Will probably be removed once React 19 is available.    |                |
+| `input`             | `CustomEvent<void>`                     | Notifies that the connected input fired the input event.                            |                |
 | `inputUpdated`      | `CustomEvent<SbbInputUpdateEvent>`      | Notifies that the attributes of the input connected to the datepicker have changes. |                |
 | `validationChange`  | `CustomEvent<SbbValidationChangeEvent>` | Emits whenever the internal validation state changes.                               |                |

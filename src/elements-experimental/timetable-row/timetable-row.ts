@@ -1,5 +1,6 @@
 import { SbbLanguageController } from '@sbb-esta/lyne-elements/core/controllers.js';
 import { defaultDateAdapter } from '@sbb-esta/lyne-elements/core/datetime.js';
+import { forceType } from '@sbb-esta/lyne-elements/core/decorators.js';
 import { setOrRemoveAttribute } from '@sbb-esta/lyne-elements/core/dom.js';
 import {
   i18nArrival,
@@ -203,28 +204,32 @@ export const handleNotices = (notices: Notice[]): Notice[] => {
 /**
  * It displays information about the trip, acting as a container for all the `sbb-timetable-*` components.
  * */
+export
 @customElement('sbb-timetable-row')
-export class SbbTimetableRowElement extends LitElement {
+class SbbTimetableRowElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** The trip Prop. */
-  @property({ type: Object }) public trip!: ITripItem;
+  @property({ type: Object }) public accessor trip: ITripItem = null!;
 
   /** The price Prop, which consists of the data for the badge. */
-  @property({ type: Object }) public price?: Price;
+  @property({ type: Object }) public accessor price: Price = null!;
 
   /** This will be forwarded to the sbb-pearl-chain component - if true the position won't be animated. */
+  @forceType()
   @property({ attribute: 'disable-animation', reflect: true, type: Boolean })
-  public disableAnimation?: boolean;
+  public accessor disableAnimation: boolean = false;
 
   /** This will be forwarded to the notices section */
-  @property({ type: Object }) public boarding?: Boarding;
+  @property({ type: Object }) public accessor boarding: Boarding = null!;
 
   /**
    * The loading state -
    * when this is true it will be render skeleton with an idling animation
    */
-  @property({ attribute: 'loading-trip', type: Boolean }) public loadingTrip = false;
+  @forceType()
+  @property({ attribute: 'loading-trip', type: Boolean })
+  public accessor loadingTrip: boolean = false;
 
   /**
    * The Footpath attribute for rendering different icons
@@ -232,25 +237,34 @@ export class SbbTimetableRowElement extends LitElement {
    * false: render walk-icon
    * default: render walk-icon
    */
-  @property({ attribute: 'a11y-footpath', type: Boolean }) public a11yFootpath?: boolean;
+  @forceType()
+  @property({ attribute: 'a11y-footpath', type: Boolean })
+  public accessor a11yFootpath: boolean = false;
 
   /**
    * The loading state -
    * when this is true it will be render skeleton with an idling animation
    */
-  @property({ attribute: 'loading-price', type: Boolean }) public loadingPrice = false;
+  @forceType()
+  @property({ attribute: 'loading-price', type: Boolean })
+  public accessor loadingPrice: boolean = false;
 
   /**
    * Hidden label for the card action. It overrides the automatically generated accessibility text for the component. Use this prop to provide custom accessibility information for the component.
    */
-  @property({ attribute: 'card-action-label' }) public cardActionLabel?: string;
+  @forceType()
+  @property({ attribute: 'card-action-label' })
+  public accessor cardActionLabel: string = '';
 
   /** This will be forwarded to the sbb-card component as aria-expanded. */
+  @forceType()
   @property({ attribute: 'accessibility-expanded', type: Boolean })
-  public accessibilityExpanded?: boolean;
+  public accessor accessibilityExpanded: boolean = false;
 
   /** When this prop is true the sbb-card will be in the active state. */
-  @property({ type: Boolean }) public active?: boolean;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor active: boolean = false;
 
   /** A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. */
   @property()
@@ -493,7 +507,7 @@ export class SbbTimetableRowElement extends LitElement {
       <sbb-card size="l" id=${id}>
         <sbb-card-button
           ?active=${this.active}
-          aria-expanded=${this.accessibilityExpanded?.toString() ?? nothing}
+          aria-expanded=${this.accessibilityExpanded ? 'true' : nothing}
         >
           ${this.cardActionLabel ? this.cardActionLabel : this._getAccessibilityText(this.trip)}
         </sbb-card-button>

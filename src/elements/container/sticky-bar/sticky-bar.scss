@@ -5,43 +5,103 @@
 
 $intersector-overlapping: 1px;
 
+// `data-sticking` v.s. `data-state='sticky'`:
+// While `data-sticking` is representing whether the sticky bar is currently sticking (due scrolling),
+// the `data-state` holds information whether the `position: sticky` is applied or not
+// but not considering the real sticking state.
+
 :host {
+  --sbb-sticky-bar-position: sticky;
   --sbb-sticky-bar-padding-block: var(--sbb-spacing-responsive-xs);
+  --sbb-sticky-bar-border-radius: var(--sbb-border-radius-8x);
+  --sbb-sticky-bar-animation-easing: var(--sbb-animation-easing);
   --sbb-sticky-bar-fade-in-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-5x)
   );
   --sbb-sticky-bar-fade-out-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
-  --sbb-sticky-bar-animation-easing: var(--sbb-animation-easing);
-  --sbb-sticky-bar-border-radius: var(--sbb-border-radius-8x);
+  --sbb-sticky-bar-slide-vertically-animation-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-4x)
+  );
+  --sbb-sticky-bar-slide-vertically-animation-easing: ease-out;
+  --sbb-sticky-bar-slide-vertically-animation-delay: 0s;
+  --sbb-sticky-bar-slide-vertically-animation-name: unset;
+  --_sbb-sticky-bar-background-animation-duration: var(
+    --sbb-sticky-bar-fade-out-animation-duration
+  );
+  --_sbb-sticky-bar-intersector-background-color: transparent;
+  --_sbb-sticky-bar-forced-colors-border: none;
 
   // Display contents needed to get the sticky bar sticky.
   display: contents;
 }
 
-:host([data-sticking]) {
+:host([data-sticking]:not([data-state='unsticky'])) {
   --sbb-sticky-bar-sticky-background-color: var(
     --sbb-container-background-color,
     var(--sbb-color-white)
   );
+  --_sbb-sticky-bar-intersector-background-color: var(--sbb-sticky-bar-sticky-background-color);
+  --_sbb-sticky-bar-background-animation-duration: var(--sbb-sticky-bar-fade-in-animation-duration);
+
+  @include sbb.if-forced-colors {
+    --_sbb-sticky-bar-forced-colors-border: var(--sbb-border-width-1x) solid CanvasText;
+  }
 }
 
-:host([data-sticking][color='white']) {
+:host([data-sticking]:not([data-state='unsticky'])[color='white']) {
   --sbb-sticky-bar-sticky-background-color: var(--sbb-color-white);
 }
 
-:host([data-sticking][color='milk']) {
+:host([data-sticking]:not([data-state='unsticky'])[color='milk']) {
   --sbb-sticky-bar-sticky-background-color: var(--sbb-color-milk);
 }
 
+:host(
+  :is(
+    [data-sticking]:is([data-slide-vertically], [data-state='sticking'], [data-state='unsticking']),
+    [data-state='unsticky']
+  )
+) {
+  --_sbb-sticky-bar-background-animation-duration: 0s;
+}
+
+:host(
+  [data-sticking]:is(
+      [data-slide-vertically]:not([data-state='unsticky'], [data-state='unsticking']),
+      [data-state='sticking']
+    )
+) {
+  --sbb-sticky-bar-slide-vertically-animation-name: slide-in;
+}
+
+:host([data-sticking][data-state='unsticking']) {
+  --sbb-sticky-bar-slide-vertically-animation-name: slide-out;
+}
+
+:host(:is(:not([data-initialized]), [data-state='unsticky'])) {
+  --sbb-sticky-bar-position: relative;
+}
+
 .sbb-sticky-bar__wrapper {
-  position: sticky;
+  position: var(--sbb-sticky-bar-position);
   inset-block-end: 0;
   display: block;
   z-index: var(--sbb-sticky-bar-z-index);
+
+  animation: {
+    name: var(--sbb-sticky-bar-slide-vertically-animation-name);
+    duration: var(--sbb-sticky-bar-slide-vertically-animation-duration);
+    timing-function: var(--sbb-sticky-bar-slide-vertically-animation-easing);
+    delay: var(--sbb-sticky-bar-slide-vertically-animation-delay);
+
+    // Fill mode needed to enable delay
+    fill-mode: backwards;
+  }
 
   &::after,
   &::before {
@@ -68,20 +128,13 @@ $intersector-overlapping: 1px;
   // Color and border radius when sticky
   &::after {
     background-color: var(--sbb-sticky-bar-sticky-background-color, transparent);
-    transition: background-color var(--sbb-sticky-bar-fade-out-animation-duration)
-      var(--sbb-sticky-bar-animation-easing);
     border-start-start-radius: var(--sbb-sticky-bar-border-radius);
     border-start-end-radius: var(--sbb-sticky-bar-border-radius);
+    transition: background-color var(--_sbb-sticky-bar-background-animation-duration)
+      var(--sbb-sticky-bar-animation-easing);
 
     // Display a border on high contrast mode.
-    :host([data-sticking]) & {
-      transition-duration: var(--sbb-sticky-bar-fade-in-animation-duration);
-
-      @include sbb.if-forced-colors {
-        border-block-start: var(--sbb-border-width-1x) solid CanvasText;
-        border-radius: 0;
-      }
-    }
+    border: var(--_sbb-sticky-bar-forced-colors-border);
   }
 }
 
@@ -100,7 +153,7 @@ $intersector-overlapping: 1px;
     z-index: -1;
     border-start-start-radius: var(--sbb-sticky-bar-border-radius);
     border-start-end-radius: var(--sbb-sticky-bar-border-radius);
-    transition: box-shadow var(--sbb-sticky-bar-fade-out-animation-duration)
+    transition: box-shadow var(--_sbb-sticky-bar-background-animation-duration)
       var(--sbb-sticky-bar-animation-easing);
     clip-path: polygon(
       -50% calc(-1 * var(--sbb-shadow-elevation-level-11-shadow-1-blur)),
@@ -109,10 +162,8 @@ $intersector-overlapping: 1px;
       -50% 50%
     );
 
-    :host([data-sticking]) & {
+    :host([data-sticking]:not([data-state='unsticky'])) & {
       @include sbb.shadow-level-11-soft;
-
-      transition-duration: var(--sbb-sticky-bar-fade-in-animation-duration);
     }
   }
 
@@ -135,14 +186,29 @@ $intersector-overlapping: 1px;
     position: absolute;
     width: 100%;
     height: calc(var(--sbb-sticky-bar-bottom-overlapping-height, 0) + $intersector-overlapping);
-    background-color: transparent;
+    background-color: var(--_sbb-sticky-bar-intersector-background-color);
     pointer-events: none;
-    transition: background-color var(--sbb-sticky-bar-fade-out-animation-duration)
+    transition: background-color var(--_sbb-sticky-bar-background-animation-duration)
       var(--sbb-sticky-bar-animation-easing);
+  }
+}
 
-    :host([data-sticking]) & {
-      transition-duration: var(--sbb-sticky-bar-fade-in-animation-duration);
-      background-color: var(--sbb-sticky-bar-sticky-background-color);
-    }
+@keyframes slide-in {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(100%);
   }
 }

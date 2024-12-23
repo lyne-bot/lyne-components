@@ -1,5 +1,8 @@
 @use '../../core/styles' as sbb;
 
+$disabled: ':disabled, [disabled-interactive]';
+$active: ':active, [data-active]';
+
 // Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
 @include sbb.box-sizing;
 
@@ -7,7 +10,7 @@
   display: inline-block;
 
   // Use !important here to not interfere with Firefox focus ring definition
-  // which appears in normalize css of several frameworks.
+  // which appears in normalize CSS of several frameworks.
   outline: none !important;
 
   --sbb-popover-color: inherit;
@@ -31,15 +34,15 @@
   --sbb-focus-outline-color: var(--sbb-focus-outline-color-dark);
 }
 
-:host(:is(:active, [data-active])) {
+:host(:is(#{$active})) {
   --sbb-popover-color: var(--sbb-color-anthracite);
 }
 
-:host(:is(:active, [data-active])[negative]) {
+:host(:is(#{$active})[negative]) {
   --sbb-popover-color: var(--sbb-color-cement);
 }
 
-:host([disabled]) {
+:host(:is(#{$disabled})) {
   pointer-events: none;
 
   --sbb-popover-color: var(--sbb-color-graphite);
@@ -49,7 +52,7 @@
   }
 }
 
-:host([disabled][negative]) {
+:host(:is(#{$disabled})[negative]) {
   --sbb-popover-color: var(--sbb-color-smoke);
 }
 
@@ -59,21 +62,21 @@
   @include sbb.icon-button-variables-negative;
 }
 
-:host([data-icon-small][disabled]) {
+:host([data-icon-small]:is(#{$disabled})) {
   @include sbb.icon-button-disabled('.sbb-popover-trigger');
 }
 
 :host(
-    [data-icon-small]:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])
-  ) {
+  [data-icon-small]:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])
+) {
   @include sbb.icon-button-focus-visible('.sbb-popover-trigger');
 }
 
-:host([data-icon-small]:not([disabled], :active, [data-active]):hover) {
+:host([data-icon-small]:not(#{$disabled}, #{active}):hover) {
   @include sbb.icon-button-hover('.sbb-popover-trigger');
 }
 
-:host([data-icon-small]:is(:active, [data-active])) {
+:host([data-icon-small]:is(#{active})) {
   @include sbb.icon-button-active('.sbb-popover-trigger');
 }
 

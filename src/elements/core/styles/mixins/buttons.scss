@@ -3,6 +3,9 @@
 @use '../core/functions';
 @use './typo';
 
+$disabled: '[disabled], :disabled, [disabled-interactive], [data-disabled], [data-group-disabled]';
+$active: ':active, [data-active]';
+
 // ----------------------------------------------------------------------------------------------------
 // Buttons Mixins
 // ----------------------------------------------------------------------------------------------------
@@ -29,24 +32,24 @@
     @include icon-button-variables-negative;
   }
 
-  :host(:is([disabled], [data-disabled], [data-group-disabled])) {
+  :host(:is(#{$disabled})) {
     @include icon-button-disabled(#{$button-selector});
   }
 
   :host(
-      :is(
-          [data-focus-visible],
-          :focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])
-        )
-    ) {
+    :is(
+      [data-focus-visible],
+      :focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])
+    )
+  ) {
     @include icon-button-focus-visible(#{$button-selector});
   }
 
-  :host(:not([disabled], [data-disabled], [data-group-disabled], :active, [data-active]):hover) {
+  :host(:not(#{$disabled}, #{$active}):hover) {
     @include icon-button-hover(#{$button-selector});
   }
 
-  :host(:not([disabled], [data-disabled], [data-group-disabled]):is(:active, [data-active])) {
+  :host(:not(#{$disabled}):is(#{$active})) {
     @include icon-button-active(#{$button-selector});
   }
 }
@@ -64,7 +67,7 @@
   --sbb-button-border-disabled-style: dashed;
   --sbb-button-border-radius: var(--sbb-border-radius-infinity);
   --sbb-button-transition-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-button-transition-easing-function: var(--sbb-animation-easing);
@@ -85,7 +88,7 @@
   --sbb-button-color-default-background: var(--sbb-color-black-alpha-0);
   --sbb-button-color-hover-background: var(--sbb-color-charcoal);
   --sbb-button-color-active-background: var(--sbb-color-iron);
-  --sbb-button-color-disabled-background: var(--sbb-color-black-alpha-0);
+  --sbb-button-color-disabled-background: var(--sbb-color-charcoal);
   --sbb-button-color-disabled-border: var(--sbb-color-smoke);
   --sbb-button-color-disabled-text: var(--sbb-color-smoke);
 }
@@ -98,7 +101,7 @@
     height: fit-content;
 
     // Use !important here to not interfere with Firefox focus ring definition
-    // which appears in normalize css of several frameworks.
+    // which appears in normalize CSS of several frameworks.
     outline: none !important;
 
     @include icon-button-variables;

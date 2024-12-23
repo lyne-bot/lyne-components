@@ -12,8 +12,8 @@ import style from './header-action.scss?lit&inline';
 export declare class SbbHeaderActionCommonElementMixinType
   implements Partial<SbbIconNameMixinType>
 {
-  public expandFrom: SbbHorizontalFrom;
-  public iconName?: string;
+  public accessor expandFrom: SbbHorizontalFrom;
+  public accessor iconName: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -34,7 +34,7 @@ export const SbbHeaderActionCommonElementMixin = <
      * and hidden for all the others.
      */
     @property({ attribute: 'expand-from', reflect: true })
-    public expandFrom: SbbHorizontalFrom = 'medium';
+    public accessor expandFrom: SbbHorizontalFrom = 'medium';
 
     protected override renderTemplate(): TemplateResult {
       return html`

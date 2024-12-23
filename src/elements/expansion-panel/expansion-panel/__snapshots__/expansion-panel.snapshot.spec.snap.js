@@ -11,7 +11,6 @@ snapshots["sbb-expansion-panel renders DOM"] =
     data-size="l"
     data-slot-names="unnamed"
     id="sbb-expansion-panel-header-1"
-    role="button"
     slot="header"
     tabindex="0"
   >
@@ -57,7 +56,6 @@ snapshots["sbb-expansion-panel renders size s DOM"] =
     data-size="s"
     data-slot-names="unnamed"
     id="sbb-expansion-panel-header-3"
-    role="button"
     slot="header"
     tabindex="0"
   >
@@ -106,7 +104,6 @@ snapshots["sbb-expansion-panel renders with level set DOM"] =
     data-size="l"
     data-slot-names="unnamed"
     id="sbb-expansion-panel-header-5"
-    role="button"
     slot="header"
     tabindex="0"
   >

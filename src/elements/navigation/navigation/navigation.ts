@@ -7,13 +7,13 @@ import { ref } from 'lit/directives/ref.js';
 
 import { SbbFocusHandler, setModalityOnNextFocus } from '../../core/a11y.js';
 import { SbbOpenCloseBaseElement } from '../../core/base-elements.js';
+import { SbbInertController, SbbLanguageController } from '../../core/controllers.js';
+import { forceType, hostAttributes } from '../../core/decorators.js';
 import {
-  SbbConnectedAbortController,
-  SbbInertController,
-  SbbLanguageController,
-} from '../../core/controllers.js';
-import { hostAttributes } from '../../core/decorators.js';
-import { findReferencedElement, SbbScrollHandler } from '../../core/dom.js';
+  findReferencedElement,
+  isZeroAnimationDuration,
+  SbbScrollHandler,
+} from '../../core/dom.js';
 import { i18nCloseNavigation } from '../../core/i18n.js';
 import { SbbUpdateSchedulerMixin } from '../../core/mixins.js';
 import {
@@ -49,11 +49,12 @@ const DEBOUNCE_TIME = 150;
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-navigation')
 @hostAttributes({
   role: 'navigation',
 })
-export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBaseElement) {
+class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBaseElement) {
   public static override styles: CSSResultGroup = style;
 
   /**
@@ -74,14 +75,14 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
   /**
    * This will be forwarded as aria-label to the close button element.
    */
-  @property({ attribute: 'accessibility-close-label' }) public accessibilityCloseLabel:
-    | string
-    | undefined;
+  @forceType()
+  @property({ attribute: 'accessibility-close-label' })
+  public accessor accessibilityCloseLabel: string = '';
 
   /**
    * Whether a navigation section is displayed.
    */
-  @state() private _activeNavigationSection: HTMLElement | null = null;
+  @state() private accessor _activeNavigationSection: HTMLElement | null = null;
 
   public get activeNavigationSection(): HTMLElement | null {
     return this._activeNavigationSection;
@@ -92,7 +93,6 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
   private _triggerElement: HTMLElement | null = null;
   private _navigationController!: AbortController;
   private _windowEventsController!: AbortController;
-  private _abort = new SbbConnectedAbortController(this);
   private _language = new SbbLanguageController(this);
   private _inertController = new SbbInertController(this);
   private _focusHandler = new SbbFocusHandler();
@@ -106,6 +106,9 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
 
   public constructor() {
     super();
+    this.addEventListener?.('click', (event) => this._handleNavigationClose(event));
+    this.addEventListener?.('pointerup', (event) => this._closeOnBackdropClick(event));
+    this.addEventListener?.('pointerdown', (event) => this._pointerDownListener(event));
 
     new MutationController(this, {
       skipInitial: true,
@@ -133,6 +136,12 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
     // Disable scrolling for content below the navigation
     this._scrollHandler.disableScroll();
     this._triggerElement?.setAttribute('aria-expanded', 'true');
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
   }
 
   private _checkActiveSection(): void {
@@ -163,6 +172,45 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
     this.state = 'closing';
     this.startUpdate();
     this._triggerElement?.setAttribute('aria-expanded', 'false');
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-navigation-animation-duration');
+  }
+
+  private _handleClosing(): void {
+    this.state = 'closed';
+    this._navigationContentElement.scrollTo(0, 0);
+    setModalityOnNextFocus(this._triggerElement);
+    this._inertController.deactivate();
+    // To enable focusing other element than the trigger, we need to call focus() a second time.
+    this._triggerElement?.focus();
+    this.didClose.emit();
+    this._navigationResizeObserver.unobserve(this);
+    this._resetMarkers();
+    this._windowEventsController?.abort();
+    this._focusHandler.disconnect();
+
+    // Enable scrolling for content below the navigation
+    this._scrollHandler.enableScroll();
+    this.completeUpdate();
+  }
+
+  private _handleOpening(): void {
+    this.state = 'opened';
+    this._navigationResizeObserver.observe(this);
+    this._inertController.activate();
+    this._focusHandler.trap(this, { filter: this._trapFocusFilter });
+    this._attachWindowEvents();
+    this._setNavigationFocus();
+    this.completeUpdate();
+    this.didOpen.emit();
   }
 
   // Removes trigger click listener on trigger change.
@@ -207,30 +255,10 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
   // To avoid entering a corrupt state, exit when state is not expected.
   private _onAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this.state === 'opening') {
-      this.state = 'opened';
-      this.didOpen.emit();
-      this._navigationResizeObserver.observe(this);
-      this._inertController.activate();
-      this._focusHandler.trap(this, { filter: this._trapFocusFilter });
-      this._attachWindowEvents();
-      this._setNavigationFocus();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this.state === 'closing') {
-      this.state = 'closed';
-      this._navigationContentElement.scrollTo(0, 0);
-      setModalityOnNextFocus(this._triggerElement);
-      this._inertController.deactivate();
-      // To enable focusing other element than the trigger, we need to call focus() a second time.
-      this._triggerElement?.focus();
-      this.didClose.emit();
-      this._navigationResizeObserver.unobserve(this);
-      this._resetMarkers();
-      this._windowEventsController?.abort();
-      this._focusHandler.disconnect();
-
-      // Enable scrolling for content below the navigation
-      this._scrollHandler.enableScroll();
+      this._handleClosing();
     }
-    this.completeUpdate();
   }
 
   private _resetMarkers(): void {
@@ -333,12 +361,7 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
   public override connectedCallback(): void {
     super.connectedCallback();
     this.id ||= `sbb-navigation-${nextId++}`;
-    const signal = this._abort.signal;
-    this.addEventListener('click', (e) => this._handleNavigationClose(e), { signal });
-    // Validate trigger element and attach event listeners
     this._configure(this.trigger);
-    this.addEventListener('pointerup', (event) => this._closeOnBackdropClick(event), { signal });
-    this.addEventListener('pointerdown', (event) => this._pointerDownListener(event), { signal });
   }
 
   public override disconnectedCallback(): void {
@@ -368,7 +391,7 @@ export class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBa
       <div class="sbb-navigation__container">
         <div
           id="sbb-navigation-overlay"
-          @animationend=${(event: AnimationEvent) => this._onAnimationEnd(event)}
+          @animationend=${this._onAnimationEnd}
           class="sbb-navigation"
           ${ref((navigationRef?: Element) => (this._navigation = navigationRef as HTMLDivElement))}
         >

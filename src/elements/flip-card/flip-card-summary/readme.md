@@ -12,7 +12,24 @@ The component's slot is implicitly set to `"summary"`.
 
 ## Slots
 
-Use the unnamed slot of `sbb-flip-card-summary` to provide a title and, optionally, the `image` slot to provide an image (via either `sbb-image` or `img`).
+Use the unnamed slot to provide a title and the `image` slot to provide an image (via either `sbb-image` or `img`).
+
+Optionally, you can add an overlapping `sbb-chip-label` by wrapping the `sbb-image` in a `figure` tag (see [sbb-image doc](/docs/elements-sbb-image--docs#utility%classes)).
+
+```html
+<sbb-flip-card>
+  <sbb-flip-card-summary>
+    ...
+    <figure class="sbb-figure" slot="image">
+      <sbb-image
+        image-src="https://cdn.img.sbb.ch/content/dam/internet/lyne/Bahnhof-Luzern.jpg"
+        alt="Station of Lucerne from outside"
+      ></sbb-image>
+      <sbb-chip-label class="sbb-figure-overlap-start-start">...</sbb-chip-label>
+    </figure>
+  </sbb-flip-card-summary>
+</sbb-flip-card>
+```
 
 <!-- Auto Generated Below -->
 

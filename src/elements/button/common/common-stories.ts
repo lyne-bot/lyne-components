@@ -14,7 +14,7 @@ import { html, unsafeStatic } from 'lit/static-html.js';
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import '../../icon.js';
-import '../../loading-indicator.js';
+import '../../loading-indicator-circle.js';
 
 /* eslint-disable lit/binding-positions, @typescript-eslint/naming-convention */
 const Template = ({ tag, text, ...args }: Args): TemplateResult => html`
@@ -38,10 +38,9 @@ const IconSlotTemplate = ({
 
 const LoadingIndicatorTemplate = ({ tag, text, ...args }: Args): TemplateResult => html`
   <${unsafeStatic(tag)} ${sbbSpread(args)}>
-    <sbb-loading-indicator
+    <sbb-loading-indicator-circle
       slot="icon"
-      variant="circle"
-    ></sbb-loading-indicator>
+    ></sbb-loading-indicator-circle>
     ${text}
   </${unsafeStatic(tag)}>
 `;
@@ -107,6 +106,11 @@ export const commonDefaultArgTypes: ArgTypes = {
   'icon-name': iconName,
 };
 
+/**
+ * NOTE
+ * The tag is the tagName of the component to display in stories,
+ * so it must be overridden before use.
+ */
 export const commonDefaultArgs: Args = {
   tag: 'TBD',
   text: 'Button',

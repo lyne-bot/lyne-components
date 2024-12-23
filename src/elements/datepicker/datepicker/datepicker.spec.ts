@@ -2,26 +2,16 @@ import { assert, expect } from '@open-wc/testing';
 import { sendKeys } from '@web/test-runner-commands';
 import type { TemplateResult } from 'lit';
 import { html } from 'lit/static-html.js';
-import type { Context } from 'mocha';
 
-import { NativeDateAdapter } from '../../core/datetime.js';
 import { findInput } from '../../core/dom.js';
 import { i18nDateChangedTo } from '../../core/i18n.js';
-import { tabKey } from '../../core/testing/private/keys.js';
-import { fixture, typeInElement } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { fixture, tabKey, typeInElement } from '../../core/testing/private.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbFormFieldElement } from '../../form-field.js';
 import type { SbbDatepickerNextDayElement } from '../datepicker-next-day.js';
 import type { SbbDatepickerPreviousDayElement } from '../datepicker-previous-day.js';
 
-import {
-  findNextAvailableDate,
-  findPreviousAvailableDate,
-  getAvailableDate,
-  getDatePicker,
-  isDateAvailable,
-  SbbDatepickerElement,
-} from './datepicker.js';
+import { getDatePicker, SbbDatepickerElement } from './datepicker.js';
 
 import '../../form-field.js';
 import '../datepicker-previous-day.js';
@@ -90,29 +80,33 @@ describe(`sbb-datepicker`, () => {
         );
       });
 
-      it('renders and emit event on value change', async function (this: Context) {
+      it('renders and emit event on value change', async () => {
         const changeSpy = new EventSpy('change', element);
+        const inputSpy = new EventSpy('input', element);
         typeInElement(input, '20/01/2023');
+        expect(inputSpy.count).to.be.equal(10);
+
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input.value).to.be.equal('Fr, 20.01.2023');
         expect(changeSpy.count).to.be.equal(1);
+        expect(inputSpy.count).to.be.equal(11);
       });
 
-      it('renders and interpret two digit year correctly in 2000s', async function (this: Context) {
+      it('renders and interpret two digit year correctly in 2000s', async () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '20/01/12');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input.value).to.be.equal('Fr, 20.01.2012');
         expect(changeSpy.count).to.be.equal(1);
       });
 
-      it('renders and interpret two digit year correctly in 1900s', async function (this: Context) {
+      it('renders and interpret two digit year correctly in 1900s', async () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '20/01/99');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input.value).to.be.equal('We, 20.01.1999');
         expect(changeSpy.count).to.be.equal(1);
       });
@@ -121,7 +115,7 @@ describe(`sbb-datepicker`, () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '20..2012');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input).to.have.attribute('data-sbb-invalid');
         expect(changeSpy.count).to.be.equal(1);
       });
@@ -130,7 +124,7 @@ describe(`sbb-datepicker`, () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '20.05.');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input).to.have.attribute('data-sbb-invalid');
         expect(changeSpy.count).to.be.equal(1);
       });
@@ -139,7 +133,7 @@ describe(`sbb-datepicker`, () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '20.00.2012');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input).to.have.attribute('data-sbb-invalid');
         expect(changeSpy.count).to.be.equal(1);
       });
@@ -148,7 +142,7 @@ describe(`sbb-datepicker`, () => {
         const changeSpy = new EventSpy('change', element);
         typeInElement(input, '00.05.2020');
         button.focus();
-        await waitForCondition(() => changeSpy.events.length === 1);
+        await changeSpy.calledOnce();
         expect(input).to.have.attribute('data-sbb-invalid');
         expect(changeSpy.count).to.be.equal(1);
       });
@@ -164,39 +158,12 @@ describe(`sbb-datepicker`, () => {
       it('renders and emits event when input parameter changes', async () => {
         const datePickerUpdatedSpy = new EventSpy('datePickerUpdated');
         element.wide = true;
-        await waitForCondition(() => datePickerUpdatedSpy.events.length === 1);
+        await datePickerUpdatedSpy.calledOnce();
         expect(datePickerUpdatedSpy.count).to.be.equal(1);
         element.dateFilter = () => false;
         await waitForLitRender(element);
-        await waitForCondition(() => datePickerUpdatedSpy.events.length === 2);
+        await datePickerUpdatedSpy.calledTimes(2);
         expect(datePickerUpdatedSpy.count).to.be.equal(2);
-      });
-
-      it('renders and interprets date with custom parse and format functions', async () => {
-        const changeSpy = new EventSpy('change', element);
-
-        element.dateParser = (s) => {
-          s = s.replace(/\D/g, ' ').trim();
-          const date = s.split(' ');
-          const now = new Date(2023, 8, 15, 0, 0, 0, 0);
-          return new Date(now.getFullYear(), +date[1] - 1, +date[0]);
-        };
-        element.format = (d) => {
-          //Intl.DateTimeFormat API is not available in test environment.
-          const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-          const weekday = weekdays[d.getDay()];
-          const date = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(
-            2,
-            '0',
-          )}`;
-          return `${weekday}, ${date}`;
-        };
-        await waitForLitRender(element);
-        typeInElement(input, '7.8', { key: 'Enter', keyCode: 13 });
-        await waitForCondition(() => changeSpy.events.length === 1);
-        await waitForLitRender(element);
-        expect(input.value).to.be.equal('Mo, 07.08');
-        expect(changeSpy.count).to.be.equal(1);
       });
 
       it('should emit validation change event', async () => {
@@ -207,7 +174,7 @@ describe(`sbb-datepicker`, () => {
         await waitForLitRender(element);
 
         // Then validation event should emit with false
-        await waitForCondition(() => validationChangeSpy.events.length === 1);
+        await validationChangeSpy.calledOnce();
         expect((validationChangeSpy.lastEvent as CustomEvent).detail['valid']).to.be.equal(false);
         expect(input).to.have.attribute('data-sbb-invalid');
 
@@ -227,12 +194,12 @@ describe(`sbb-datepicker`, () => {
         input.blur();
 
         // Then validation event should be emitted with true
-        await waitForCondition(() => validationChangeSpy.events.length === 1);
+        await validationChangeSpy.calledOnce();
         expect((validationChangeSpy.lastEvent as CustomEvent).detail['valid']).to.be.equal(true);
         expect(input).not.to.have.attribute('data-sbb-invalid');
       });
 
-      it('should interpret valid values and set accessibility labels', async function (this: Context) {
+      it('should interpret valid values and set accessibility labels', async () => {
         const testCases = [
           {
             value: '5.5.0',
@@ -294,7 +261,7 @@ describe(`sbb-datepicker`, () => {
         }
       });
 
-      it('should not touch invalid values', async function (this: Context) {
+      it('should not touch invalid values', async () => {
         const testCases = [
           { value: '.12.2020', interpretedAs: '.12.2020' },
           { value: '24..1995', interpretedAs: '24..1995' },
@@ -339,6 +306,170 @@ describe(`sbb-datepicker`, () => {
           <button></button>
         </div>
       `);
+    });
+
+    describe('date validation', () => {
+      let formField: SbbFormFieldElement;
+      let datePicker: SbbDatepickerElement;
+      let input: HTMLInputElement;
+
+      beforeEach(async () => {
+        formField = await fixture(
+          html`<sbb-form-field>
+            <sbb-datepicker></sbb-datepicker>
+            <input id="datepicker-input" />
+          </sbb-form-field>`,
+        );
+
+        datePicker = formField.querySelector('sbb-datepicker')!;
+        input = formField.querySelector('input')!;
+      });
+
+      describe(`findPreviousAvailableDate`, () => {
+        it('get date without dateFilter and without min', async () => {
+          const availableDate: Date = datePicker.findPreviousAvailableDate(
+            new Date(2023, 1, 26, 0, 0, 0, 0),
+          );
+          expect(availableDate.getTime()).to.equal(new Date(2023, 1, 25, 0, 0, 0, 0).getTime());
+        });
+
+        it('get date without dateFilter and with current date equal to min date', async () => {
+          const date = new Date(2023, 1, 26, 0, 0, 0, 0);
+          input.min = String(date.valueOf() / 1000);
+          const availableDate: Date = datePicker.findPreviousAvailableDate(date);
+          expect(availableDate.getTime()).to.equal(date.getTime());
+        });
+
+        it('get date with dateFilter and min', async () => {
+          const minDate = new Date(2023, 1, 26, 0, 0, 0, 0);
+
+          datePicker.dateFilter = (d: Date | null) => d?.getDate() !== 27;
+          input.min = String(minDate.valueOf() / 1000);
+
+          const availableDate: Date = datePicker.findPreviousAvailableDate(
+            new Date(2023, 1, 28, 0, 0, 0, 0),
+          );
+          expect(availableDate.getTime()).to.equal(minDate.getTime());
+        });
+      });
+
+      describe(`findNextAvailableDate`, () => {
+        it('get date without max and without dateFilter', async () => {
+          const availableDate: Date = datePicker.findNextAvailableDate(
+            new Date(2023, 1, 26, 0, 0, 0, 0),
+          );
+          expect(availableDate.getTime()).to.equal(new Date(2023, 1, 27, 0, 0, 0, 0).getTime());
+        });
+
+        it('get date without dateFilter with current date equal to max date', async () => {
+          const date: Date = new Date(2023, 1, 26, 0, 0, 0, 0);
+          input.max = String(date.valueOf() / 1000);
+          const availableDate: Date = datePicker.findNextAvailableDate(date);
+          expect(availableDate.getTime()).to.equal(date.getTime());
+        });
+
+        it('get date with dateFilter and max', async () => {
+          const maxDate = new Date(2023, 1, 28, 0, 0, 0, 0);
+
+          datePicker.dateFilter = (d: Date | null) => d?.getDate() !== 27;
+          input.min = String(maxDate.valueOf() / 1000);
+
+          const availableDate: Date = datePicker.findNextAvailableDate(
+            new Date(2023, 1, 26, 0, 0, 0, 0),
+          );
+          expect(availableDate.getTime()).to.equal(maxDate.getTime());
+        });
+      });
+
+      describe(`validation`, () => {
+        describe('invalid', () => {
+          it('get invalid date with min', async () => {
+            input.min = new Date('2023-02-26').toISOString();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '20.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Mo, 20.02.2023');
+            expect(input).to.have.attribute('data-sbb-invalid');
+          });
+
+          it('get invalid date with max', async () => {
+            input.max = new Date('2023-02-26').toISOString();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '28.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Tu, 28.02.2023');
+            expect(input).to.have.attribute('data-sbb-invalid');
+          });
+
+          it('get invalid date with dateFilter', async () => {
+            datePicker.dateFilter = (d: Date | null) =>
+              d!.getTime() > new Date('2024-12-31').valueOf();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '28.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Tu, 28.02.2023');
+            expect(input).to.have.attribute('data-sbb-invalid');
+          });
+        });
+
+        describe('valid', () => {
+          it('get valid date without dateFilter, min and max', async () => {
+            typeInElement(input, '25.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Sa, 25.02.2023');
+            expect(input).not.to.have.attribute('data-sbb-invalid');
+          });
+
+          it('get valid date with min', async () => {
+            input.min = new Date('2023-02-01').toISOString();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '20.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Mo, 20.02.2023');
+            expect(input).not.to.have.attribute('data-sbb-invalid');
+          });
+
+          it('get valid date with max', async () => {
+            input.max = new Date('2023-03-31').toISOString();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '28.02.2023');
+            input.blur();
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Tu, 28.02.2023');
+            expect(input).not.to.have.attribute('data-sbb-invalid');
+          });
+
+          it('get invalid date with dateFilter', async () => {
+            datePicker.dateFilter = (d: Date | null) =>
+              d!.getTime() > new Date('2022-01-01').valueOf();
+            await waitForLitRender(formField);
+
+            typeInElement(input, '28.02.2023');
+            input.blur();
+
+            await waitForLitRender(formField);
+
+            expect(input.value).to.be.equal('Tu, 28.02.2023');
+            expect(input).not.to.have.attribute('data-sbb-invalid');
+          });
+        });
+      });
     });
   });
 
@@ -399,172 +530,6 @@ describe(`sbb-datepicker`, () => {
         page.querySelector<SbbDatepickerElement>('sbb-datepicker')!;
       const input: HTMLInputElement = page.querySelector<HTMLInputElement>('input')!;
       expect(findInput(picker, 'input')).to.equal(input);
-    });
-  });
-
-  describe(`getAvailableDate`, () => {
-    it('with dateFilter', async () => {
-      const availableDate: Date = getAvailableDate(
-        new Date(2024, 0, 1, 0, 0, 0, 0),
-        1,
-        (d: Date) => d.getDay() === 1,
-        new NativeDateAdapter(),
-      );
-      expect(availableDate.getTime()).to.equal(new Date(2024, 0, 8, 0, 0, 0, 0).getTime());
-    });
-
-    it('without dateFilter', async () => {
-      const availableDate: Date = getAvailableDate(
-        new Date(2024, 0, 1, 0, 0, 0, 0),
-        1,
-        () => true,
-        new NativeDateAdapter(),
-      );
-      expect(availableDate.getTime()).to.equal(new Date(2024, 0, 2, 0, 0, 0, 0).getTime());
-    });
-  });
-
-  describe(`findPreviousAvailableDate`, () => {
-    it('get date without dateFilter and without min', async () => {
-      const availableDate: Date = findPreviousAvailableDate(
-        new Date(2023, 1, 26, 0, 0, 0, 0),
-        null,
-        new NativeDateAdapter(),
-        null,
-      );
-      expect(availableDate.getTime()).to.equal(new Date(2023, 1, 25, 0, 0, 0, 0).getTime());
-    });
-
-    it('get date without dateFilter and with current date equal to min date', async () => {
-      const date = new Date(2023, 1, 26, 0, 0, 0, 0);
-      const availableDate: Date = findPreviousAvailableDate(
-        date,
-        null,
-        new NativeDateAdapter(),
-        date.valueOf() / 1000,
-      );
-      expect(availableDate.getTime()).to.equal(date.getTime());
-    });
-
-    it('get date with dateFilter and min', async () => {
-      const minDate = new Date(2023, 1, 26, 0, 0, 0, 0);
-      const availableDate: Date = findPreviousAvailableDate(
-        new Date(2023, 1, 28, 0, 0, 0, 0),
-        (d: Date) => d.getDate() !== 27,
-        new NativeDateAdapter(),
-        minDate.valueOf() / 1000,
-      );
-      expect(availableDate.getTime()).to.equal(minDate.getTime());
-    });
-  });
-
-  describe(`findNextAvailableDate`, () => {
-    it('get date without max and without dateFilter', async () => {
-      const availableDate: Date = findNextAvailableDate(
-        new Date(2023, 1, 26, 0, 0, 0, 0),
-        null,
-        new NativeDateAdapter(),
-        null,
-      );
-      expect(availableDate.getTime()).to.equal(new Date(2023, 1, 27, 0, 0, 0, 0).getTime());
-    });
-
-    it('get date without dateFilter with current date equal to max date', async () => {
-      const date: Date = new Date(2023, 1, 26, 0, 0, 0, 0);
-      const availableDate: Date = findNextAvailableDate(
-        date,
-        null,
-        new NativeDateAdapter(),
-        date.valueOf() / 1000,
-      );
-      expect(availableDate.getTime()).to.equal(date.getTime());
-    });
-
-    it('get date with dateFilter and max', async () => {
-      const maxDate = new Date(2023, 1, 28, 0, 0, 0, 0);
-      const availableDate: Date = findNextAvailableDate(
-        new Date(2023, 1, 26, 0, 0, 0, 0),
-        (d: Date) => d.getDate() !== 27,
-        new NativeDateAdapter(),
-        maxDate.valueOf() / 1000,
-      );
-      expect(availableDate.getTime()).to.equal(maxDate.getTime());
-    });
-  });
-
-  describe(`isDateAvailable`, () => {
-    describe('invalid', () => {
-      it('get invalid date with min', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-20'),
-            null,
-            new Date('2023-02-26').valueOf() / 1000,
-            null,
-          ),
-        ).to.be.false;
-      });
-
-      it('get invalid date with max', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-28'),
-            null,
-            null,
-            new Date('2023-02-26').valueOf() / 1000,
-          ),
-        ).to.be.false;
-      });
-
-      it('get invalid date with dateFilter', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-28'),
-            (d: Date) => d.getTime() > new Date('2024-12-31').valueOf(),
-            null,
-            null,
-          ),
-        ).to.be.false;
-      });
-    });
-
-    describe('valid', function () {
-      it('get valid date without dateFilter, min and max', async () => {
-        expect(isDateAvailable(new Date('2023-02-25'), null, null, null)).to.be.true;
-      });
-
-      it('get valid date with min', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-20'),
-            null,
-            new Date('2023-02-01').valueOf() / 1000,
-            null,
-          ),
-        ).to.be.true;
-      });
-
-      it('get valid date with max', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-28'),
-            null,
-            null,
-            new Date('2023-03-31').valueOf() / 1000,
-          ),
-        ).to.be.true;
-      });
-
-      it('get invalid date with dateFilter', async () => {
-        expect(
-          isDateAvailable(
-            new Date('2023-02-28'),
-            (d: Date) => d.getTime() > new Date('2022-01-01').valueOf(),
-            null,
-            null,
-          ),
-        ).to.be.true;
-      });
     });
   });
 });

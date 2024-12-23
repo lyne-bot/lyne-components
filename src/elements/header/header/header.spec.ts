@@ -2,9 +2,8 @@ import { assert, expect } from '@open-wc/testing';
 import { sendKeys, setViewport } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
-import { tabKey } from '../../core/testing/private/keys.js';
-import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForLitRender, mockScrollTo, waitForCondition } from '../../core/testing.js';
+import { fixture, tabKey } from '../../core/testing/private.js';
+import { EventSpy, mockScrollTo, waitForLitRender } from '../../core/testing.js';
 import { SbbMenuElement } from '../../menu.js';
 import type { SbbHeaderButtonElement } from '../header-button.js';
 
@@ -162,15 +161,15 @@ describe(`sbb-header`, () => {
     expect(element).to.have.attribute('data-visible');
 
     // Open menu
-    const willOpenEventSpy = new EventSpy(SbbMenuElement.events.willOpen);
-    const didOpenEventSpy = new EventSpy(SbbMenuElement.events.didOpen);
+    const willOpenEventSpy = new EventSpy(SbbMenuElement.events.willOpen, null, { capture: true });
+    const didOpenEventSpy = new EventSpy(SbbMenuElement.events.didOpen, null, { capture: true });
     const menuTrigger = root.querySelector<SbbHeaderButtonElement>('sbb-header-button')!;
     menuTrigger.click();
     await waitForLitRender(element);
-    await waitForCondition(() => willOpenEventSpy.events.length === 1);
+    await willOpenEventSpy.calledOnce();
     expect(willOpenEventSpy.count).to.be.equal(1);
     await waitForLitRender(element);
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
     await waitForLitRender(element);
     const menuId = menuTrigger.getAttribute('aria-controls');

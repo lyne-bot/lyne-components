@@ -1,7 +1,7 @@
 import { LitElement, html, type TemplateResult, type CSSResultGroup, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import '@sbb-esta/lyne-elements/chip.js';
+import '@sbb-esta/lyne-elements/chip-label.js';
 import style from './test-title-chip-list.scss?lit&inline';
 
 /**
@@ -27,8 +27,9 @@ type DescribeEachItem = {
  *  - If param is undefined, show nothing;
  *  - Else, show a default chip with "key = value";
  */
+export
 @customElement('app-test-title-chip-list')
-export class TestTitleChipList extends LitElement {
+class TestTitleChipList extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   @property()
@@ -62,12 +63,14 @@ export class TestTitleChipList extends LitElement {
       <div class="chip-list-wrapper">
         ${this._chips.map((c) =>
           c.isBoolean
-            ? html`<sbb-chip size="xs" color=${c.value === 'true' ? 'custom-green' : 'custom-red'}
-                >${c.key}</sbb-chip
+            ? html`<sbb-chip-label
+                size="xs"
+                color=${c.value === 'true' ? 'custom-green' : 'custom-red'}
+                >${c.key}</sbb-chip-label
               >`
             : c.isUndefined
               ? nothing
-              : html`<sbb-chip size="xs">${c.key} = ${c.value}</sbb-chip>`,
+              : html`<sbb-chip-label size="xs">${c.key} = ${c.value}</sbb-chip-label>`,
         )}
       </div>
     `;

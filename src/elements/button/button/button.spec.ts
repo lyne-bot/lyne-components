@@ -3,7 +3,7 @@ import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import {
   buttonIconTestTemplate,
   buttonSpaceIconTestTemplate,
@@ -29,7 +29,7 @@ describe(`sbb-button`, () => {
       const clickSpy = new EventSpy('click');
 
       element.click();
-      await waitForCondition(() => clickSpy.events.length === 1);
+      await clickSpy.calledOnce();
       expect(clickSpy.count).to.be.equal(1);
     });
 

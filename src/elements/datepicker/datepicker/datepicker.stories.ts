@@ -118,44 +118,6 @@ const dateFilter: InputType = {
   },
 };
 
-const handlingFunctions = [
-  { dateParser: undefined, format: undefined },
-  {
-    dateParser: (s: string) => new Date(s),
-    format: (d: Date) =>
-      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-        d.getDate(),
-      ).padStart(2, '0')}`,
-  },
-  {
-    dateParser: (s: string) =>
-      new Date(+s.substring(4, s.length), +s.substring(2, 4) - 1, +s.substring(0, 2)),
-    format: (d: Date) =>
-      `${String(d.getDate()).padStart(2, '0')}${String(d.getMonth() + 1).padStart(
-        2,
-        '0',
-      )}${d.getFullYear()}`,
-  },
-];
-const dateHandling: InputType = {
-  name: 'Date Handling',
-  description:
-    'Change the default date handling option with a combination of `dateParser` and `format` properties.',
-  options: Object.keys(filterFunctions),
-  mapping: handlingFunctions,
-  control: {
-    type: 'select',
-    labels: {
-      0: 'Default',
-      1: 'ISO String (YYYY-MM-DD)',
-      2: 'Business (DDMMYY)',
-    },
-  },
-  table: {
-    category: 'Datepicker attribute',
-  },
-};
-
 const ariaLabel: InputType = {
   control: {
     type: 'text',
@@ -230,7 +192,6 @@ const basicArgTypes: ArgTypes = {
   max,
   wide,
   dateFilter,
-  dateHandling,
   now,
   'aria-label': ariaLabel,
 };
@@ -245,7 +206,6 @@ const basicArgs: Args = {
   max: undefined,
   wide: false,
   dateFilter: dateFilter.options![0],
-  dateHandling: dateHandling.options![0],
   now: undefined,
   'aria-label': undefined,
 };
@@ -282,7 +242,7 @@ const Template = ({ min, max, wide, dateFilter, now, ...args }: Args): TemplateR
   return html`
     <div style=${styleMap({ display: 'flex', gap: '0.25rem' })}>
       <sbb-datepicker-previous-day date-picker="datepicker"></sbb-datepicker-previous-day>
-      <sbb-datepicker-toggle date-picker="datepicker" data-testid="toggle"></sbb-datepicker-toggle>
+      <sbb-datepicker-toggle date-picker="datepicker"></sbb-datepicker-toggle>
       <input
         ${sbbSpread(args)}
         id="datepicker-input"
@@ -318,7 +278,6 @@ const TemplateFormField = ({
   negative,
   wide,
   dateFilter,
-  dateHandling,
   now,
   ...args
 }: Args): TemplateResult => {
@@ -333,7 +292,7 @@ const TemplateFormField = ({
       ${label ? html`<label>${label}</label>` : nothing}
       <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
       <sbb-datepicker-next-day></sbb-datepicker-next-day>
-      <sbb-datepicker-toggle data-testid="toggle"></sbb-datepicker-toggle>
+      <sbb-datepicker-toggle></sbb-datepicker-toggle>
       <input
         ${sbbSpread(args)}
         min=${convertMillisecondsToSeconds(min)}
@@ -341,8 +300,6 @@ const TemplateFormField = ({
       />
       <sbb-datepicker
         .dateFilter=${dateFilter}
-        .dateParser=${dateHandling.dateParser}
-        .format=${dateHandling.format}
         ?wide=${wide}
         @change=${(event: Event) => changeEventHandler(event)}
         now=${convertMillisecondsToSeconds(now)}
@@ -413,12 +370,6 @@ export const InFormFieldWithDateFilter: StoryObj = {
   render: TemplateFormField,
   argTypes: { ...formFieldBasicArgsTypes },
   args: { ...formFieldBasicArgs, dateFilter: dateFilter.options![1] },
-};
-
-export const InFormFieldWithDateParser: StoryObj = {
-  render: TemplateFormField,
-  argTypes: { ...formFieldBasicArgsTypes },
-  args: { ...formFieldBasicArgs, value: '2023-02-12', dateHandling: dateHandling.options![1] },
 };
 
 export const InFormFieldSmall: StoryObj = {

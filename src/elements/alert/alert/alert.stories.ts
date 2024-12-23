@@ -1,33 +1,31 @@
 import { withActions } from '@storybook/addon-actions/decorator';
 import type { InputType } from '@storybook/types';
-import type { Meta, StoryObj, ArgTypes, Args, Decorator } from '@storybook/web-components';
+import type { Args, ArgTypes, Decorator, Meta, StoryObj } from '@storybook/web-components';
 import type { TemplateResult } from 'lit';
-import { html, nothing } from 'lit';
+import { html } from 'lit';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import { SbbAlertElement } from './alert.js';
 import readme from './readme.md?raw';
 
+import '../../link/link.js';
+
 const Default = ({ 'content-slot-text': contentSlotText, ...args }: Args): TemplateResult => html`
-  <sbb-alert
-    ${sbbSpread(args)}
-    @dismissalRequested=${(e: Event) => (e.target! as SbbAlertElement).close()}
-    >${contentSlotText}</sbb-alert
-  >
+  <sbb-alert ${sbbSpread(args)}>${contentSlotText}</sbb-alert>
+`;
+
+const WithLink = ({ 'content-slot-text': contentSlotText, ...args }: Args): TemplateResult => html`
+  <sbb-alert ${sbbSpread(args)}>
+    ${contentSlotText} <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
+  </sbb-alert>
 `;
 
 const DefaultWithOtherContent = (args: Args): TemplateResult => {
   return html`
     <div>
-      ${Default(args)}
+      ${WithLink(args)}
       <p>Other Content on the page.</p>
-      ${!args.readonly
-        ? html`<p>
-            Dismissal event of the alert has to be caught by the consumer and the alert has to be
-            manually removed from DOM. See 'sbb-alert-group' for demonstration.
-          </p>`
-        : nothing}
     </div>
   `;
 };
@@ -82,58 +80,6 @@ const contentSlotText: InputType = {
   },
 };
 
-const linkContent: InputType = {
-  control: {
-    type: 'text',
-  },
-  table: {
-    category: 'Link',
-  },
-};
-
-const hrefs = ['https://www.sbb.ch', 'https://github.com/sbb-design-systems/lyne-components'];
-const href: InputType = {
-  options: Object.keys(hrefs),
-  mapping: hrefs,
-  control: {
-    type: 'select',
-    labels: {
-      0: 'sbb.ch',
-      1: 'GitHub Lyne Components',
-    },
-  },
-  table: {
-    category: 'Link',
-  },
-};
-
-const target: InputType = {
-  control: {
-    type: 'text',
-  },
-  table: {
-    category: 'Link',
-  },
-};
-
-const rel: InputType = {
-  control: {
-    type: 'text',
-  },
-  table: {
-    category: 'Link',
-  },
-};
-
-const accessibilityLabel: InputType = {
-  control: {
-    type: 'text',
-  },
-  table: {
-    category: 'Link',
-  },
-};
-
 const animation: InputType = {
   control: {
     type: 'inline-radio',
@@ -148,11 +94,6 @@ const defaultArgTypes: ArgTypes = {
   readonly,
   'icon-name': iconName,
   'content-slot-text': contentSlotText,
-  'link-content': linkContent,
-  href,
-  target,
-  rel,
-  'accessibility-label': accessibilityLabel,
   animation: animation,
 };
 
@@ -164,11 +105,6 @@ const defaultArgs: Args = {
   'icon-name': 'info',
   'content-slot-text':
     "Between Berne and Olten from 03.11.2021 to 05.12.2022 each time from 22:30 to 06:00 o'clock construction work will take place. You have to expect changed travel times and changed connections.",
-  'link-content': undefined,
-  href: href.options![0],
-  target: undefined,
-  rel: undefined,
-  'accessibility-label': undefined,
   animation: animation.options![0],
 };
 
@@ -179,19 +115,19 @@ export const defaultAlert: StoryObj = {
 };
 
 export const sizeL: StoryObj = {
-  render: Default,
+  render: WithLink,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, size: size.options![1] },
 };
 
 export const sizeS: StoryObj = {
-  render: Default,
+  render: WithLink,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, size: size.options![2] },
 };
 
 export const withoutCloseButton: StoryObj = {
-  render: Default,
+  render: WithLink,
   argTypes: defaultArgTypes,
   args: { ...defaultArgs, readonly: true },
 };
@@ -199,13 +135,7 @@ export const withoutCloseButton: StoryObj = {
 export const withoutLink: StoryObj = {
   render: Default,
   argTypes: defaultArgTypes,
-  args: { ...defaultArgs, href: undefined },
-};
-
-export const withCustomLinkText: StoryObj = {
-  render: Default,
-  argTypes: defaultArgTypes,
-  args: { ...defaultArgs, ['link-content']: 'Follow this link (custom text)' },
+  args: { ...defaultArgs },
 };
 
 export const iconAndTitleAsSlot: StoryObj = {
@@ -221,7 +151,8 @@ const meta: Meta = {
       handles: [
         SbbAlertElement.events.willOpen,
         SbbAlertElement.events.didOpen,
-        SbbAlertElement.events.dismissalRequested,
+        SbbAlertElement.events.willClose,
+        SbbAlertElement.events.didClose,
       ],
     },
     docs: {

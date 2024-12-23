@@ -107,6 +107,7 @@ describe('sbb-select', () => {
             );
             setup.withPostSetupAction(() => {
               const select = setup.snapshotElement.querySelector('sbb-select')!;
+              select.focus();
               select.open();
             });
           }),
@@ -186,6 +187,7 @@ describe('sbb-select', () => {
             });
             setup.withPostSetupAction(() => {
               const select = setup.snapshotElement.querySelector('sbb-select')!;
+              select.focus();
               select.open();
             });
           }),
@@ -203,6 +205,7 @@ describe('sbb-select', () => {
             );
             setup.withPostSetupAction(() => {
               const select = setup.snapshotElement.querySelector('sbb-select')!;
+              select.focus();
               select.open();
             });
           }),
@@ -227,6 +230,7 @@ describe('sbb-select', () => {
               );
               setup.withPostSetupAction(() => {
                 const select = setup.snapshotElement.querySelector('sbb-select')!;
+                select.focus();
                 select.open();
               });
             }),
@@ -244,6 +248,7 @@ describe('sbb-select', () => {
             );
             setup.withPostSetupAction(() => {
               const select = setup.snapshotElement.querySelector('sbb-select')!;
+              select.focus();
               select.open();
             });
           }),
@@ -268,6 +273,7 @@ describe('sbb-select', () => {
               );
               setup.withPostSetupAction(() => {
                 const select = setup.snapshotElement.querySelector('sbb-select')!;
+                select.focus();
                 select.open();
               });
             }),

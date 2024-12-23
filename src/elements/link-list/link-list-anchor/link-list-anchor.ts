@@ -11,8 +11,9 @@ import style from './link-list-anchor.scss?lit&inline';
  * @slot - Use the unnamed slot to add one or more `sbb-block-link`.
  * @slot title - Use this slot to provide a title.
  */
+export
 @customElement('sbb-link-list-anchor')
-export class SbbLinkListAnchorElement extends SbbLinkListBaseElement {
+class SbbLinkListAnchorElement extends SbbLinkListBaseElement {
   public static override styles: CSSResultGroup = [linkListBaseStyle, style];
 }
 

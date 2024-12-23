@@ -12,6 +12,8 @@ import {
 import { waitForImageReady } from '../core/testing.js';
 
 import './teaser.js';
+import '../chip-label.js';
+import '../container.js';
 import '../image.js';
 
 const imageUrl = import.meta.resolve('../core/testing/assets/placeholder-image.png');
@@ -27,6 +29,37 @@ describe(`sbb-teaser`, () => {
   const longChip: string =
     'This is a chip which has a very long content and should receive ellipsis.';
 
+  const imgCases = [
+    {
+      title: 'imageSlot=sbb-image',
+      imgSelector: 'sbb-image',
+      imgTemplate: () => html`<sbb-image slot="image" image-src=${imageUrl}></sbb-image>`,
+    },
+    {
+      title: 'imageSlot=img',
+      imgSelector: 'img',
+      imgTemplate: () => html`<img src=${imageBase64} slot="image" alt="" />`,
+    },
+    {
+      title: 'imageSlot=figure_and_sbb-image',
+      imgSelector: 'sbb-image',
+      imgTemplate: () =>
+        html`<figure class="sbb-figure" slot="image">
+          <sbb-image image-src=${imageUrl}></sbb-image>
+          <sbb-chip-label class="sbb-figure-overlap-start-start">AI chip</sbb-chip-label>
+        </figure>`,
+    },
+    {
+      title: 'imageSlot=figure_and_img',
+      imgSelector: 'img',
+      imgTemplate: () =>
+        html`<figure class="sbb-figure" slot="image">
+          <img src=${imageBase64} alt="" />
+          <sbb-chip-label class="sbb-figure-overlap-start-start">AI chip</sbb-chip-label>
+        </figure>`,
+    },
+  ];
+
   const visualStates = {
     hasChip: [false, true],
     withLongContent: [false, true],
@@ -41,26 +74,31 @@ describe(`sbb-teaser`, () => {
     describeViewports({ viewports: [screenCombination.viewport] }, () => {
       for (const alignment of screenCombination.alignments) {
         describe(`alignment=${alignment}`, () => {
-          for (const visualDiffStandardState of [
-            visualDiffDefault,
-            visualDiffFocus,
-            visualDiffHover,
-          ]) {
-            it(
-              `state=${visualDiffStandardState.name}`,
-              visualDiffStandardState.with(async (setup) => {
-                await setup.withFixture(
-                  html`
-                    <sbb-teaser title-content="This is a title" href="#" alignment=${alignment}>
-                      <img slot="image" src=${imageBase64} />
-                      This is a paragraph
-                    </sbb-teaser>
-                  `,
-                  { maxWidth: '760px' },
+          for (const imgCase of imgCases) {
+            describe(imgCase.title, () => {
+              for (const visualDiffStandardState of [
+                visualDiffDefault,
+                visualDiffFocus,
+                visualDiffHover,
+              ]) {
+                it(
+                  `state=${visualDiffStandardState.name}`,
+                  visualDiffStandardState.with(async (setup) => {
+                    await setup.withFixture(
+                      html`
+                        <sbb-teaser title-content="This is a title" href="#" alignment=${alignment}>
+                          ${imgCase.imgTemplate()} This is a paragraph
+                        </sbb-teaser>
+                      `,
+                      { maxWidth: '760px' },
+                    );
+                    await waitForImageReady(
+                      setup.snapshotElement.querySelector(imgCase.imgSelector)!,
+                    );
+                  }),
                 );
-                await waitForImageReady(setup.snapshotElement.querySelector('img')!);
-              }),
-            );
+              }
+            });
           }
 
           describeEach(visualStates, ({ hasChip, withLongContent }) => {
@@ -75,7 +113,14 @@ describe(`sbb-teaser`, () => {
                       alignment=${alignment}
                       chip-content=${hasChip ? 'This is a chip.' : nothing}
                     >
-                      <img slot="image" src=${imageBase64} />
+                      <figure slot="image" class="sbb-figure">
+                        <img src=${imageBase64} />
+                        ${hasChip
+                          ? html`<sbb-chip-label class="sbb-figure-overlap-start-start">
+                              AI chip
+                            </sbb-chip-label>`
+                          : nothing}
+                      </figure>
                       ${withLongContent ? loremIpsum : 'This is a paragraph'}
                     </sbb-teaser>
                   `,
@@ -85,84 +130,83 @@ describe(`sbb-teaser`, () => {
               }),
             );
           });
-
-          it(
-            `longChip=true`,
-            visualDiffDefault.with(async (setup) => {
-              await setup.withFixture(
-                html`
-                  <sbb-teaser
-                    style="width: ${screenCombination.viewport === 'micro' ? '300px' : '400px'};"
-                    title-content="This is a title"
-                    href="#"
-                    alignment=${alignment}
-                    chip-content=${longChip}
-                  >
-                    <img slot="image" src=${imageBase64} />
-                    This is a paragraph
-                  </sbb-teaser>
-                `,
-                { maxWidth: '760px' },
-              );
-              await waitForImageReady(setup.snapshotElement.querySelector('img')!);
-            }),
-          );
-
-          it(
-            `list=true`,
-            visualDiffDefault.with(async (setup) => {
-              const count = 5;
-              await setup.withFixture(html`
-                <ul style="list-style: none; padding: 0;">
-                  ${repeat(
-                    new Array(count),
-                    (_, i) => html`
-                      <li style="margin-block: 1rem;">
-                        <sbb-teaser
-                          title-content="This is title n.${i + 1}"
-                          href="#"
-                          alignment=${alignment}
-                        >
-                          <img slot="image" src=${imageBase64} id=${`img${i}`} />
-                          This is the paragraph n.${i + 1}
-                        </sbb-teaser>
-                      </li>
-                    `,
-                  )}
-                </ul>
-              `);
-              await Promise.all(
-                new Array(count).map((_, i) =>
-                  waitForImageReady(setup.snapshotElement.querySelector(`#img${i}`)!),
-                ),
-              );
-            }),
-          );
         });
       }
 
       it(
         'grid with sbb-image',
         visualDiffDefault.with(async (setup) => {
+          const count = 2;
           await setup.withFixture(html`
-            <div style="display:grid; gap: 2rem; grid-template-columns: repeat(2, 1fr);">
-              ${repeat(
-                new Array(2),
-                () => html`
-                  <sbb-teaser
-                    title-content="This is a title"
-                    href="#"
-                    alignment="below"
-                    style="--sbb-teaser-align-items: stretch;"
-                  >
-                    <sbb-image slot="image" image-src=${imageUrl} style="width: 100%"></sbb-image>
-                    This is a paragraph
-                  </sbb-teaser>
-                `,
-              )}
-            </div>
+            <sbb-container>
+              <div style="display:grid; gap: 2rem; grid-template-columns: repeat(2, 1fr);">
+                ${repeat(
+                  new Array(count),
+                  (_) => html`
+                    <sbb-teaser
+                      title-content="This is a title"
+                      href="#"
+                      alignment="below"
+                      style="--sbb-teaser-align-items: stretch;"
+                    >
+                      <figure slot="image" class="sbb-figure" style="width: 100%">
+                        <sbb-image image-src=${imageUrl}></sbb-image>
+                        <sbb-chip-label class="sbb-figure-overlap-start-start">
+                          AI chip
+                        </sbb-chip-label>
+                      </figure>
+                      This is a paragraph
+                    </sbb-teaser>
+                  `,
+                )}
+              </div>
+            </sbb-container>
           `);
+
+          await Promise.all(
+            Array.from(setup.snapshotElement.querySelectorAll('sbb-image')).map((el) =>
+              waitForImageReady(el),
+            ),
+          );
+        }),
+      );
+
+      it(
+        'forcedColors=true',
+        visualDiffDefault.with(async (setup) => {
+          await setup.withFixture(
+            html`
+              <sbb-teaser title-content="This is a title" href="#" alignment="below">
+                <sbb-image slot="image" image-src=${imageUrl}></sbb-image>
+                This is a paragraph
+              </sbb-teaser>
+            `,
+            { forcedColors: true },
+          );
+
           await waitForImageReady(setup.snapshotElement.querySelector('sbb-image')!);
+        }),
+      );
+
+      it(
+        `longChip`,
+        visualDiffDefault.with(async (setup) => {
+          await setup.withFixture(
+            html`
+              <sbb-teaser
+                style="width: ${screenCombination.viewport === 'micro' ? '300px' : '400px'};"
+                title-content="This is a title"
+                href="#"
+                alignment="below"
+                chip-content=${longChip}
+              >
+                <img src=${imageBase64} slot="image" alt="" />
+                This is a paragraph
+              </sbb-teaser>
+            `,
+            { maxWidth: '760px' },
+          );
+          await waitForImageReady(setup.snapshotElement.querySelector('img')!);
         }),
       );
     });

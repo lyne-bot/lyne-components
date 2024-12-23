@@ -16,7 +16,6 @@ snapshots["sbb-accordion renders DOM"] =
       data-size="l"
       data-slot-names="unnamed"
       id="sbb-expansion-panel-header-1"
-      role="button"
       slot="header"
       tabindex="0"
     >
@@ -46,7 +45,6 @@ snapshots["sbb-accordion renders DOM"] =
       data-size="l"
       data-slot-names="unnamed"
       id="sbb-expansion-panel-header-2"
-      role="button"
       slot="header"
       tabindex="0"
     >

@@ -36,22 +36,22 @@ const updateFormError = (event: CustomEvent): void => {
   }
 };
 
-const changeEventHandler = async (event: CustomEvent): Promise<void> => {
+const changeEventHandler = (event: CustomEvent): void => {
   const target = event.target as SbbTimeInputElement;
   const exampleParent = target.closest<HTMLDivElement>('div#example-parent');
   const div = document.createElement('div');
   div.innerText = `value is: ${
     (exampleParent?.querySelector('#input-id') as HTMLInputElement).value
-  }; valueAsDate is: ${await target.getValueAsDate()}.`;
+  }; valueAsDate is: ${target.valueAsDate}.`;
   exampleParent?.querySelector('#container-value')!.append(div);
 };
 
 const setValueAsDate = async (event: Event): Promise<void> => {
   const target = event.target as HTMLElement;
-  const exampleParent = target.closest<HTMLDivElement>('div#example-parent');
+  const exampleParent = target.closest<HTMLDivElement>('div#example-parent')!;
 
-  const timeInput = exampleParent?.querySelector<SbbTimeInputElement>('sbb-time-input');
-  await timeInput?.setValueAsDate(new Date());
+  const timeInput = exampleParent.querySelector<SbbTimeInputElement>('sbb-time-input')!;
+  timeInput.valueAsDate = new Date();
 
   const input = exampleParent?.querySelector<HTMLInputElement>('#input-id');
   input?.dispatchEvent(new Event('change')); // Trigger change to update invalid state

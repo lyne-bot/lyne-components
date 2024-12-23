@@ -77,7 +77,7 @@ The component has no `size` property but, when slotted in a `sbb-form-field`, it
 ```html
 <sbb-form-field size="s">
   <label>Train types</label>
-  <sbb-select> ... </sbb-select>
+  <sbb-select>...</sbb-select>
 </sbb-form-field>
 ```
 
@@ -86,6 +86,30 @@ The component has no `size` property but, when slotted in a `sbb-form-field`, it
 Consumers can listen to the native `change`/`input` event on the `sbb-select` component to intercept the selection's change;
 the current value can be read from `event.target.value`.
 Additionally `sbb-option` will emit `optionSelected` when selected via user interaction.
+
+## Accessibility
+
+The select follows the combobox pattern. As a technical difficulty, we have to copy the combobox element into the light DOM.
+As a consequence, linking labels is not fully supported. While `aria-label`, `aria-labelledby` and `aria-describedby` on the `sbb-select` work,
+using `<label>` together with `sbb-select` is only partially supported.
+As workaround, we copy the text into the aria-label of the combobox element, but this remains not synchronized.
+Whenever a `<label>` gets a change, we won't be able to detect it, and we won't be able to update the `aria-label`.
+The only two exceptions are when `connectedCallback()` gets called and when the document language changes.
+
+Fully supported:
+
+```html
+<sbb-select aria-label="Select train type">...</sbb-select>
+```
+
+Changes to the `<label>`-text might not be reflected after initialization:
+
+```html
+<sbb-form-field size="s">
+  <label>Train types</label>
+  <sbb-select>...</sbb-select>
+</sbb-form-field>
+```
 
 ## Keyboard interaction
 
@@ -111,25 +135,23 @@ Opened panel:
 | <kbd>Shift</kbd><kbd>Up Arrow</kbd>     | If `multiple`, moves to the next non-disabled option and toggle its selection.                                                                    |
 | Any char or number                      | If exists, select the first non-disabled matching option after the selected value.                                                                |
 
-<!-- Override
-  @type value => string \| string[] \| null
--->
 <!-- Auto Generated Below -->
 
 ## Properties
 
-| Name          | Attribute     | Privacy | Type                         | Default | Description                                                    |
-| ------------- | ------------- | ------- | ---------------------------- | ------- | -------------------------------------------------------------- |
-| `disabled`    | `disabled`    | public  | `boolean`                    | `false` | Whether the component is disabled.                             |
-| `form`        | -             | public  | `HTMLFormElement \| null`    |         | Returns the form owner of the internals of the target element. |
-| `isOpen`      | -             | public  | `boolean`                    |         | Whether the element is open.                                   |
-| `multiple`    | `multiple`    | public  | `boolean`                    | `false` | Whether the select allows for multiple selection.              |
-| `name`        | `name`        | public  | `string`                     |         | Name of the form element. Will be read from name attribute.    |
-| `negative`    | `negative`    | public  | `boolean`                    | `false` | Negative coloring variant flag.                                |
-| `placeholder` | `placeholder` | public  | `string \| undefined`        |         | The placeholder used if no value has been selected.            |
-| `readonly`    | `readonly`    | public  | `boolean`                    | `false` | Whether the select is readonly.                                |
-| `required`    | `required`    | public  | `boolean`                    | `false` | Whether the component is required.                             |
-| `value`       | `value`       | public  | `string \| string[] \| null` | `null`  | Value of the form element.                                     |
+| Name          | Attribute     | Privacy | Type                         | Default                          | Description                                                    |
+| ------------- | ------------- | ------- | ---------------------------- | -------------------------------- | -------------------------------------------------------------- |
+| `disabled`    | `disabled`    | public  | `boolean`                    | `false`                          | Whether the component is disabled.                             |
+| `form`        | -             | public  | `HTMLFormElement \| null`    |                                  | Returns the form owner of the internals of the target element. |
+| `isOpen`      | -             | public  | `boolean`                    |                                  | Whether the element is open.                                   |
+| `multiple`    | `multiple`    | public  | `boolean`                    | `false`                          | Whether the select allows for multiple selection.              |
+| `name`        | `name`        | public  | `string`                     |                                  | Name of the form element. Will be read from name attribute.    |
+| `negative`    | `negative`    | public  | `boolean`                    | `false`                          | Negative coloring variant flag.                                |
+| `placeholder` | `placeholder` | public  | `string`                     | `''`                             | The placeholder used if no value has been selected.            |
+| `readonly`    | `readonly`    | public  | `boolean`                    | `false`                          | Whether the select is readonly.                                |
+| `required`    | `required`    | public  | `boolean`                    | `false`                          | Whether the component is required.                             |
+| `type`        | -             | public  | `string`                     | `'select-one / select-multiple'` | Form type of element.                                          |
+| `value`       | `value`       | public  | `string \| string[] \| null` | `null`                           | Value of the form element.                                     |
 
 ## Methods
 
@@ -141,15 +163,14 @@ Opened panel:
 
 ## Events
 
-| Name        | Type                | Description                                                                      | Inherited From          |
-| ----------- | ------------------- | -------------------------------------------------------------------------------- | ----------------------- |
-| `change`    | `CustomEvent<void>` | Notifies that the component's value has changed.                                 |                         |
-| `didChange` | `CustomEvent<void>` | Deprecated. used for React. Will probably be removed once React 19 is available. |                         |
-| `didClose`  | `CustomEvent<void>` | Emits whenever the `sbb-select` is closed.                                       | SbbOpenCloseBaseElement |
-| `didOpen`   | `CustomEvent<void>` | Emits whenever the `sbb-select` is opened.                                       | SbbOpenCloseBaseElement |
-| `input`     | `CustomEvent<void>` | Notifies that an option value has been selected.                                 |                         |
-| `willClose` | `CustomEvent<void>` | Emits whenever the `sbb-select` begins the closing transition. Can be canceled.  | SbbOpenCloseBaseElement |
-| `willOpen`  | `CustomEvent<void>` | Emits whenever the `sbb-select` starts the opening transition. Can be canceled.  | SbbOpenCloseBaseElement |
+| Name        | Type                | Description                                                                     | Inherited From          |
+| ----------- | ------------------- | ------------------------------------------------------------------------------- | ----------------------- |
+| `change`    | `CustomEvent<void>` | Notifies that the component's value has changed.                                |                         |
+| `didClose`  | `CustomEvent<void>` | Emits whenever the `sbb-select` is closed.                                      | SbbOpenCloseBaseElement |
+| `didOpen`   | `CustomEvent<void>` | Emits whenever the `sbb-select` is opened.                                      | SbbOpenCloseBaseElement |
+| `input`     | `CustomEvent<void>` | Notifies that an option value has been selected.                                |                         |
+| `willClose` | `CustomEvent<void>` | Emits whenever the `sbb-select` begins the closing transition. Can be canceled. | SbbOpenCloseBaseElement |
+| `willOpen`  | `CustomEvent<void>` | Emits whenever the `sbb-select` starts the opening transition. Can be canceled. | SbbOpenCloseBaseElement |
 
 ## CSS Properties
 

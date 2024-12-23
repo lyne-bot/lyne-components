@@ -6,29 +6,32 @@ import type { UnsafeHTMLDirective } from 'lit/directives/unsafe-html.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { until } from 'lit/directives/until.js';
 
-import { hostAttributes } from '../core/decorators.js';
+import { forceType, hostAttributes } from '../core/decorators.js';
 
 import { getSvgContent } from './icon-request.js';
 import style from './icon.scss?lit&inline';
+
+const defaultNamespace = 'default';
 
 /**
  * @cssprop [--sbb-icon-svg-width=auto] - Can be used to set a custom width.
  * @cssprop [--sbb-icon-svg-height=auto] - Can be used to set a custom height.
  */
+export
 @hostAttributes({
-  'data-namespace': SbbIconBase._defaultNamespace,
+  'data-namespace': defaultNamespace,
   'data-empty': '',
 })
-export abstract class SbbIconBase extends LitElement {
+abstract class SbbIconBase extends LitElement {
   public static override styles: CSSResultGroup = style;
-  private static readonly _defaultNamespace = 'default';
 
-  @state() private _svgNamespace = SbbIconBase._defaultNamespace;
+  @state() private accessor _svgNamespace = defaultNamespace;
 
   /**
    * The icon svg content rendered on the page: <svg>...</svg>.
    */
-  @state() private _svgIcon?: Promise<DirectiveResult<typeof UnsafeHTMLDirective>>;
+  @state() private accessor _svgIcon: Promise<DirectiveResult<typeof UnsafeHTMLDirective>> | null =
+    null;
 
   /**
    * When set to `true`, SVG content that is HTTP fetched will not be checked
@@ -36,7 +39,9 @@ export abstract class SbbIconBase extends LitElement {
    * that start with `on`, such as `onclick`.
    * @default false
    */
-  @property({ attribute: 'no-sanitize', type: Boolean }) public noSanitize = false;
+  @forceType()
+  @property({ attribute: 'no-sanitize', type: Boolean })
+  public accessor noSanitize: boolean = false;
 
   protected async loadSvgIcon(iconName: string): Promise<void> {
     if (!iconName) {
@@ -68,7 +73,7 @@ export abstract class SbbIconBase extends LitElement {
     switch (parts.length) {
       case 1:
         // Use default namespace if empty.
-        return [SbbIconBase._defaultNamespace, parts[0]];
+        return [defaultNamespace, parts[0]];
       case 2:
         return parts as [string, string];
       default:

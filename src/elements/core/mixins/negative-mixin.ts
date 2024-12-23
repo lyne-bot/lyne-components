@@ -1,10 +1,12 @@
 import type { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
+import { forceType } from '../decorators.js';
+
 import type { AbstractConstructor } from './constructor.js';
 
 export declare class SbbNegativeMixinType {
-  public negative: boolean;
+  public accessor negative: boolean;
 }
 
 /**
@@ -16,7 +18,9 @@ export const SbbNegativeMixin = <T extends AbstractConstructor<LitElement>>(
 ): AbstractConstructor<SbbNegativeMixinType> & T => {
   abstract class SbbNegativeElement extends superClass implements SbbNegativeMixinType {
     /** Negative coloring variant flag. */
-    @property({ reflect: true, type: Boolean }) public negative: boolean = false;
+    @forceType()
+    @property({ reflect: true, type: Boolean })
+    public accessor negative: boolean = false;
   }
 
   return SbbNegativeElement as AbstractConstructor<SbbNegativeMixinType> & T;

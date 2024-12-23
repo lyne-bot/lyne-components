@@ -2,32 +2,33 @@ import { type CSSResultGroup, html, isServer, LitElement, type TemplateResult } 
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { SbbFocusVisibleWithinController } from '../../core/a11y.js';
-import { findReferencedElement } from '../../core/dom.js';
+import { forceType } from '../../core/decorators.js';
+import { findReferencedElement, isLean } from '../../core/dom.js';
 import { SbbHydrationMixin } from '../../core/mixins.js';
 
 import style from './header.scss?lit&inline';
-
-import '../../logo.js';
 
 const IS_MENU_OPENED_QUERY = "[aria-controls][aria-expanded='true']";
 
 /**
  * It displays a header section for the page.
  *
- * @slot - Use the unnamed slot to add actions or content to the header.
- * @slot logo - Slot used to render the logo on the right side (sbb-logo as default).
+ * @slot - Use the unnamed slot to add actions, content and logo to the header.
  * @cssprop [--sbb-header-z-index=10] - Can be used to modify the z-index of the header.
  * @cssprop [--sbb-header-height=zero-small:var(--sbb-spacing-fixed-14x);medium-ultra:var(--sbb-spacing-fixed-24x)] - Can be used to modify height of the header.
  */
+export
 @customElement('sbb-header')
-export class SbbHeaderElement extends SbbHydrationMixin(LitElement) {
+class SbbHeaderElement extends SbbHydrationMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /**
    * Whether to allow the header content to stretch to full width.
    * By default, the content has the appropriate page size.
    */
-  @property({ reflect: true, type: Boolean }) public expanded = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor expanded: boolean = false;
 
   /** The element's id or the element on which the scroll listener is attached. */
   @property({ attribute: 'scroll-origin' })
@@ -42,13 +43,17 @@ export class SbbHeaderElement extends SbbHydrationMixin(LitElement) {
   private _scrollOrigin: string | HTMLElement | Document = !isServer ? document : null!;
 
   /** Whether the header should hide and show on scroll. */
-  @property({ attribute: 'hide-on-scroll', reflect: true, type: Boolean }) public hideOnScroll =
-    false;
+  @forceType()
+  @property({ attribute: 'hide-on-scroll', reflect: true, type: Boolean })
+  public accessor hideOnScroll: boolean = false;
 
-  /** Size of the header. */
-  @property({ reflect: true }) public size: 'm' | 's' = 'm';
+  /**
+   * Size of the header, either m or s.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: 'm' | 's' = isLean() ? 's' : 'm';
 
-  @state() private _headerOnTop = true;
+  @state() private accessor _headerOnTop = true;
 
   private _scrollElement: HTMLElement | Document | null | undefined;
   private _scrollEventsController!: AbortController;
@@ -183,11 +188,6 @@ export class SbbHeaderElement extends SbbHydrationMixin(LitElement) {
       <header class="sbb-header">
         <div class="sbb-header__wrapper">
           <slot></slot>
-          <div class="sbb-header__logo">
-            <slot name="logo">
-              <sbb-logo protective-room="none"></sbb-logo>
-            </slot>
-          </div>
         </div>
       </header>
     `;

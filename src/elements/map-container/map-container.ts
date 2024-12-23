@@ -4,11 +4,13 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { SbbLanguageController } from '../core/controllers.js';
+import { forceType } from '../core/decorators.js';
+import { forwardEvent } from '../core/eventing.js';
 import { i18nMapContainerButtonLabel } from '../core/i18n.js';
 
 import style from './map-container.scss?lit&inline';
 
-import '../button/tertiary-button.js';
+import '../button/accent-button.js';
 
 /**
  * It can be used as a container for maps.
@@ -25,15 +27,17 @@ import '../button/tertiary-button.js';
  * this offset from the document's top. Only applied on mobile views.
  * Most commonly it can be set to `var(--sbb-header-height)`.
  */
+export
 @customElement('sbb-map-container')
-export class SbbMapContainerElement extends LitElement {
+class SbbMapContainerElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Flag to show/hide the scroll up button inside the sidebar on mobile. */
+  @forceType()
   @property({ attribute: 'hide-scroll-up-button', reflect: true, type: Boolean })
-  public hideScrollUpButton = false;
+  public accessor hideScrollUpButton: boolean = false;
 
-  @state() private _scrollUpButtonVisible = false;
+  @state() private accessor _scrollUpButtonVisible = false;
 
   private _language = new SbbLanguageController(this);
   private _observer = new IntersectionController(this, {
@@ -93,13 +97,13 @@ export class SbbMapContainerElement extends LitElement {
         <div class="sbb-map-container__map">
           <slot name="map"></slot>
         </div>
-        <div class="sbb-map-container__sidebar">
+        <div class="sbb-map-container__sidebar" @scroll=${(e: Event) => forwardEvent(e, document)}>
           <span id="intersector"></span>
 
           <slot></slot>
 
           ${!this.hideScrollUpButton
-            ? html`<sbb-tertiary-button
+            ? html`<sbb-accent-button
                 class="sbb-map-container__sidebar-button"
                 size="l"
                 icon-name="location-pin-map-small"
@@ -108,7 +112,7 @@ export class SbbMapContainerElement extends LitElement {
                 ?inert=${!this._scrollUpButtonVisible}
               >
                 ${i18nMapContainerButtonLabel[this._language.current]}
-              </sbb-tertiary-button>`
+              </sbb-accent-button>`
             : nothing}
         </div>
       </div>

@@ -9,7 +9,6 @@ snapshots["sbb-header-button renders DOM"] =
   expand-from="zero"
   icon-name="pie-small"
   name="test"
-  role="button"
   tabindex="0"
   type="reset"
   value="value"

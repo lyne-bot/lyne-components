@@ -36,21 +36,26 @@ export abstract class SbbOpenCloseBaseElement extends LitElement {
   protected willOpen: EventEmitter = new EventEmitter(
     this,
     SbbOpenCloseBaseElement.events.willOpen,
+    { cancelable: true },
   );
 
   /** Emits whenever the component is opened. */
-  protected didOpen: EventEmitter = new EventEmitter(this, SbbOpenCloseBaseElement.events.didOpen);
+  protected didOpen: EventEmitter = new EventEmitter(this, SbbOpenCloseBaseElement.events.didOpen, {
+    cancelable: true,
+  });
 
   /** Emits whenever the component begins the closing transition. */
   protected willClose: EventEmitter = new EventEmitter(
     this,
     SbbOpenCloseBaseElement.events.willClose,
+    { cancelable: true },
   );
 
   /** Emits whenever the component is closed. */
   protected didClose: EventEmitter = new EventEmitter(
     this,
     SbbOpenCloseBaseElement.events.didClose,
+    { cancelable: true },
   );
 
   /** Opens the component. */

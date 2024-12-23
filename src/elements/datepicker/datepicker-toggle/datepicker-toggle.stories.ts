@@ -47,7 +47,6 @@ const StandaloneTemplate = (args: Args, picker?: string): TemplateResult => html
   <sbb-datepicker-toggle
     ${sbbSpread(args)}
     date-picker=${picker || nothing}
-    data-testid="toggle"
   ></sbb-datepicker-toggle>
 `;
 

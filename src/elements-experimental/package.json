@@ -14,7 +14,8 @@
     "@sbb-esta/lyne-elements": "0.0.0-PLACEHOLDER"
   },
   "dependencies": {
-    "lit": "0.0.0-LIT"
+    "lit": "0.0.0-LIT",
+    "tslib": "0.0.0-TSLIB"
   },
   "publishConfig": {
     "access": "public"

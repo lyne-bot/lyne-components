@@ -30,17 +30,17 @@ accepting its associated properties (`href`, `target`, `rel` and `download`).
 
 ## Properties
 
-| Name                  | Attribute              | Privacy | Type                                    | Default | Description                                                                                                                      |
-| --------------------- | ---------------------- | ------- | --------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityLabel`  | `accessibility-label`  | public  | `string \| undefined`                   |         | This will be forwarded as aria-label to the inner anchor element.                                                                |
-| `amount`              | `amount`               | public  | `string \| undefined`                   |         | Value shown as badge at component end.                                                                                           |
-| `disabled`            | `disabled`             | public  | `boolean`                               | `false` | Whether the component is disabled.                                                                                               |
-| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                               | `false` | Whether disabled buttons should be interactive.                                                                                  |
-| `download`            | `download`             | public  | `boolean \| undefined`                  |         | Whether the browser will show the download dialog on click.                                                                      |
-| `href`                | `href`                 | public  | `string \| undefined`                   |         | The href value you want to link to.                                                                                              |
-| `iconName`            | `icon-name`            | public  | `string \| undefined`                   |         | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `rel`                 | `rel`                  | public  | `string \| undefined`                   |         | The relationship of the linked URL as space-separated link types.                                                                |
-| `target`              | `target`               | public  | `LinkTargetType \| string \| undefined` |         | Where to display the linked URL.                                                                                                 |
+| Name                  | Attribute              | Privacy | Type                       | Default | Description                                                                                                                      |
+| --------------------- | ---------------------- | ------- | -------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `accessibilityLabel`  | `accessibility-label`  | public  | `string`                   | `''`    | This will be forwarded as aria-label to the inner anchor element.                                                                |
+| `amount`              | `amount`               | public  | `string`                   | `''`    | Value shown as badge at component end.                                                                                           |
+| `disabled`            | `disabled`             | public  | `boolean`                  | `false` | Whether the component is disabled.                                                                                               |
+| `disabledInteractive` | `disabled-interactive` | public  | `boolean`                  | `false` | Whether the button should be aria-disabled but stay interactive.                                                                 |
+| `download`            | `download`             | public  | `boolean`                  | `false` | Whether the browser will show the download dialog on click.                                                                      |
+| `href`                | `href`                 | public  | `string`                   | `''`    | The href value you want to link to.                                                                                              |
+| `iconName`            | `icon-name`            | public  | `string`                   | `''`    | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `rel`                 | `rel`                  | public  | `string`                   | `''`    | The relationship of the linked URL as space-separated link types.                                                                |
+| `target`              | `target`               | public  | `LinkTargetType \| string` | `''`    | Where to display the linked URL.                                                                                                 |
 
 ## CSS Properties
 

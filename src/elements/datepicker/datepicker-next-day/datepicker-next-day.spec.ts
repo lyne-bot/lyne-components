@@ -2,7 +2,7 @@ import { assert, expect } from '@open-wc/testing';
 import { html } from 'lit/static-html.js';
 
 import { fixture } from '../../core/testing/private.js';
-import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
+import { EventSpy, waitForLitRender } from '../../core/testing.js';
 import type { SbbFormFieldElement } from '../../form-field.js';
 import type { SbbDatepickerElement } from '../datepicker.js';
 
@@ -44,7 +44,7 @@ describe(`sbb-datepicker-next-day`, () => {
 
       await element.click();
 
-      await waitForCondition(() => changeSpy.events.length >= 1);
+      await changeSpy.calledOnce();
 
       expect(changeSpy.count).to.be.equal(1);
       expect(blurSpy.count).to.be.equal(1);
@@ -136,7 +136,7 @@ describe(`sbb-datepicker-next-day`, () => {
       const changeSpy = new EventSpy('change', input);
       const blurSpy = new EventSpy('blur', input);
       element.click();
-      await waitForCondition(() => changeSpy.events.length === 1);
+      await changeSpy.calledOnce();
       expect(changeSpy.count).to.be.equal(1);
       expect(blurSpy.count).to.be.equal(1);
       expect(input.value).to.be.equal('Su, 22.01.2023');

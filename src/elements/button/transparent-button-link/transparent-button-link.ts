@@ -15,8 +15,9 @@ import {
  * @slot - Use the unnamed slot to add content to the transparent-button-link.
  * @slot icon - Slot used to display the icon, if one is set
  */
+export
 @customElement('sbb-transparent-button-link')
-export class SbbTransparentButtonLinkElement extends SbbButtonCommonElementMixin(
+class SbbTransparentButtonLinkElement extends SbbButtonCommonElementMixin(
   SbbDisabledInteractiveMixin(SbbDisabledMixin(SbbLinkBaseElement)),
 ) {
   public static override styles: CSSResultGroup = [buttonCommonStyle, buttonTransparentStyle];

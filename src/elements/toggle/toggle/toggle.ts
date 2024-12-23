@@ -10,8 +10,8 @@ import {
 import { customElement, property } from 'lit/decorators.js';
 
 import { getNextElementIndex, interactivityChecker, isArrowKeyPressed } from '../../core/a11y.js';
-import { SbbConnectedAbortController } from '../../core/controllers.js';
-import { hostAttributes } from '../../core/decorators.js';
+import { forceType, handleDistinctChange, hostAttributes } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import { EventEmitter } from '../../core/eventing.js';
 import type { SbbToggleOptionElement } from '../toggle-option.js';
 
@@ -21,39 +21,38 @@ import style from './toggle.scss?lit&inline';
  * It can be used as a container for two `sbb-toggle-option`, acting as a toggle button.
  *
  * @slot - Use the unnamed slot to add `<sbb-toggle-option>` elements to the toggle.
- * @event {CustomEvent<void>} didChange - Deprecated. used for React. Will probably be removed once React 19 is available.
  * @event {CustomEvent<void>} change - Emits whenever the toggle value changes.
  */
+export
 @customElement('sbb-toggle')
 @hostAttributes({
   role: 'radiogroup',
 })
-export class SbbToggleElement extends LitElement {
+class SbbToggleElement extends LitElement {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
-    didChange: 'didChange',
     change: 'change',
   } as const;
 
   /** Whether the toggle is disabled. */
+  @forceType()
+  @handleDistinctChange((e) => e._updateDisabled())
   @property({ reflect: true, type: Boolean })
-  public set disabled(value: boolean) {
-    this._disabled = value;
-    this._updateDisabled();
-  }
-  public get disabled(): boolean {
-    return this._disabled;
-  }
-  private _disabled: boolean = false;
+  public accessor disabled: boolean = false;
 
   /**
    * If true, set the width of the component fixed; if false,
    * the width is dynamic based on the label of the sbb-toggle-option.
    */
-  @property({ reflect: true, type: Boolean }) public even: boolean = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor even: boolean = false;
 
-  /** Size variant, either m or s. */
-  @property({ reflect: true }) public size?: 's' | 'm' = 'm';
+  /**
+   * Size variant, either m or s.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: 's' | 'm' = isLean() ? 's' : 'm';
 
   /**
    * The value of the toggle. It needs to be mutable since it is updated whenever
@@ -86,22 +85,17 @@ export class SbbToggleElement extends LitElement {
     callback: () => this.updatePillPosition(true),
   });
 
-  /**
-   * @deprecated only used for React. Will probably be removed once React 19 is available.
-   * Emits whenever the toggle value changes.
-   */
-  private _didChange: EventEmitter = new EventEmitter(this, SbbToggleElement.events.didChange, {
-    bubbles: true,
-    composed: true,
-  });
-
   /** Emits whenever the toggle value changes. */
   private _change: EventEmitter = new EventEmitter(this, SbbToggleElement.events.change, {
     bubbles: true,
     composed: true,
   });
 
-  private _abort = new SbbConnectedAbortController(this);
+  public constructor() {
+    super();
+    this.addEventListener?.('input', () => this._handleInput(), { passive: true });
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
+  }
 
   /** @internal */
   public updatePillPosition(resizing: boolean): void {
@@ -135,9 +129,6 @@ export class SbbToggleElement extends LitElement {
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('input', () => this._handleInput(), { signal, passive: true });
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
     this.options.forEach((option) => this._toggleResizeObserver.observe(option));
     this._updateToggle();
   }
@@ -187,7 +178,6 @@ export class SbbToggleElement extends LitElement {
   private _handleInput(): void {
     this.updatePillPosition(false);
     this._change.emit();
-    this._didChange.emit();
   }
 
   private _handleKeyDown(evt: KeyboardEvent): void {

@@ -12,8 +12,9 @@ import { SbbMenuActionCommonElementMixin } from '../common.js';
  * @cssprop [--sbb-menu-action-outer-horizontal-padding=var(--sbb-spacing-fixed-3x)] - Can be used
  * to modify horizontal padding.
  */
+export
 @customElement('sbb-menu-button')
-export class SbbMenuButtonElement extends SbbDisabledTabIndexActionMixin(
+class SbbMenuButtonElement extends SbbDisabledTabIndexActionMixin(
   SbbMenuActionCommonElementMixin(SbbButtonBaseElement),
 ) {}
 

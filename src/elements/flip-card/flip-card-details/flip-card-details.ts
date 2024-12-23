@@ -13,11 +13,12 @@ import style from './flip-card-details.scss?lit&inline';
  *
  * @slot - Use the unnamed slot to provide any kind of content.
  */
+export
 @customElement('sbb-flip-card-details')
 @hostAttributes({
   slot: 'details',
 })
-export class SbbFlipCardDetailsElement extends LitElement {
+class SbbFlipCardDetailsElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   public constructor() {

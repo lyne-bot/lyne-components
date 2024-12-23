@@ -11,7 +11,7 @@
   --sbb-overlay-inset: 0 auto auto 0;
   --sbb-overlay-padding-block: calc(var(--sbb-spacing-fixed-14x) + var(--sbb-spacing-responsive-l));
   --sbb-overlay-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-6x)
   );
   --sbb-overlay-animation-easing: ease;

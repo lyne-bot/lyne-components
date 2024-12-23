@@ -39,6 +39,12 @@ const value: InputType = {
   },
 };
 
+const name: InputType = {
+  control: {
+    type: 'text',
+  },
+};
+
 const required: InputType = {
   control: {
     type: 'boolean',
@@ -86,6 +92,7 @@ const ariaLabel: InputType = {
 
 const defaultArgTypes: ArgTypes = {
   value,
+  name,
   required,
   disabled,
   'allow-empty-selection': allowEmptySelection,
@@ -97,6 +104,7 @@ const defaultArgTypes: ArgTypes = {
 
 const defaultArgs: Args = {
   value: 'Value two',
+  name: undefined,
   required: false,
   disabled: false,
   'allow-empty-selection': false,

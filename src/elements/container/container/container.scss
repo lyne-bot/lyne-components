@@ -4,6 +4,8 @@
 @include sbb.box-sizing;
 
 :host {
+  --sbb-container-background-border-radius: 0;
+
   display: block;
 }
 
@@ -26,6 +28,12 @@
 
 :host([data-slot-names~='image'][background-expanded]) {
   position: relative;
+}
+
+:host(:not([expanded], [background-expanded])) {
+  @include sbb.mq($from: ultra) {
+    --sbb-container-background-border-radius: var(--sbb-border-radius-4x);
+  }
 }
 
 .sbb-container {
@@ -62,22 +70,8 @@
 }
 
 ::slotted([slot='image']) {
-  --sbb-image-border-radius: 0;
-
   position: absolute;
   inset: 0;
-
-  :host(:not([expanded], [background-expanded])) & {
-    @include sbb.mq($from: ultra) {
-      --sbb-image-border-radius: var(--sbb-border-radius-4x);
-
-      border-radius: var(--sbb-border-radius-4x);
-    }
-  }
-}
-
-::slotted(img[slot='image']) {
-  object-fit: cover;
   height: 100%;
   width: 100%;
 }

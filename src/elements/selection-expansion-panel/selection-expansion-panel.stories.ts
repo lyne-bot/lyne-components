@@ -8,10 +8,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 
 import { sbbSpread } from '../../storybook/helpers/spread.js';
 import type { SbbFormErrorElement } from '../form-error.js';
-import type {
-  SbbRadioButtonGroupElement,
-  SbbRadioButtonGroupEventDetail,
-} from '../radio-button.js';
+import type { SbbRadioButtonGroupElement } from '../radio-button.js';
 import { SbbSelectionExpansionPanelElement } from '../selection-expansion-panel.js';
 
 import '../card.js';
@@ -433,11 +430,12 @@ const WithRadiosErrorMessageTemplate = ({
       size=${size}
       allow-empty-selection
       id="sbb-radio-group"
-      @change=${(event: CustomEvent<SbbRadioButtonGroupEventDetail>) => {
-        if (event.detail.value) {
+      @change=${(event: Event) => {
+        const group = event.currentTarget as SbbRadioButtonGroupElement;
+        if (group.value) {
           sbbFormError.remove();
         } else {
-          (event.currentTarget as SbbRadioButtonGroupElement).append(sbbFormError);
+          group.append(sbbFormError);
         }
       }}
     >

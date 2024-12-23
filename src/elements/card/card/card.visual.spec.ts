@@ -19,7 +19,10 @@ describe(`sbb-card`, () => {
     badge: ['none', 'charcoal', 'white'],
   };
 
-  const sizeCases = ['xs', 's', 'm', 'l', 'xl', 'xxl', 'xxxl'];
+  const sizeCases = {
+    size: ['xs', 's', 'm', 'l', 'xl', 'xxl', 'xxxl'],
+    badge: ['none', 'charcoal'],
+  };
 
   describeViewports({ viewports: ['zero', 'medium'] }, () => {
     // Main test cases
@@ -49,7 +52,7 @@ describe(`sbb-card`, () => {
       });
 
       it(
-        visualDiffDefault.name,
+        '',
         visualDiffDefault.with((setup) => {
           setup.withSnapshotElement(root);
         }),
@@ -57,26 +60,50 @@ describe(`sbb-card`, () => {
     });
 
     // Size test cases
-    for (const size of sizeCases) {
-      it(
-        `size=${size}`,
-        visualDiffDefault.with(async (setup) => {
-          await setup.withFixture(
-            html`
-              <sbb-card size=${size}>
-                <span class="sbb-text-m">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. justo.
-                </span>
+    describeEach(sizeCases, ({ size, badge }) => {
+      beforeEach(async function () {
+        root = await visualRegressionFixture(
+          html`
+            <sbb-card size=${size}>
+              <span class="sbb-text-m">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. justo.
+              </span>
 
-                <sbb-card-badge>
-                  <span>% from CHF 19.99</span>
-                </sbb-card-badge>
-              </sbb-card>
-            `,
-            { backgroundColor: 'var(--sbb-color-milk)' },
-          );
+              ${badge !== 'none'
+                ? html`
+                    <sbb-card-badge color=${badge}>
+                      <span>% from CHF 19.99</span>
+                    </sbb-card-badge>
+                  `
+                : nothing}
+            </sbb-card>
+          `,
+          {
+            backgroundColor: 'var(--sbb-color-milk)',
+          },
+        );
+      });
+
+      it(
+        '',
+        visualDiffDefault.with((setup) => {
+          setup.withSnapshotElement(root);
         }),
       );
-    }
+    });
+
+    it(
+      'fixed height',
+      visualDiffDefault.with(async (setup) => {
+        await setup.withFixture(
+          html`
+            <sbb-card style="height: 250px;">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. justo.
+            </sbb-card>
+          `,
+          { backgroundColor: 'var(--sbb-color-milk)' },
+        );
+      }),
+    );
   });
 });

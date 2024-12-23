@@ -1,4 +1,4 @@
-import { assert, expect } from '@open-wc/testing';
+import { assert, aTimeout, expect } from '@open-wc/testing';
 import { sendKeys } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
@@ -40,7 +40,10 @@ describe(`sbb-datepicker-toggle`, () => {
       root.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;
     assert.instanceOf(element, SbbDatepickerToggleElement);
 
-    const didOpenEventSpy = new EventSpy(SbbPopoverElement.events.didOpen, element);
+    const didOpenEventSpy = new EventSpy(
+      SbbPopoverElement.events.didOpen,
+      element.shadowRoot!.querySelector('sbb-popover'),
+    );
     const popoverTrigger: SbbMiniButtonElement =
       element.shadowRoot!.querySelector<SbbMiniButtonElement>('sbb-mini-button')!;
     const popover: SbbPopoverElement =
@@ -50,7 +53,7 @@ describe(`sbb-datepicker-toggle`, () => {
     expect(popover).to.have.attribute('data-state', 'closed');
 
     popoverTrigger.click();
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
 
     expect(popover).to.have.attribute('data-state', 'opened');
   });
@@ -65,7 +68,10 @@ describe(`sbb-datepicker-toggle`, () => {
     `);
     const element: SbbDatepickerToggleElement =
       root.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;
-    const didOpenEventSpy = new EventSpy(SbbPopoverElement.events.didOpen, element);
+    const didOpenEventSpy = new EventSpy(
+      SbbPopoverElement.events.didOpen,
+      element.shadowRoot!.querySelector('sbb-popover'),
+    );
     const popoverTrigger: SbbMiniButtonElement =
       element.shadowRoot!.querySelector<SbbMiniButtonElement>('sbb-mini-button')!;
     const popover: SbbPopoverElement =
@@ -77,7 +83,7 @@ describe(`sbb-datepicker-toggle`, () => {
 
     element.open();
 
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
 
     expect(popover).to.have.attribute('data-state', 'opened');
   });
@@ -178,7 +184,10 @@ describe(`sbb-datepicker-toggle`, () => {
     const popover: SbbPopoverElement =
       element.shadowRoot!.querySelector<SbbPopoverElement>('sbb-popover')!;
     expect(popover).to.have.attribute('data-state', 'closed');
-    const didOpenEventSpy = new EventSpy(SbbPopoverElement.events.didOpen, element);
+    const didOpenEventSpy = new EventSpy(
+      SbbPopoverElement.events.didOpen,
+      element.shadowRoot!.querySelector('sbb-popover')!,
+    );
     const changeSpy = new EventSpy('change', input);
     const blurSpy = new EventSpy('blur', input);
     assert.instanceOf(element, SbbDatepickerToggleElement);
@@ -186,7 +195,7 @@ describe(`sbb-datepicker-toggle`, () => {
     const popoverTrigger: SbbMiniButtonElement =
       element.shadowRoot!.querySelector<SbbMiniButtonElement>('sbb-mini-button')!;
     popoverTrigger.click();
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
     expect(popover).to.have.attribute('data-state', 'opened');
 
     const calendar: SbbCalendarElement =
@@ -213,7 +222,7 @@ describe(`sbb-datepicker-toggle`, () => {
   });
 
   it('handles view property', async () => {
-    const element: SbbDatepickerToggleElement = await fixture(
+    const element: SbbFormFieldElement = await fixture(
       html`<sbb-form-field>
         <sbb-datepicker-toggle view="year"></sbb-datepicker-toggle>
         <sbb-datepicker now="2022-04-01"></sbb-datepicker>
@@ -221,14 +230,24 @@ describe(`sbb-datepicker-toggle`, () => {
       </sbb-form-field>`,
     );
 
-    const didOpenEventSpy = new EventSpy(SbbPopoverElement.events.didOpen, element);
-    const didCloseEventSpy = new EventSpy(SbbPopoverElement.events.didClose, element);
     const datepickerToggle =
       element.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;
 
+    const didOpenEventSpy = new EventSpy(
+      SbbPopoverElement.events.didOpen,
+      datepickerToggle.shadowRoot!.querySelector('sbb-popover'),
+    );
+    const didCloseEventSpy = new EventSpy(
+      SbbPopoverElement.events.didClose,
+      datepickerToggle.shadowRoot!.querySelector('sbb-popover'),
+    );
+
     // Open calendar
     datepickerToggle.open();
-    await waitForCondition(() => didOpenEventSpy.events.length === 1);
+    await didOpenEventSpy.calledOnce();
+
+    // We have to wait another tick
+    await aTimeout(0);
 
     // Year view should be active
     const calendar = datepickerToggle.shadowRoot!.querySelector('sbb-calendar')!;
@@ -251,11 +270,11 @@ describe(`sbb-datepicker-toggle`, () => {
 
     // Expect selected date and closed calendar
     expect(defaultDateAdapter.toIso8601(calendar.selected!)).to.be.equal('2020-05-05');
-    await waitForCondition(() => didCloseEventSpy.events.length === 1);
+    await didCloseEventSpy.calledOnce();
 
     // Open again
     datepickerToggle.open();
-    await waitForCondition(() => didOpenEventSpy.events.length === 2);
+    await didOpenEventSpy.calledTimes(2);
 
     // Should open with year view again
     expect(calendar.shadowRoot!.querySelector('.sbb-calendar__table-year-view')!).not.to.be.null;
@@ -265,7 +284,7 @@ describe(`sbb-datepicker-toggle`, () => {
 
     // Close again
     await sendKeys({ press: 'Escape' });
-    await waitForCondition(() => didCloseEventSpy.events.length === 2);
+    await didCloseEventSpy.calledTimes(2);
 
     // Changing to month view
     datepickerToggle.view = 'month';
@@ -273,7 +292,7 @@ describe(`sbb-datepicker-toggle`, () => {
 
     // Open again
     datepickerToggle.open();
-    await waitForCondition(() => didOpenEventSpy.events.length === 3);
+    await didOpenEventSpy.calledTimes(3);
 
     // Month view should be active and correct year preselected
     expect(calendar.shadowRoot!.querySelector('.sbb-calendar__table-month-view')!).not.to.be.null;

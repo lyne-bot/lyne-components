@@ -11,8 +11,9 @@ import { buttonCommonStyle, buttonPrimaryStyle, SbbButtonCommonElementMixin } fr
  * @slot - Use the unnamed slot to add content to the button-static.
  * @slot icon - Slot used to display the icon, if one is set
  */
+export
 @customElement('sbb-button-static')
-export class SbbButtonStaticElement extends SbbButtonCommonElementMixin(
+class SbbButtonStaticElement extends SbbButtonCommonElementMixin(
   SbbDisabledMixin(SbbActionBaseElement),
 ) {
   public static override styles: CSSResultGroup = [buttonCommonStyle, buttonPrimaryStyle];

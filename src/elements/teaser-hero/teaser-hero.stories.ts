@@ -9,7 +9,8 @@ import sampleImages from '../core/images.js';
 
 import readme from './readme.md?raw';
 import './teaser-hero.js';
-import '../chip.js';
+import '../chip-label.js';
+import '../image.js';
 
 const accessibilityLabel: InputType = {
   control: {
@@ -75,12 +76,6 @@ const imageSrc: InputType = {
   },
 };
 
-const imageAlt: InputType = {
-  control: {
-    type: 'text',
-  },
-};
-
 const chipLabel: InputType = {
   control: {
     type: 'text',
@@ -95,7 +90,6 @@ const defaultArgTypes: ArgTypes = {
   content,
   'link-content': linkContent,
   'image-src': imageSrc,
-  'image-alt': imageAlt,
   'chip-label': chipLabel,
 };
 
@@ -107,40 +101,35 @@ const defaultArgs: Args = {
   content: 'Break out and explore castles and palaces.',
   'link-content': 'Find out more',
   'image-src': sampleImages[1],
-  'image-alt': 'SBB CFF FFS Employee',
   'chip-label': undefined,
 };
 
-const chip = (content: string): TemplateResult => html`
-  <sbb-chip slot="chip">${content}</sbb-chip>
-`;
-
-const TemplateSbbTeaserHeroDefault = ({
+const Template = ({
   content,
   'chip-label': chipLabel,
-  ...args
-}: Args): TemplateResult => html`
-  <sbb-teaser-hero ${sbbSpread(args)}
-    >${content} ${chipLabel ? chip(chipLabel) : nothing}
-  </sbb-teaser-hero>
-`;
-
-const TemplateSbbTeaserWithSlots = ({
-  content,
   'link-content': linkContent,
   'image-src': imageSrc,
   'image-alt': imageAlt,
   ...args
 }: Args): TemplateResult => html`
   <sbb-teaser-hero ${sbbSpread(args)}>
-    ${content}
-    <span slot="link-content">${linkContent}</span>
-    <sbb-image slot="image" image-src=${imageSrc} alt=${imageAlt}></sbb-image>
+    ${content ?? nothing}
+    ${linkContent ? html`<span slot="link-content">${linkContent}</span>` : nothing}
+    ${!chipLabel
+      ? html`<sbb-image slot="image" image-src=${imageSrc} alt=${imageAlt}></sbb-image>`
+      : html`
+          <figure class="sbb-figure" slot="image">
+            <sbb-image image-src=${imageSrc} alt=${imageAlt}></sbb-image>
+            <sbb-chip-label class="sbb-figure-overlap-start-start" style="z-index: 1">
+              ${chipLabel}
+            </sbb-chip-label>
+          </figure>
+        `}
   </sbb-teaser-hero>
 `;
 
 export const defaultTeaser: StoryObj = {
-  render: TemplateSbbTeaserHeroDefault,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
@@ -148,7 +137,7 @@ export const defaultTeaser: StoryObj = {
 };
 
 export const openInNewWindow: StoryObj = {
-  render: TemplateSbbTeaserHeroDefault,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
@@ -157,7 +146,7 @@ export const openInNewWindow: StoryObj = {
 };
 
 export const withChip: StoryObj = {
-  render: TemplateSbbTeaserHeroDefault,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
@@ -166,7 +155,7 @@ export const withChip: StoryObj = {
 };
 
 export const chipOnly: StoryObj = {
-  render: TemplateSbbTeaserHeroDefault,
+  render: Template,
   argTypes: defaultArgTypes,
   args: {
     ...defaultArgs,
@@ -174,14 +163,6 @@ export const chipOnly: StoryObj = {
     'chip-label': 'Label',
     content: undefined,
     'link-content': undefined,
-  },
-};
-
-export const withSlots: StoryObj = {
-  render: TemplateSbbTeaserWithSlots,
-  argTypes: defaultArgTypes,
-  args: {
-    ...defaultArgs,
   },
 };
 

@@ -6,7 +6,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 
 import { getNextElementIndex, isArrowKeyPressed } from '../../core/a11y.js';
-import { SbbConnectedAbortController } from '../../core/controllers.js';
+import { forceType } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import { EventEmitter, throttle } from '../../core/eventing.js';
 import { SbbHydrationMixin } from '../../core/mixins.js';
 import type { SbbTabLabelElement } from '../tab-label.js';
@@ -32,7 +33,7 @@ export interface InterfaceSbbTabGroupActions {
 }
 
 export interface InterfaceSbbTabGroupTab extends SbbTabLabelElement {
-  active?: boolean;
+  active: boolean;
   disabled: boolean;
   tab?: SbbTabElement;
   index?: number;
@@ -53,8 +54,9 @@ let nextId = 0;
  * `sbb-tab-label` and `sbb-tab` instances.
  * @event {CustomEvent<SbbTabChangedEventDetails>} didChange - Emits an event on selected tab change.
  */
+export
 @customElement('sbb-tab-group')
-export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
+class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
   public static readonly events = {
     didChange: 'didChange',
@@ -64,7 +66,6 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
   private _selectedTab?: InterfaceSbbTabGroupTab;
   private _tabGroupElement!: HTMLElement;
   private _tabContentElement!: HTMLElement;
-  private _abort = new SbbConnectedAbortController(this);
   private _tabAttributeObserver = new MutationController(this, {
     target: null,
     config: tabObserverConfig,
@@ -81,7 +82,10 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
     callback: (entries) => this._onTabContentElementResize(entries),
   });
 
-  /** Size variant, either s, l or xl. */
+  /**
+   * Size variant, either s, l or xl.
+   * @default 'l' / 's' (lean)
+   */
   @property()
   public set size(value: InterfaceSbbTabGroupTab['size']) {
     this._size = value;
@@ -90,13 +94,15 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
   public get size(): InterfaceSbbTabGroupTab['size'] {
     return this._size;
   }
-  private _size: InterfaceSbbTabGroupTab['size'] = 'l';
+  private _size: InterfaceSbbTabGroupTab['size'] = isLean() ? 's' : 'l';
 
   /**
    * Sets the initial tab. If it matches a disabled tab or exceeds the length of
    * the tab group, the first enabled tab will be selected.
    */
-  @property({ attribute: 'initial-selected-index', type: Number }) public initialSelectedIndex = 0;
+  @forceType()
+  @property({ attribute: 'initial-selected-index', type: Number })
+  public accessor initialSelectedIndex: number = 0;
 
   /** Emits an event on selected tab change. */
   private _selectedTabChanged: EventEmitter<SbbTabChangedEventDetails> = new EventEmitter(
@@ -104,10 +110,9 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
     SbbTabGroupElement.events.didChange,
   );
 
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
+  public constructor() {
+    super();
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
   }
 
   protected override firstUpdated(changedProperties: PropertyValues<this>): void {
@@ -167,6 +172,9 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
     if (loadedTabs.length) {
       loadedTabs.forEach((tab) => this._configure(tab));
       this._tabs = this._tabs.concat(loadedTabs);
+
+      // If there is an active tab in the new batch, it becomes the new selected
+      loadedTabs.find((tab) => tab.active)?.tabGroupActions?.select();
     }
   };
 
@@ -242,10 +250,13 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
   }
 
   private _onTabContentElementResize(entries: ResizeObserverEntry[]): void {
+    if (!this._tabContentElement) {
+      return;
+    }
     for (const entry of entries) {
       const contentHeight = Math.floor(entry.contentRect.height);
 
-      (this._tabContentElement as HTMLElement).style.height = `${contentHeight}px`;
+      this._tabContentElement.style.height = `${contentHeight}px`;
     }
   }
 
@@ -315,6 +326,7 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
         }
       },
     };
+
     if (tabLabel.nextElementSibling?.localName === 'sbb-tab') {
       tabLabel.tab = tabLabel.nextElementSibling as SbbTabElement;
       tabLabel.tab.id = this._assignId();
@@ -333,7 +345,7 @@ export class SbbTabGroupElement extends SbbHydrationMixin(LitElement) {
     tabLabel.disabled = tabLabel.hasAttribute('disabled');
     tabLabel.active = tabLabel.hasAttribute('active') && !tabLabel.disabled;
     tabLabel.setAttribute('role', 'tab');
-    tabLabel.setAttribute('aria-selected', 'false');
+    tabLabel.setAttribute('aria-selected', String(tabLabel.active));
     tabLabel.addEventListener('click', () => {
       tabLabel.tabGroupActions?.select();
     });

@@ -14,7 +14,6 @@ snapshots["sbb-action-group renders renders DOM"] =
     data-button=""
     data-sbb-button=""
     data-slot-names="unnamed"
-    role="button"
     size="l"
     tabindex="0"
   >

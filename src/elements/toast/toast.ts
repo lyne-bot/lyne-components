@@ -4,9 +4,9 @@ import { customElement, property } from 'lit/decorators.js';
 
 import type { SbbTransparentButtonElement, SbbTransparentButtonLinkElement } from '../button.js';
 import { SbbOpenCloseBaseElement } from '../core/base-elements.js';
-import { SbbConnectedAbortController, SbbLanguageController } from '../core/controllers.js';
-import { slotState } from '../core/decorators.js';
-import { isFirefox } from '../core/dom.js';
+import { SbbLanguageController } from '../core/controllers.js';
+import { forceType, slotState } from '../core/decorators.js';
+import { isFirefox, isLean, isZeroAnimationDuration } from '../core/dom.js';
 import { composedPathHasAttribute } from '../core/eventing.js';
 import { i18nCloseAlert } from '../core/i18n.js';
 import { SbbHydrationMixin } from '../core/mixins.js';
@@ -38,31 +38,35 @@ const toastRefs = new Set<SbbToastElement>();
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
  */
+export
 @customElement('sbb-toast')
 @slotState()
-export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenCloseBaseElement)) {
+class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenCloseBaseElement)) {
   public static override styles: CSSResultGroup = style;
 
   /**
    * The length of time in milliseconds to wait before automatically dismissing the toast.
    * If 0, it stays open indefinitely.
    */
-  @property({ type: Number }) public timeout = 6000;
+  @forceType()
+  @property({ type: Number })
+  public accessor timeout: number = 6000;
 
   /** The position where to place the toast. */
-  @property({ reflect: true }) public position: SbbToastPosition = 'bottom-center';
+  @property({ reflect: true }) public accessor position: SbbToastPosition = 'bottom-center';
 
   /** Whether the toast has a close button. */
-  @property({ type: Boolean, reflect: true }) public dismissible = false;
+  @forceType()
+  @property({ type: Boolean, reflect: true })
+  public accessor dismissible: boolean = false;
 
   /**
    * The ARIA politeness level.
    * Check https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#live_regions for further info
    */
-  @property() public politeness: 'polite' | 'assertive' | 'off' = 'polite';
+  @property() public accessor politeness: 'polite' | 'assertive' | 'off' = 'polite';
 
   private _closeTimeout?: ReturnType<typeof setTimeout>;
-  private _abort = new SbbConnectedAbortController(this);
   private _language = new SbbLanguageController(this);
 
   /**
@@ -81,6 +85,11 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
     }
   }
 
+  public constructor() {
+    super();
+    this.addEventListener?.('click', (e) => this._onClick(e));
+  }
+
   /**
    * Open the toast.
    * If there are other opened toasts in the page, close them first.
@@ -95,6 +104,16 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
     }
     this.state = 'opening';
     this._closeOtherToasts();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-toast-animation-duration');
   }
 
   /**
@@ -110,6 +129,27 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
     }
     clearTimeout(this._closeTimeout);
     this.state = 'closing';
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _handleClosing(): void {
+    this.state = 'closed';
+    this.didClose.emit();
+  }
+
+  private _handleOpening(): void {
+    this.state = 'opened';
+    this.didOpen.emit();
+
+    // Start the countdown to close it
+    if (this.timeout) {
+      this._closeTimeout = setTimeout(() => this.close(), this.timeout);
+    }
   }
 
   // Close the toast on click of any element that has the 'sbb-toast-close' attribute.
@@ -123,9 +163,6 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
 
   public override connectedCallback(): void {
     super.connectedCallback();
-
-    const signal = this._abort.signal;
-    this.addEventListener('click', (e) => this._onClick(e), { signal });
 
     // Add this toast to the global collection
     toastRefs.add(this);
@@ -165,7 +202,7 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
       ) as (SbbTransparentButtonElement | SbbTransparentButtonLinkElement)[];
     buttons.forEach((btn: SbbTransparentButtonElement | SbbTransparentButtonLinkElement) => {
       btn.negative = true;
-      btn.size = 'm';
+      btn.size = isLean() ? 's' : 'm';
     });
 
     // Force negative on inline slotted links
@@ -182,19 +219,9 @@ export class SbbToastElement extends SbbIconNameMixin(SbbHydrationMixin(SbbOpenC
   private _onToastAnimationEnd(event: AnimationEvent): void {
     // On toast opened
     if (event.animationName === 'open' && this.state === 'opening') {
-      this.state = 'opened';
-      this.didOpen.emit();
-
-      // Start the countdown to close it
-      if (this.timeout) {
-        this._closeTimeout = setTimeout(() => this.close(), this.timeout);
-      }
-    }
-
-    // On toast closed
-    if (event.animationName === 'close' && this.state === 'closing') {
-      this.state = 'closed';
-      this.didClose.emit();
+      this._handleOpening();
+    } else if (event.animationName === 'close' && this.state === 'closing') {
+      this._handleClosing();
     }
   }
 

@@ -11,7 +11,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { screenshots, type ScreenshotTestCase } from '../../screenshots.js';
 
 import '@sbb-esta/lyne-elements/button/secondary-button-link.js';
-import '@sbb-esta/lyne-elements/chip.js';
+import '@sbb-esta/lyne-elements/chip-label.js';
 import '@sbb-esta/lyne-elements/container.js';
 import '@sbb-esta/lyne-elements/header.js';
 import '@sbb-esta/lyne-elements/notification.js';
@@ -35,16 +35,20 @@ interface Filter {
  * Displays a test case with its images.
  * Provides filtering functions.
  */
+export
 @customElement('app-test-case')
-export class TestCase extends LitElement {
+class TestCase extends LitElement {
   public static override styles: CSSResultGroup = style;
 
-  @property() public params?: { componentName: string; testCaseName: string };
+  @property({ attribute: false }) public accessor params: {
+    componentName: string;
+    testCaseName: string;
+  } | null = null;
 
-  @state() private _testCase?: ScreenshotTestCase;
-  @state() private _testCaseIndex: number = -1;
-  @state() private _filter: Filter = {};
-  @state() private _showGlobalDiff = true;
+  @state() private accessor _testCase: ScreenshotTestCase | null = null;
+  @state() private accessor _testCaseIndex: number = -1;
+  @state() private accessor _filter: Filter = {};
+  @state() private accessor _showGlobalDiff = true;
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
@@ -60,7 +64,7 @@ export class TestCase extends LitElement {
         this.params!.testCaseName!,
       );
       if (this._testCaseIndex >= 0) {
-        this._testCase = screenshots.getByTestCaseIndex(this._testCaseIndex);
+        this._testCase = screenshots.getByTestCaseIndex(this._testCaseIndex)!;
       }
     }
   }
@@ -100,13 +104,13 @@ export class TestCase extends LitElement {
       <sbb-header expanded>
         <div class="app-progress" style="--app-progress: ${this._progressFraction()}"></div>
         <div class="app-file-name-box sbb-header-shrinkable">
-          <sbb-chip color="charcoal">${this.params?.componentName}</sbb-chip>
+          <sbb-chip-label color="charcoal">${this.params?.componentName}</sbb-chip-label>
           <sbb-title level="2" visual-level="6">
             <span class="app-file-name-ellipsis">${this.params?.testCaseName}</span>
           </sbb-title>
         </div>
         <div class="sbb-header-spacer"></div>
-        <div class="app-navigation-block" slot="logo">
+        <div class="sbb-header-logo app-navigation-block">
           <sbb-header-link href="/" icon-name="house-small">Overview</sbb-header-link>
           <sbb-secondary-button-link
             href="/compare/${this._previous()?.path}"
@@ -126,7 +130,7 @@ export class TestCase extends LitElement {
         ? html`<div class="app-testcase">
             <sbb-container expanded>
               <app-test-title-chip-list
-                .testCaseName=${this.params?.testCaseName}
+                .testCaseName=${this.params!.testCaseName}
               ></app-test-title-chip-list>
               <div class="app-filter-and-toggle">
                 <app-test-case-filter

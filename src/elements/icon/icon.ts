@@ -1,13 +1,16 @@
 import { html, type PropertyValues, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
+import { forceType, omitEmptyConverter } from '../core/decorators.js';
+
 import { SbbIconBase } from './icon-base.js';
 
 /**
- * It displays an icon loaded from a registered namespace.
+ * Displays an icon loaded from a registered namespace.
  */
+export
 @customElement('sbb-icon')
-export class SbbIconElement extends SbbIconBase {
+class SbbIconElement extends SbbIconBase {
   /**
    * We need to additionally observe the svgicon attribute
    * for sbb-angular compatibility.
@@ -22,7 +25,9 @@ export class SbbIconElement extends SbbIconBase {
    * If the namespace is missing, the default namespace "sbb" will be used.
    * E.g. `name` (will use "sbb" as namespace) or `namespace:name`.
    */
-  @property({ reflect: true }) public name!: string;
+  @forceType()
+  @property({ reflect: true, converter: omitEmptyConverter })
+  public accessor name: string = '';
 
   private _defaultAriaLabel = '';
 
@@ -31,7 +36,7 @@ export class SbbIconElement extends SbbIconBase {
    * compatibility with it (as some icons are used internally inside the other sbb-angular
    * components) we need to check whether the attribute svgicon is used.
    */
-  @state() private _sbbAngularCompatibility = false;
+  @state() private accessor _sbbAngularCompatibility = false;
 
   protected override async fetchSvgIcon(namespace: string, name: string): Promise<string> {
     // If the icon is changing, and we were using the defaultAriaLabel, reset it
@@ -53,7 +58,7 @@ export class SbbIconElement extends SbbIconBase {
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
     super.willUpdate(changedProperties);
 
-    if (changedProperties.has('name')) {
+    if (changedProperties.has('name') && this.name) {
       this.loadSvgIcon(this.name);
     }
   }

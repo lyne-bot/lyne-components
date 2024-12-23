@@ -12,16 +12,17 @@ import style from './card-badge.scss?lit&inline';
  * @slot - Use the unnamed slot to add content to the badge.
  *   Content parts should be wrapped in `<span>` tags to achieve correct spacings.
  */
+export
 @customElement('sbb-card-badge')
 @hostAttributes({
   slot: 'badge',
   role: 'text',
 })
-export class SbbCardBadgeElement extends LitElement {
+class SbbCardBadgeElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Color of the card badge. */
-  @property({ reflect: true }) public color: 'charcoal' | 'white' = 'charcoal';
+  @property({ reflect: true }) public accessor color: 'charcoal' | 'white' = 'charcoal';
 
   private _parentElement?: HTMLElement | null;
 

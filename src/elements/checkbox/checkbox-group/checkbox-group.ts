@@ -3,8 +3,8 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { getNextElementIndex, interactivityChecker, isArrowKeyPressed } from '../../core/a11y.js';
-import { SbbConnectedAbortController } from '../../core/controllers.js';
-import { slotState } from '../../core/decorators.js';
+import { forceType, slotState } from '../../core/decorators.js';
+import { isLean } from '../../core/dom.js';
 import type { SbbHorizontalFrom, SbbOrientation } from '../../core/interfaces.js';
 import { SbbDisabledMixin } from '../../core/mixins.js';
 import type { SbbCheckboxPanelElement } from '../checkbox-panel.js';
@@ -19,24 +19,30 @@ import style from './checkbox-group.scss?lit&inline';
  * @slot - Use the unnamed slot to add `sbb-checkbox` elements to the `sbb-checkbox-group`.
  * @slot error - Slot used to render a `sbb-form-error` inside the `sbb-checkbox-group`.
  */
+export
 @customElement('sbb-checkbox-group')
 @slotState()
-export class SbbCheckboxGroupElement extends SbbDisabledMixin(LitElement) {
+class SbbCheckboxGroupElement extends SbbDisabledMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** Whether the checkbox group is required. */
-  @property({ reflect: true, type: Boolean }) public required = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor required: boolean = false;
 
-  /** Size variant, either m or s. */
-  @property() public size: SbbCheckboxSize = 'm';
+  /**
+   * Size variant, either m, s or xs.
+   * @default 'm' / 'xs' (lean)
+   */
+  @property() public accessor size: SbbCheckboxSize = isLean() ? 'xs' : 'm';
 
   /** Overrides the behaviour of `orientation` property. */
   @property({ attribute: 'horizontal-from', reflect: true })
-  public horizontalFrom?: SbbHorizontalFrom;
+  public accessor horizontalFrom: SbbHorizontalFrom | null = null;
 
   /** Indicates the orientation of the checkboxes inside the `<sbb-checkbox-group>`. */
   @property({ reflect: true })
-  public orientation: SbbOrientation = 'horizontal';
+  public accessor orientation: SbbOrientation = 'horizontal';
 
   /** List of contained checkbox elements. */
   public get checkboxes(): (SbbCheckboxElement | SbbCheckboxPanelElement)[] {
@@ -47,12 +53,13 @@ export class SbbCheckboxGroupElement extends SbbDisabledMixin(LitElement) {
     );
   }
 
-  private _abort: SbbConnectedAbortController = new SbbConnectedAbortController(this);
+  public constructor() {
+    super();
+    this.addEventListener?.('keydown', (e) => this._handleKeyDown(e));
+  }
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('keydown', (e) => this._handleKeyDown(e), { signal });
     this.toggleAttribute(
       'data-has-panel',
       !!this.querySelector?.('sbb-selection-expansion-panel, sbb-checkbox-panel'),

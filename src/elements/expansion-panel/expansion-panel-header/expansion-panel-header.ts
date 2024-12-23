@@ -2,7 +2,11 @@ import { type CSSResultGroup, html, nothing, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import { SbbButtonBaseElement } from '../../core/base-elements.js';
-import { SbbConnectedAbortController, SbbSlotStateController } from '../../core/controllers.js';
+import {
+  SbbMediaQueryHover,
+  SbbMediaMatcherController,
+  SbbSlotStateController,
+} from '../../core/controllers.js';
 import { hostAttributes } from '../../core/decorators.js';
 import { EventEmitter } from '../../core/eventing.js';
 import { SbbDisabledTabIndexActionMixin } from '../../core/mixins.js';
@@ -18,11 +22,12 @@ import style from './expansion-panel-header.scss?lit&inline';
  * @slot icon - Slot used to render the `sbb-expansion-panel-header` icon.
  * @event {CustomEvent<void>} toggleExpanded - Notifies that the `sbb-expansion-panel` has to expand.
  */
+export
 @customElement('sbb-expansion-panel-header')
 @hostAttributes({
   slot: 'header',
 })
-export class SbbExpansionPanelHeaderElement extends SbbDisabledTabIndexActionMixin(
+class SbbExpansionPanelHeaderElement extends SbbDisabledTabIndexActionMixin(
   SbbIconNameMixin(SbbButtonBaseElement),
 ) {
   public static override styles: CSSResultGroup = style;
@@ -38,15 +43,18 @@ export class SbbExpansionPanelHeaderElement extends SbbDisabledTabIndexActionMix
       bubbles: true,
     },
   );
-  private _abort = new SbbConnectedAbortController(this);
   private _namedSlots = new SbbSlotStateController(this, () => this._setDataIconAttribute());
+  private _mediaMatcher = new SbbMediaMatcherController(this, {
+    [SbbMediaQueryHover]: (m) => (this._isHover = m),
+  });
 
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    const signal = this._abort.signal;
-    this.addEventListener('click', () => this._emitExpandedEvent(), { signal });
-    this.addEventListener('mouseenter', () => this._onMouseMovement(true), { signal });
-    this.addEventListener('mouseleave', () => this._onMouseMovement(false), { signal });
+  private _isHover: boolean = this._mediaMatcher.matches(SbbMediaQueryHover) ?? false;
+
+  public constructor() {
+    super();
+    this.addEventListener?.('click', () => this._emitExpandedEvent());
+    this.addEventListener?.('mouseenter', () => this._onMouseMovement(true));
+    this.addEventListener?.('mouseleave', () => this._onMouseMovement(false));
   }
 
   private _emitExpandedEvent(): void {
@@ -58,7 +66,7 @@ export class SbbExpansionPanelHeaderElement extends SbbDisabledTabIndexActionMix
   private _onMouseMovement(toggleDataAttribute: boolean): void {
     const parent: SbbExpansionPanelElement = this.closest('sbb-expansion-panel')!;
     // The `sbb.hover-mq` logic has been removed from scss, but it must be replicated to have the correct behavior on mobile.
-    if (!toggleDataAttribute || (parent && window.matchMedia('(any-hover: hover)').matches)) {
+    if (!toggleDataAttribute || (parent && this._isHover)) {
       parent.toggleAttribute('data-toggle-hover', toggleDataAttribute);
     }
   }
@@ -66,7 +74,7 @@ export class SbbExpansionPanelHeaderElement extends SbbDisabledTabIndexActionMix
   /**
    * The 'data-icon' is used by the 'sbb-expansion-panel'.
    * It needs to be set before the @slotchange event bubbles to the 'expansion-panel'
-   * but after the 'NamedSlotStateController' has run.
+   * but after the 'SbbSlotStateController' has run.
    */
   private _setDataIconAttribute(): void {
     this.toggleAttribute('data-icon', !!(this.iconName || this._namedSlots.slots.has('icon')));

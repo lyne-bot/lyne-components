@@ -51,17 +51,17 @@ The component has three sizes (`xs`, `s`, which is the default, and `m`).
 
 ## Properties
 
-| Name                 | Attribute             | Privacy | Type                                    | Default   | Description                                                                                                                      |
-| -------------------- | --------------------- | ------- | --------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityLabel` | `accessibility-label` | public  | `string \| undefined`                   |           | This will be forwarded as aria-label to the inner anchor element.                                                                |
-| `disabled`           | `disabled`            | public  | `boolean`                               | `false`   | Whether the component is disabled.                                                                                               |
-| `download`           | `download`            | public  | `boolean \| undefined`                  |           | Whether the browser will show the download dialog on click.                                                                      |
-| `href`               | `href`                | public  | `string \| undefined`                   |           | The href value you want to link to.                                                                                              |
-| `iconName`           | `icon-name`           | public  | `string \| undefined`                   |           | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
-| `iconPlacement`      | `icon-placement`      | public  | `SbbIconPlacement \| undefined`         | `'start'` | Moves the icon to the end of the component if set to true.                                                                       |
-| `rel`                | `rel`                 | public  | `string \| undefined`                   |           | The relationship of the linked URL as space-separated link types.                                                                |
-| `size`               | `size`                | public  | `SbbLinkSize`                           | `'s'`     | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used.       |
-| `target`             | `target`              | public  | `LinkTargetType \| string \| undefined` |           | Where to display the linked URL.                                                                                                 |
+| Name                 | Attribute             | Privacy | Type                       | Default             | Description                                                                                                                      |
+| -------------------- | --------------------- | ------- | -------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `accessibilityLabel` | `accessibility-label` | public  | `string`                   | `''`                | This will be forwarded as aria-label to the inner anchor element.                                                                |
+| `disabled`           | `disabled`            | public  | `boolean`                  | `false`             | Whether the component is disabled.                                                                                               |
+| `download`           | `download`            | public  | `boolean`                  | `false`             | Whether the browser will show the download dialog on click.                                                                      |
+| `href`               | `href`                | public  | `string`                   | `''`                | The href value you want to link to.                                                                                              |
+| `iconName`           | `icon-name`           | public  | `string`                   | `''`                | The icon name we want to use, choose from the small icon variants from the ui-icons category from here https://icons.app.sbb.ch. |
+| `iconPlacement`      | `icon-placement`      | public  | `SbbIconPlacement`         | `'start'`           | Moves the icon to the end of the component if set to true.                                                                       |
+| `rel`                | `rel`                 | public  | `string`                   | `''`                | The relationship of the linked URL as space-separated link types.                                                                |
+| `size`               | `size`                | public  | `SbbLinkSize`              | `'s' / 'xs' (lean)` | Text size, the link should get in the non-button variation. With inline variant, the text size adapts to where it is used.       |
+| `target`             | `target`              | public  | `LinkTargetType \| string` | `''`                | Where to display the linked URL.                                                                                                 |
 
 ## Slots
 

@@ -14,7 +14,7 @@
 :host {
   --sbb-navigation-grid-column: 1 / 5;
   --sbb-navigation-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-3x)
   );
   --sbb-navigation-animation-easing: ease-in;
@@ -31,7 +31,7 @@
   --sbb-navigation-transform: translateX(-100%);
   --sbb-navigation-content-transform: translateX(0);
   --sbb-navigation-width: 100%;
-  --sbb-navigation-height: 100vh;
+  --sbb-navigation-height: 100dvh;
   --sbb-focus-outline-color: var(--sbb-focus-outline-color-dark);
 
   display: block;
@@ -40,12 +40,6 @@
   z-index: var(--sbb-navigation-z-index, var(--sbb-overlay-default-z-index));
   overflow: hidden;
 
-  // Needed for backwards compatibility
-  // TODO: Remove once not needed
-  @supports (height: 100dvh) {
-    --sbb-navigation-height: 100dvh;
-  }
-
   @include sbb.mq($from: medium) {
     --sbb-navigation-grid-column: 1 / 9;
   }
@@ -53,7 +47,7 @@
   @include sbb.mq($from: large) {
     --sbb-navigation-grid-column: 1 / 5;
     --sbb-navigation-animation-duration: var(
-      --sbb-disable-animation-zero-time,
+      --sbb-disable-animation-duration,
       var(--sbb-animation-duration-6x)
     );
     --sbb-navigation-padding-block-start: var(--sbb-spacing-responsive-xl);
@@ -88,14 +82,8 @@
   --sbb-navigation-content-transform: translateX(-100%);
 
   @include sbb.mq($from: 'large') {
-    --sbb-navigation-expanded-width: 100vw;
+    --sbb-navigation-expanded-width: 100dvw;
     --sbb-navigation-content-transform: translateX(0%);
-
-    // Needed for backwards compatibility
-    // TODO: Remove once not needed
-    @supports (height: 100dvw) {
-      --sbb-navigation-expanded-width: 100dvw;
-    }
   }
 }
 

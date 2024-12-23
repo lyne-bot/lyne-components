@@ -8,18 +8,55 @@
 
   --sbb-train-wagon-width: var(--sbb-train-formation-wagon-width);
   --sbb-train-wagon-height: var(--sbb-train-formation-wagon-height);
-  --sbb-train-wagon-inner-padding: var(--sbb-spacing-fixed-3x);
-  --sbb-train-wagon-shape-border-radius: var(--sbb-train-formation-wagon-border-radius);
   --sbb-train-wagon-shape-color: var(--sbb-color-charcoal);
-  --sbb-train-wagon-shape-color-closed: var(--sbb-color-metal);
-  --sbb-train-wagon-shape-width: var(--sbb-border-width-1x);
-  --sbb-train-wagon-gap: var(--sbb-spacing-fixed-2x);
-  --sbb-train-wagon-icons-gap: var(--sbb-spacing-fixed-1x);
-  --sbb-train-wagon-icons-height: #{sbb.px-to-rem-build(14)};
+  --sbb-train-wagon-main-icon-height: #{sbb.px-to-rem-build(20)};
+  --sbb-train-wagon-main-icon-margin-block-start: #{sbb.px-to-rem-build(10)};
+  --sbb-train-wagon-attribute-icon-gap: var(--sbb-spacing-fixed-1x);
+  --sbb-train-wagon-attribute-icon-height: #{sbb.px-to-rem-build(14)};
+  --sbb-train-wagon-attribute-icon-color: var(--sbb-color-granite);
+  --sbb-train-wagon-occupancy-height: #{sbb.px-to-rem-build(12)};
 
   @include sbb.if-forced-colors {
-    --sbb-train-wagon-shape-color-closed: CanvasText;
+    --sbb-train-wagon-shape-color: CanvasText;
   }
+}
+
+:host(:is([type='closed'], [type='locomotive'])) {
+  --sbb-train-wagon-shape-color: var(--sbb-color-metal);
+
+  @include sbb.if-forced-colors {
+    --sbb-train-wagon-shape-color: CanvasText;
+  }
+}
+
+:host([type='closed']) {
+  @include sbb.if-forced-colors {
+    --sbb-train-wagon-shape-color: GrayText;
+  }
+}
+
+:host(:is([type='sleeping'], [type='couchette'])) {
+  --sbb-train-wagon-main-icon-margin-block-start: #{sbb.px-to-rem-build(6.25)};
+}
+
+:host(:is([type='wagon'], [type='restaurant'], [type='sleeping'], [type='couchette'])) {
+  --sbb-train-wagon-shape: var(--sbb-train-wagon-wagon-shape);
+}
+
+:host([type='closed']) {
+  --sbb-train-wagon-shape: var(--sbb-train-wagon-wagon-closed-shape);
+}
+
+:host([type='locomotive']) {
+  --sbb-train-wagon-shape: var(--sbb-train-wagon-locomotive-shape);
+}
+
+:host([type='wagon-end-left']) {
+  --sbb-train-wagon-shape: var(--sbb-train-wagon-wagon-end-left-shape);
+}
+
+:host([type='wagon-end-right']) {
+  --sbb-train-wagon-shape: var(--sbb-train-wagon-wagon-end-right-shape);
 }
 
 .sbb-train-wagon {
@@ -27,7 +64,7 @@
   flex-direction: column;
   align-items: center;
   width: var(--sbb-train-wagon-width);
-  gap: var(--sbb-train-wagon-gap);
+  gap: var(--sbb-train-formation-vertical-gap);
 }
 
 .sbb-train-wagon__compartment {
@@ -37,48 +74,33 @@
   grid-template:
     'label label' auto
     'occupancy class' 1fr / 1fr 1fr;
-  position: relative;
-  width: 100%;
 
-  // Reserve space because there is no content in the closed wagon
+  // Type shape
   &::before {
-    :host([type='closed']) &,
-    :host(:not([data-has-visible-wagon-content])) & {
-      content: '';
-      grid-area: occupancy / span 2;
-      height: var(--sbb-train-wagon-height);
-    }
-  }
-
-  &::after {
     content: '';
-    display: block;
-    position: absolute;
-    inset-inline: 0;
-    inset-block: auto 0;
+    grid-column: occupancy / class;
+    grid-row: occupancy;
+    pointer-events: none;
     width: var(--sbb-train-wagon-width);
     height: var(--sbb-train-wagon-height);
-    border-radius: var(--sbb-train-wagon-shape-border-radius);
+    background-color: var(--sbb-train-wagon-shape-color);
 
-    :host([type='wagon']) & {
-      border: var(--sbb-train-wagon-shape-width) solid var(--sbb-train-wagon-shape-color);
-    }
-
-    :host([type='closed']) & {
-      border: var(--sbb-train-wagon-shape-width) solid var(--sbb-train-wagon-shape-color-closed);
-    }
+    // Using mask-image takes the background-color as stroke color
+    mask-image: var(--sbb-train-wagon-shape);
   }
 }
 
-.sbb-train-wagon__occupancy,
-.sbb-train-wagon__class {
-  height: var(--sbb-train-wagon-height);
-  display: flex;
-  align-items: center;
+.sbb-train-wagon__main-icon {
+  --sbb-icon-svg-height: var(--sbb-train-wagon-main-icon-height);
+
+  grid-column: occupancy / class;
+  grid-row: occupancy;
+  margin-block-start: var(--sbb-train-wagon-main-icon-margin-block-start);
+  justify-self: center;
 }
 
 .sbb-train-wagon__label {
-  @include sbb.text-s--regular;
+  @include sbb.text-xxs--regular;
 
   grid-area: label;
   text-align: center;
@@ -86,46 +108,41 @@
   min-height: calc(1em * var(--sbb-typo-line-height-body-text));
 }
 
+.sbb-train-wagon__occupancy,
+.sbb-train-wagon__class {
+  height: var(--sbb-train-wagon-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sbb-train-wagon__occupancy {
+  --sbb-icon-svg-height: var(--sbb-train-wagon-occupancy-height);
+
   grid-area: occupancy;
-  padding-inline-start: var(--sbb-train-wagon-inner-padding);
 }
 
 .sbb-train-wagon__class {
   @include sbb.title-6($exclude-spacing: true);
 
   grid-area: class;
-  padding-inline-end: var(--sbb-train-wagon-inner-padding);
-  margin-inline-start: auto;
 }
 
-.sbb-train-wagon__locomotive {
-  grid-area: occupancy / span 2;
-}
-
-.sbb-train-wagon__icons {
-  --sbb-icon-svg-height: var(--sbb-train-wagon-icons-height);
-
-  display: flex;
-
-  &[hidden] {
-    // Don't reserve any space in hidden case
-    position: absolute;
-  }
-}
-
-.sbb-train-wagon__icons-list {
+.sbb-train-wagon__attribute-icon-list {
   @include sbb.list-reset;
+
+  --sbb-icon-svg-height: var(--sbb-train-wagon-attribute-icon-height);
 
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sbb-train-wagon-icons-gap);
   justify-content: center;
+  gap: var(--sbb-train-wagon-attribute-icon-gap);
+  color: var(--sbb-train-wagon-attribute-icon-color);
 }
 
 // Using ... li selector, because the li generation
 // is handled in the component base class.
-.sbb-train-wagon__icons-list > :is(li, span) {
+.sbb-train-wagon__attribute-icon-list > :is(li, span) {
   display: inline-flex;
 }
 

@@ -4,7 +4,7 @@
    We recommend using `nvm` to manage your node versions.
 2. From the root of the project, run `yarn` to install the dependencies.
 
-There are currently some unknown problems with developing on Windows when working with SASS,
+There are currently some unknown problems with developing on Windows when working with Sass,
 so we recommend using WSL2 to develop on Windows machines.
 
 To bring up a local server, run `yarn start`. This will automatically watch for changes

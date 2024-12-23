@@ -7,4 +7,4 @@ here to show the various configuration options to component developers. !!
 
 | Name     | Attribute | Privacy | Type     | Default | Description                                                                                                                               |
 | -------- | --------- | ------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `config` | `config`  | public  | `string` |         | Stringified JSON which defines most of the content of the component. Please check the individual stories to get an idea of the structure. |
+| `config` | `config`  | public  | `string` | `''`    | Stringified JSON which defines most of the content of the component. Please check the individual stories to get an idea of the structure. |

@@ -9,6 +9,19 @@ It is displayed with sticky positioning at the bottom of the container that cont
 </sbb-container>
 ```
 
+## Animate from sticky to normal content flow and vice versa
+
+By default, the sticky bar is set to `position: sticky`. In certain cases, the consumer needs
+to control the sliding out (or sliding in) of the sticky bar.
+By calling the `stick()` or `unstick()` methods, the position property is toggled
+between `position: sticky` and `position: relative` by displaying a slide animation. When the sticky bar is `unstick`,
+the `sbb-sticky-bar` will behave like a normal container without any sticky behavior.
+Whenever the sticky bar is currently not sticky (e.g. scrolled down),
+calling `stick()` or `unstick()` won't have any visual effect.
+
+An example use case is to call `unstick()`, which visually slides out the sticky bar, and
+then the consumer can remove it from the DOM by listening to the `didUnstick` event.
+
 ## Slots
 
 The `sbb-sticky-bar` content is provided via an unnamed slot.
@@ -22,9 +35,25 @@ Optionally the user can set the `color` property on the `sbb-sticky-bar` in orde
 
 ## Properties
 
-| Name    | Attribute | Privacy | Type                             | Default | Description                                          |
-| ------- | --------- | ------- | -------------------------------- | ------- | ---------------------------------------------------- |
-| `color` | `color`   | public  | `'white' \| 'milk' \| undefined` |         | Color of the container, like transparent, white etc. |
+| Name    | Attribute | Privacy | Type                        | Default | Description                                          |
+| ------- | --------- | ------- | --------------------------- | ------- | ---------------------------------------------------- |
+| `color` | `color`   | public  | `'white' \| 'milk' \| null` | `null`  | Color of the container, like transparent, white etc. |
+
+## Methods
+
+| Name      | Privacy | Description                                                       | Parameters | Return | Inherited From |
+| --------- | ------- | ----------------------------------------------------------------- | ---------- | ------ | -------------- |
+| `stick`   | public  | Animates from normal content flow position to `position: sticky`. |            | `void` |                |
+| `unstick` | public  | Animates `position: sticky` to normal content flow position.      |            | `void` |                |
+
+## Events
+
+| Name          | Type                | Description                                                                                      | Inherited From |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------------ | -------------- |
+| `didStick`    | `CustomEvent<void>` | Emits when the animation from normal content flow to `position: sticky` ends.                    |                |
+| `didUnstick`  | `CustomEvent<void>` | Emits when the animation from `position: sticky` to normal content flow ends.                    |                |
+| `willStick`   | `CustomEvent<void>` | Emits when the animation from normal content flow to `position: sticky` starts. Can be canceled. |                |
+| `willUnstick` | `CustomEvent<void>` | Emits when the animation from `position: sticky` to normal content flow starts. Can be canceled. |                |
 
 ## CSS Properties
 

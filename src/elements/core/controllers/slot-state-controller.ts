@@ -40,7 +40,7 @@ export class SbbSlotStateController implements ReactiveController {
   }
 
   // We avoid using AbortController here, as it would mean creating
-  // a new instance for every NamedSlotStateController instance.
+  // a new instance for every SbbSlotStateController instance.
   private _slotchangeHandler = (event: Event): void => {
     this._syncSlots(event.target as HTMLSlotElement);
   };

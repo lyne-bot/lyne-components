@@ -3,6 +3,8 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { SbbLanguageController } from '../core/controllers.js';
+import { forceType } from '../core/decorators.js';
+import { isLean } from '../core/dom.js';
 import { i18nConnectionFrom, i18nConnectionRoundtrip, i18nConnectionTo } from '../core/i18n.js';
 import { SbbNegativeMixin } from '../core/mixins.js';
 import type { SbbTitleLevel } from '../title.js';
@@ -24,24 +26,34 @@ const sizeToLevel: Map<JourneyHeaderSize, string> = new Map<JourneyHeaderSize, s
 /**
  * Combined with the `sbb-journey-summary`, it displays the journey's detail.
  */
+export
 @customElement('sbb-journey-header')
-export class SbbJourneyHeaderElement extends SbbNegativeMixin(LitElement) {
+class SbbJourneyHeaderElement extends SbbNegativeMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
 
   /** Origin location for the journey header. */
-  @property() public origin!: string;
+  @forceType()
+  @property()
+  public accessor origin: string = '';
 
   /** Destination location for the journey header. */
-  @property() public destination!: string;
+  @forceType()
+  @property()
+  public accessor destination: string = '';
 
   /** Whether the journey is a round trip. If so, the icon changes to a round-trip one. */
-  @property({ attribute: 'round-trip', type: Boolean }) public roundTrip?: boolean;
+  @forceType()
+  @property({ attribute: 'round-trip', type: Boolean })
+  public accessor roundTrip: boolean = false;
 
   /** Heading level of the journey header element (e.g. h1-h6). */
-  @property() public level: SbbTitleLevel = '3';
+  @property() public accessor level: SbbTitleLevel = '3';
 
-  /** Journey header size. */
-  @property({ reflect: true }) public size: JourneyHeaderSize = 'm';
+  /**
+   * Journey header size, either s, m or l.
+   * @default 'm' / 's' (lean)
+   */
+  @property({ reflect: true }) public accessor size: JourneyHeaderSize = isLean() ? 's' : 'm';
 
   private _language = new SbbLanguageController(this);
 

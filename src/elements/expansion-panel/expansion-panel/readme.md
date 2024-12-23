@@ -86,14 +86,14 @@ This can be achieved by adding an `aria-label`, `aria-labelledby` or `aria-descr
 
 ## Properties
 
-| Name         | Attribute     | Privacy | Type                                 | Default   | Description                                                            |
-| ------------ | ------------- | ------- | ------------------------------------ | --------- | ---------------------------------------------------------------------- |
-| `borderless` | `borderless`  | public  | `boolean`                            | `false`   | Whether the panel has no border.                                       |
-| `color`      | `color`       | public  | `'white' \| 'milk'`                  | `'white'` | The background color of the panel.                                     |
-| `disabled`   | `disabled`    | public  | `boolean`                            | `false`   | Whether the panel is disabled, so its expanded state can't be changed. |
-| `expanded`   | `expanded`    | public  | `boolean`                            | `false`   | Whether the panel is expanded.                                         |
-| `size`       | `size`        | public  | `'s' \| 'l'`                         | `'l'`     | Size variant, either l or s.                                           |
-| `titleLevel` | `title-level` | public  | `SbbTitleLevel \| null \| undefined` |           | Heading level; if unset, a `div` will be rendered.                     |
+| Name         | Attribute     | Privacy | Type                    | Default            | Description                                                            |
+| ------------ | ------------- | ------- | ----------------------- | ------------------ | ---------------------------------------------------------------------- |
+| `borderless` | `borderless`  | public  | `boolean`               | `false`            | Whether the panel has no border.                                       |
+| `color`      | `color`       | public  | `'white' \| 'milk'`     | `'white'`          | The background color of the panel.                                     |
+| `disabled`   | `disabled`    | public  | `boolean`               | `false`            | Whether the panel is disabled, so its expanded state can't be changed. |
+| `expanded`   | `expanded`    | public  | `boolean`               | `false`            | Whether the panel is expanded.                                         |
+| `size`       | `size`        | public  | `'s' \| 'l'`            | `'l' / 's' (lean)` | Size variant, either l or s.                                           |
+| `titleLevel` | `title-level` | public  | `SbbTitleLevel \| null` | `null`             | Heading level; if unset, a `div` will be rendered.                     |
 
 ## Events
 

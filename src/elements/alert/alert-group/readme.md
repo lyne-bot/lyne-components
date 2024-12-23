@@ -1,19 +1,17 @@
-The `sbb-alert-group` manages the dismissal and accessibility of one or multiple
+The `sbb-alert-group` manages the accessibility of one or multiple
 [sbb-alert](/docs/elements-sbb-alert-sbb-alert--docs) and also its visual gap between each other.
 
 ```html
 <sbb-alert-group accessibility-title="Disruptions" accessibility-level="2">
-  <sbb-alert
-    title-content="Interruption between Genève and Lausanne"
-    href="https://www.sbb.ch"
-    size="l"
-  >
+  <sbb-alert title-content="Interruption between Genève and Lausanne" size="l">
     The rail traffic between Allaman and Morges is interrupted. All trains are cancelled.
+    <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
   </sbb-alert>
-  <sbb-alert title-content="Interruption between Berne and Olten" href="https://www.sbb.ch">
+  <sbb-alert title-content="Interruption between Berne and Olten">
     Between Berne and Olten from 03.11.2021 to 05.12.2022 each time from 22:30 to 06:00 o'clock
     construction work will take place. You have to expect changed travel times and changed
     connections.
+    <sbb-link href="https://www.sbb.ch">Find out more</sbb-link>
   </sbb-alert>
 </sbb-alert-group>
 ```
@@ -45,16 +43,15 @@ and therefore interrupts screen reader flow, to immediately read out the alert c
 
 | Name                      | Attribute                   | Privacy | Type                            | Default    | Description                                                                                                                                                                              |
 | ------------------------- | --------------------------- | ------- | ------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibilityTitle`      | `accessibility-title`       | public  | `string \| undefined`           |            | Title for this alert group which is only visible for screen reader users.                                                                                                                |
+| `accessibilityTitle`      | `accessibility-title`       | public  | `string`                        | `''`       | Title for this alert group which is only visible for screen reader users.                                                                                                                |
 | `accessibilityTitleLevel` | `accessibility-title-level` | public  | `SbbTitleLevel`                 | `'2'`      | Level of the accessibility title, will be rendered as heading tag (e.g. h2). Defaults to level 2.                                                                                        |
 | `role`                    | `role`                      | public  | `'alert' \| 'status' \| string` | `'status'` | The role attribute defines how to announce alerts to the user. 'status': sets aria-live to polite and aria-atomic to true. 'alert': sets aria-live to assertive and aria-atomic to true. |
 
 ## Events
 
-| Name              | Type                           | Description                                 | Inherited From |
-| ----------------- | ------------------------------ | ------------------------------------------- | -------------- |
-| `didDismissAlert` | `CustomEvent<SbbAlertElement>` | Emits when an alert was removed from DOM.   |                |
-| `empty`           | `CustomEvent<void>`            | Emits when `sbb-alert-group` becomes empty. |                |
+| Name    | Type                | Description                                 | Inherited From |
+| ------- | ------------------- | ------------------------------------------- | -------------- |
+| `empty` | `CustomEvent<void>` | Emits when `sbb-alert-group` becomes empty. |                |
 
 ## Slots
 

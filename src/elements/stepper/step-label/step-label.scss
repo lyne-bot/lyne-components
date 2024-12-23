@@ -6,7 +6,7 @@
 :host {
   --sbb-step-label-color: var(--sbb-color-iron);
   --sbb-step-label-animation-duration: var(
-    --sbb-disable-animation-zero-time,
+    --sbb-disable-animation-duration,
     var(--sbb-animation-duration-2x)
   );
   --sbb-step-label-prefix-size: var(--sbb-size-element-xxs);
@@ -72,7 +72,7 @@
   }
 }
 
-:host([disabled]) {
+:host(:disabled) {
   --sbb-step-label-color: var(--sbb-color-granite);
   --sbb-step-label-prefix-border-style: dashed;
 
@@ -81,7 +81,7 @@
   }
 }
 
-:host(:hover:not([disabled])) {
+:host(:hover:not(:disabled)) {
   @include sbb.hover-mq($hover: true) {
     --sbb-step-label-cursor: pointer;
     --sbb-step-label-prefix-background-color: var(--sbb-color-milk);

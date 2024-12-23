@@ -10,7 +10,6 @@ snapshots["sbb-link-button renders DOM"] =
   data-slot-names="unnamed"
   form="form"
   name="name"
-  role="button"
   size="m"
   tabindex="0"
   type="button"

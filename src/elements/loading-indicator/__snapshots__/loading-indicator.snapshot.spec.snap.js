@@ -7,7 +7,6 @@ snapshots["sbb-loading-indicator renders with variant `window` DOM"] =
   color="default"
   role="progressbar"
   size="s"
-  variant="window"
 >
 </sbb-loading-indicator>
 `;

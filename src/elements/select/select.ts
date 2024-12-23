@@ -7,9 +7,9 @@ import { until } from 'lit/directives/until.js';
 
 import { getNextElementIndex } from '../core/a11y.js';
 import { SbbOpenCloseBaseElement } from '../core/base-elements.js';
-import { SbbConnectedAbortController } from '../core/controllers.js';
-import { hostAttributes } from '../core/decorators.js';
-import { isNextjs, isSafari } from '../core/dom.js';
+import { SbbLanguageController } from '../core/controllers.js';
+import { forceType, hostAttributes } from '../core/decorators.js';
+import { isNextjs, isSafari, isZeroAnimationDuration, setOrRemoveAttribute } from '../core/dom.js';
 import { EventEmitter } from '../core/eventing.js';
 import {
   type FormRestoreReason,
@@ -43,7 +43,6 @@ export interface SelectChange {
  * It displays a panel with selectable options.
  *
  * @slot - Use the unnamed slot to add options.
- * @event {CustomEvent<void>} didChange - Deprecated. used for React. Will probably be removed once React 19 is available.
  * @event {CustomEvent<void>} change - Notifies that the component's value has changed.
  * @event {CustomEvent<void>} input - Notifies that an option value has been selected.
  * @event {CustomEvent<void>} willOpen - Emits whenever the `sbb-select` starts the opening transition. Can be canceled.
@@ -53,12 +52,14 @@ export interface SelectChange {
  * @cssprop [--sbb-select-z-index=var(--sbb-overlay-default-z-index)] - To specify a custom stack order,
  * the `z-index` can be overridden by defining this CSS variable. The default `z-index` of the
  * component is set to `var(--sbb-overlay-default-z-index)` with a value of `1000`.
+ * @overrideType value - string | string[] | null
  */
+export
 @customElement('sbb-select')
 @hostAttributes({
   role: ariaRoleOnHost ? 'listbox' : null,
 })
-export class SbbSelectElement extends SbbUpdateSchedulerMixin(
+class SbbSelectElement extends SbbUpdateSchedulerMixin(
   SbbDisabledMixin(
     SbbNegativeMixin(
       SbbHydrationMixin(
@@ -73,9 +74,8 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 ) {
   public static override styles: CSSResultGroup = style;
 
-  // FIXME using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
+  // TODO: fix using ...super.events requires: https://github.com/sbb-design-systems/lyne-components/issues/2600
   public static override readonly events = {
-    didChange: 'didChange',
     change: 'change',
     input: 'input',
     stateChange: 'stateChange',
@@ -86,21 +86,30 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   } as const;
 
   /** The placeholder used if no value has been selected. */
-  @property() public placeholder?: string;
+  @forceType()
+  @property()
+  public accessor placeholder: string = '';
 
   /** Whether the select allows for multiple selection. */
-  @property({ reflect: true, type: Boolean }) public multiple = false;
+  @forceType()
+  @property({ reflect: true, type: Boolean })
+  public accessor multiple: boolean = false;
 
   /** Whether the select is readonly. */
-  @property({ type: Boolean }) public readonly = false;
-
-  /** The value displayed by the component. */
-  @state() private _displayValue: string | null = null;
+  @forceType()
+  @property({ type: Boolean })
+  public accessor readonly: boolean = false;
 
   /**
-   * @deprecated only used for React. Will probably be removed once React 19 is available.
+   * Form type of element.
+   * @default 'select-one / select-multiple'
    */
-  private _didChange: EventEmitter = new EventEmitter(this, SbbSelectElement.events.didChange);
+  public override get type(): string {
+    return this.multiple ? 'select-multiple' : 'select-one';
+  }
+
+  /** The value displayed by the component. */
+  @state() private accessor _displayValue: string | null = null;
 
   /** Notifies that the component's value has changed. */
   private _change: EventEmitter = new EventEmitter(this, SbbSelectElement.events.change);
@@ -128,7 +137,6 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   private _searchString = '';
   private _didLoad = false;
   private _isPointerDownEventOnMenu: boolean = false;
-  private _abort = new SbbConnectedAbortController(this);
 
   /**
    * The 'combobox' input element
@@ -151,25 +159,61 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
   public constructor() {
     super();
+    this.addEventListener?.('optionSelectionChange', (e: CustomEvent<void>) =>
+      this._onOptionChanged(e),
+    );
+    this.addEventListener?.('optionLabelChanged', (e: Event) => this._onOptionLabelChanged(e));
+    this.addEventListener?.('click', (e: MouseEvent) => {
+      const target = e.target as SbbSelectElement | SbbOptionElement;
+      if (target.localName === 'sbb-option') {
+        // Option click
+        if (!this.multiple && !target.disabled) {
+          this.close();
+          this.focus();
+        }
+      } else {
+        this._toggleOpening();
+      }
+    });
 
     new MutationController(this, {
-      config: { attributeFilter: ['aria-labelledby'] },
-      callback: (mutationsList: MutationRecord[]) => this._onSelectAttributesChange(mutationsList),
+      config: { attributeFilter: ['aria-labelledby', 'aria-label', 'aria-describedby'] },
+      callback: () => this._syncAriaLabels(),
     });
+
+    new SbbLanguageController(this).withHandler(() => setTimeout(() => this._syncAriaLabels()));
   }
 
-  /**
-   * TODO: Accessibility fix required to correctly read the label;
-   * can be possibly removed after the merge of https://github.com/sbb-design-systems/lyne-components/issues/3062
-   */
-  private _onSelectAttributesChange(mutationsList: MutationRecord[]): void {
-    for (const mutation of mutationsList) {
-      if (mutation.attributeName === 'aria-labelledby') {
-        this._triggerElement?.setAttribute(
-          'aria-labelledby',
-          this.getAttribute('aria-labelledby')!,
-        );
-      }
+  private _syncAriaLabels(): void {
+    if (!this._triggerElement) {
+      return;
+    }
+
+    setOrRemoveAttribute(
+      this._triggerElement,
+      'aria-labelledby',
+      this.getAttribute('aria-labelledby'),
+    );
+    setOrRemoveAttribute(this._triggerElement, 'aria-label', this.getAttribute('aria-label'));
+    setOrRemoveAttribute(
+      this._triggerElement,
+      'aria-describedby',
+      this.getAttribute('aria-describedby'),
+    );
+
+    // Using the associated labels is only a fallback.
+    // The drawback is, that it doesn't get updated automatically when the list of label changes.
+    if (
+      !this.getAttribute('aria-label') &&
+      !this.getAttribute('aria-labelledby') &&
+      this.internals.labels.length
+    ) {
+      this._triggerElement?.setAttribute(
+        'aria-label',
+        Array.from(this.internals.labels)
+          .map((label) => label.textContent)
+          .join(', '),
+      );
     }
   }
 
@@ -190,6 +234,12 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     }
     this.state = 'opening';
     this._setOverlayPosition();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `opened` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleOpening();
+    }
   }
 
   /** Closes the selection panel. */
@@ -203,6 +253,16 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     }
     this.state = 'closing';
     this._openPanelEventsController.abort();
+
+    // If the animation duration is zero, the animationend event is not always fired reliably.
+    // In this case we directly set the `closed` state.
+    if (this._isZeroAnimationDuration()) {
+      this._handleClosing();
+    }
+  }
+
+  private _isZeroAnimationDuration(): boolean {
+    return isZeroAnimationDuration(this, '--sbb-options-panel-animation-duration');
   }
 
   /** Gets the current displayed value. */
@@ -220,14 +280,28 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     }
   }
 
-  private _onOptionClick(event: MouseEvent): void {
-    const target = event.target as SbbSelectElement | SbbOptionElement;
-    if (target.localName !== 'sbb-option' || target.disabled) {
+  /** Listens to option changes. */
+  private _onOptionLabelChanged(event: Event): void {
+    const target = event.target as SbbOptionElement;
+    const selected = this._getSelected();
+
+    if (
+      (!Array.isArray(selected) && target !== selected) ||
+      (Array.isArray(selected) && !selected.includes(target))
+    ) {
       return;
     }
 
-    if (!this.multiple) {
-      this.close();
+    this._updateDisplayValue(selected);
+  }
+
+  private _updateDisplayValue(selected: SbbOptionElement | SbbOptionElement[] | null): void {
+    if (Array.isArray(selected)) {
+      this._displayValue = selected.map((o) => o.textContent).join(', ') || null;
+    } else if (selected) {
+      this._displayValue = selected?.textContent || null;
+    } else {
+      this._displayValue = null;
     }
   }
 
@@ -235,23 +309,24 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   private _onValueChanged(newValue: string | string[]): void {
     const options = this._filteredOptions;
     if (!Array.isArray(newValue)) {
-      const optionElement = options.find((o) => (o.value ?? o.getAttribute('value')) === newValue);
+      const optionElement =
+        options.find((o) => (o.value ?? o.getAttribute('value')) === newValue) ?? null;
       if (optionElement) {
         optionElement.selected = true;
       }
       options
         .filter((o) => (o.value ?? o.getAttribute('value')) !== newValue)
         .forEach((o) => (o.selected = false));
-      this._displayValue = optionElement?.textContent || null;
+      this._updateDisplayValue(optionElement);
     } else {
       options
         .filter((o) => !newValue.includes(o.value ?? o.getAttribute('value')))
         .forEach((e) => (e.selected = false));
-      const selectedOptionElements = options.filter((o) =>
+      const selectedElements = options.filter((o) =>
         newValue.includes(o.value ?? o.getAttribute('value')),
       );
-      selectedOptionElements.forEach((o) => (o.selected = true));
-      this._displayValue = selectedOptionElements.map((o) => o.textContent).join(', ') || null;
+      selectedElements.forEach((o) => (o.selected = true));
+      this._updateDisplayValue(selectedElements);
     }
     this._stateChange.emit({ type: 'value', value: newValue });
   }
@@ -296,13 +371,13 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
       this.id ||= this._overlayId;
     }
 
-    const signal = this._abort.signal;
     const formField = this.closest?.('sbb-form-field') ?? this.closest?.('[data-form-field]');
 
     if (formField) {
       this.negative = formField.hasAttribute('negative');
     }
     this._syncProperties();
+    this._syncAriaLabels();
 
     if (this._didLoad) {
       this._setupOrigin();
@@ -311,20 +386,6 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     if (this.value) {
       this._onValueChanged(this.value);
     }
-
-    this.addEventListener(
-      'optionSelectionChange',
-      (e: CustomEvent<void>) => this._onOptionChanged(e),
-      { signal },
-    );
-    this.addEventListener(
-      'click',
-      (e: MouseEvent) => {
-        this._onOptionClick(e);
-        this._toggleOpening();
-      },
-      { signal },
-    );
   }
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
@@ -443,13 +504,13 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
   // To avoid entering a corrupt state, exit when state is not expected.
   private _onAnimationEnd(event: AnimationEvent): void {
     if (event.animationName === 'open' && this.state === 'opening') {
-      this._onOpenAnimationEnd();
+      this._handleOpening();
     } else if (event.animationName === 'close' && this.state === 'closing') {
-      this._onCloseAnimationEnd();
+      this._handleClosing();
     }
   }
 
-  private _onOpenAnimationEnd(): void {
+  private _handleOpening(): void {
     this.state = 'opened';
     this._attachOpenPanelEvents();
     this._triggerElement.setAttribute('aria-expanded', 'true');
@@ -457,7 +518,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     this.didOpen.emit();
   }
 
-  private _onCloseAnimationEnd(): void {
+  private _handleClosing(): void {
     this.state = 'closed';
     this._triggerElement.setAttribute('aria-expanded', 'false');
     this._resetActiveElement();
@@ -482,7 +543,6 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
     this._input.emit();
     this._change.emit();
-    this._didChange.emit();
   }
 
   /** When an option is unselected in `multiple`, removes it from value and updates displayValue. */
@@ -494,7 +554,6 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
       this._input.emit();
       this._change.emit();
-      this._didChange.emit();
     }
   }
 
@@ -505,6 +564,9 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     document.addEventListener('scroll', () => this._setOverlayPosition(), {
       passive: true,
       signal: this._openPanelEventsController.signal,
+      // Without capture, other scroll contexts would not bubble to this event listener.
+      // Capture allows us to react to all scroll contexts in this DOM.
+      capture: true,
     });
     window.addEventListener('resize', () => this._setOverlayPosition(), {
       passive: true,
@@ -527,8 +589,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
     if (this.state === 'opened') {
       this._openedPanelKeyboardInteraction(event);
-    }
-    if (this.state === 'closed') {
+    } else if (this.state === 'closed') {
       this._closedPanelKeyboardInteraction(event);
     }
   }
@@ -721,24 +782,28 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
     }
   };
 
-  private _setValueFromSelectedOption(): void {
-    if (!this.multiple) {
-      const selectedOption = this._filteredOptions.find((option) => option.selected);
-      if (selectedOption) {
-        this._activeItemIndex = this._filteredOptions.findIndex(
-          (option) => option === selectedOption,
-        );
-        this.value = selectedOption.value;
-      }
-    } else {
-      const options = this._filteredOptions.filter((option) => option.selected);
-      if (options && options.length > 0) {
+  private _setValueFromSelected(): void {
+    const selected = this._getSelected();
+
+    if (Array.isArray(selected)) {
+      if (selected && selected.length > 0) {
         const value: string[] = [];
-        for (const option of options) {
+        for (const option of selected) {
           value.push(option.value!);
         }
         this.value = value;
       }
+    } else if (selected) {
+      this._activeItemIndex = this._filteredOptions.findIndex((option) => option === selected);
+      this.value = selected.value;
+    }
+  }
+
+  private _getSelected(): SbbOptionElement | SbbOptionElement[] | null {
+    if (this.multiple) {
+      return this._filteredOptions.filter((option) => option.selected);
+    } else {
+      return this._filteredOptions.find((option) => option.selected) ?? null;
     }
   }
 
@@ -820,7 +885,7 @@ export class SbbSelectElement extends SbbUpdateSchedulerMixin(
               ?aria-multiselectable=${this.multiple}
               ${ref((containerRef) => (this._optionContainer = containerRef as HTMLElement))}
             >
-              <slot @slotchange=${this._setValueFromSelectedOption}></slot>
+              <slot @slotchange=${this._setValueFromSelected}></slot>
             </div>
           </div>
         </div>

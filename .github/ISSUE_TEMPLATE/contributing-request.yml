@@ -60,7 +60,7 @@ body:
       label: Please describe the required properties (with type and value) for the component
       value: |
         Example:
-        variant (string): "primary" | "secondary" | "tertiary" | "transparent"
+        variant (string): "primary" | "secondary" | "accent" | "transparent"
         size (string):  "s" | "m" | "l"
   - type: textarea
     id: markup-proposal
