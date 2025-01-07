@@ -3,6 +3,7 @@ export class TimeAdapter {
 
   public addMilliseconds(date: Date, amount: number): Date {
     const timestamp: number = date.getTime();
+
     return new Date(timestamp + amount);
   }
 

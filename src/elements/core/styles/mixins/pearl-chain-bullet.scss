@@ -91,6 +91,8 @@
 }
 
 @mixin pearl-chain-bullet-skipped-transparent {
+  @include pearl-chain-bullet-skipped;
+
   mask: linear-gradient(
     45deg,
     var(--sbb-color-black) 0%,
@@ -101,8 +103,6 @@
     var(--sbb-color-black) 100%
   );
   mask-clip: no-clip;
-
-  @include pearl-chain-bullet-skipped;
 }
 
 @mixin pearl-chain-bullet-skipped-stop {
