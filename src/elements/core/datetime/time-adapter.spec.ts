@@ -12,25 +12,25 @@ describe('TimeAdapter', () => {
   it('addMilliseconds should return the right value', () => {
     let date = new Date(2023, 4, 1, 20, 5, 20, 200);
 
-    expect(date.toISOString()).to.be.equal('2023-05-01T18:05:20.200Z');
+    expect(date.getTime()).to.be.equal(1682964320200);
 
     date = timeAdapter.addMilliseconds(date, 200);
-    expect(date.toISOString()).to.be.equal('2023-05-01T18:05:20.400Z');
+    expect(date.getTime()).to.be.equal(1682964320400);
 
     date = timeAdapter.addMilliseconds(date, -300);
-    expect(date.toISOString()).to.be.equal('2023-05-01T18:05:20.100Z');
+    expect(date.getTime()).to.be.equal(1682964320100);
   });
 
   it('addMinutes should return the right value', () => {
     let date = new Date(2023, 4, 1, 20, 5);
 
-    expect(date.toISOString()).to.be.equal('2023-05-01T18:05:00.000Z');
+    expect(date.getTime()).to.be.equal(1682964300000);
 
     date = timeAdapter.addMinutes(date, 20);
-    expect(date.toISOString()).to.be.equal('2023-05-01T18:25:00.000Z');
+    expect(date.getTime()).to.be.equal(1682965500000);
 
     date = timeAdapter.addMinutes(date, 150);
-    expect(date.toISOString()).to.be.equal('2023-05-01T20:55:00.000Z');
+    expect(date.getTime()).to.be.equal(1682974500000);
   });
 
   it('differenceInMilliseconds should return the right value', () => {
@@ -87,18 +87,12 @@ describe('TimeAdapter', () => {
   });
 
   it('deserialize should return the right value', () => {
-    expect(timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).toISOString()).to.be.equal(
-      '2023-05-01T16:05:00.000Z',
+    expect(timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime()).to.be.equal(
+      1682957100000,
     );
-    expect(timeAdapter.deserialize('2022-08-18T04:00').toISOString()).to.be.equal(
-      '2022-08-18T02:00:00.000Z',
-    );
-    expect(timeAdapter.deserialize('1661788000').toISOString()).to.be.equal(
-      '2022-08-29T15:46:40.000Z',
-    );
-    expect(timeAdapter.deserialize(1660628000).toISOString()).to.be.equal(
-      '2022-08-16T05:33:20.000Z',
-    );
+    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime()).to.be.equal(1660788000000);
+    expect(timeAdapter.deserialize('1661788000').getTime()).to.be.equal(1661788000000);
+    expect(timeAdapter.deserialize(1660628000).getTime()).to.be.equal(1660628000000);
     expect(timeAdapter.isValid(timeAdapter.deserialize('Invalid input'))).to.be.equal(false);
   });
 });

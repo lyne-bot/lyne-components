@@ -1,4 +1,4 @@
-import type { CSSResultGroup, PropertyValues, TemplateResult } from 'lit';
+import { type CSSResultGroup, isServer, type PropertyValues, type TemplateResult } from 'lit';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -42,10 +42,12 @@ class SbbPearlChainElement extends LitElement {
   public constructor() {
     super();
 
-    this.addEventListener('leg-updated', (event) => {
-      event.stopPropagation();
-      this._setUpComponent();
-    });
+    if (!isServer) {
+      this.addEventListener('leg-updated', (event) => {
+        event.stopPropagation();
+        this._setUpComponent();
+      });
+    }
   }
 
   private _legs(): SbbPearlChainLegElement[] {
