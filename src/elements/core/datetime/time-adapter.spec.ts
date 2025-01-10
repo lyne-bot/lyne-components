@@ -87,10 +87,10 @@ describe('TimeAdapter', () => {
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
 
     expect(
-      timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime() - timeZoneOffset,
-    ).to.be.equal(1682960700000);
-    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime() - timeZoneOffset).to.be.equal(
-      1660791600000,
+      timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime() + timeZoneOffset,
+    ).to.be.equal(1682953500000);
+    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime() + timeZoneOffset).to.be.equal(
+      1660784400000,
     );
     expect(timeAdapter.deserialize('1661788000').getTime()).to.be.equal(1661788000000);
     expect(timeAdapter.deserialize(1660628000).getTime()).to.be.equal(1660628000000);
