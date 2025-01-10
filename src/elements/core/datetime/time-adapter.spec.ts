@@ -10,9 +10,7 @@ describe('TimeAdapter', () => {
   });
 
   it('addMilliseconds should return the right value', () => {
-    let date = new Date(2023, 4, 1, 20, 5, 20, 200);
-
-    expect(date.getTime()).to.be.equal(1682964320200);
+    let date = new Date(1682964320200);
 
     date = timeAdapter.addMilliseconds(date, 200);
     expect(date.getTime()).to.be.equal(1682964320400);
@@ -22,9 +20,7 @@ describe('TimeAdapter', () => {
   });
 
   it('addMinutes should return the right value', () => {
-    let date = new Date(2023, 4, 1, 20, 5);
-
-    expect(date.getTime()).to.be.equal(1682964300000);
+    let date = new Date(1682964300000);
 
     date = timeAdapter.addMinutes(date, 20);
     expect(date.getTime()).to.be.equal(1682965500000);
@@ -87,10 +83,15 @@ describe('TimeAdapter', () => {
   });
 
   it('deserialize should return the right value', () => {
-    expect(timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime()).to.be.equal(
-      1682957100000,
+    // Use UTC to keep test results consistent.
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+
+    expect(
+      timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime() - timeZoneOffset,
+    ).to.be.equal(1682960700000);
+    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime() - timeZoneOffset).to.be.equal(
+      1660791600000,
     );
-    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime()).to.be.equal(1660788000000);
     expect(timeAdapter.deserialize('1661788000').getTime()).to.be.equal(1661788000000);
     expect(timeAdapter.deserialize(1660628000).getTime()).to.be.equal(1660628000000);
     expect(timeAdapter.isValid(timeAdapter.deserialize('Invalid input'))).to.be.equal(false);
