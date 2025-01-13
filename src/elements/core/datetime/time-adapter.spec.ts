@@ -83,14 +83,14 @@ describe('TimeAdapter', () => {
   });
 
   it('deserialize should return the right value', () => {
-    // Use UTC to keep test results consistent.
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+    expect(timeAdapter.deserialize(new Date(Date.UTC(2023, 4, 1, 18, 5))).getTime()).to.be.equal(
+      1682964300000,
+    );
 
-    expect(
-      timeAdapter.deserialize(new Date(2023, 4, 1, 18, 5)).getTime() + timeZoneOffset,
-    ).to.be.equal(1682953500000);
-    expect(timeAdapter.deserialize('2022-08-18T04:00').getTime() + timeZoneOffset).to.be.equal(
-      1660784400000,
+    const dateObject = new Date(2023, 4, 1, 20, 5);
+
+    expect(timeAdapter.deserialize(dateObject.toISOString()).getTime()).to.be.equal(
+      dateObject.getTime(),
     );
     expect(timeAdapter.deserialize('1661788000').getTime()).to.be.equal(1661788000000);
     expect(timeAdapter.deserialize(1660628000).getTime()).to.be.equal(1660628000000);
