@@ -17,8 +17,8 @@
   --sbb-pearl-chain-bullet-animation-easing: ease-out;
   --sbb-pearl-chain-bullet-animation-name: pearl-chain-bullet-position-pulse;
   --sbb-pearl-chain-bullet-crossed-width: #{functions.px-to-rem-build(14.14)};
-  --sbb-pearl-chain-bullet-crossed-height: #{functions.px-to-rem-build(3.5)};
-  --sbb-pearl-chain-bullet-crossed-border-width: #{functions.px-to-rem-build(1.5)};
+  --sbb-pearl-chain-bullet-crossed-height: #{functions.px-to-rem-build(3.2)};
+  --sbb-pearl-chain-bullet-crossed-border-width: #{functions.px-to-rem-build(1.6)};
   --sbb-pearl-chain-bullet-background-color: Canvas;
 }
 
@@ -27,6 +27,7 @@
   color: var(--sbb-pearl-chain-bullet-color);
   border-color: var(--sbb-pearl-chain-bullet-color);
   border-radius: 100%;
+  display: block;
 
   @include a11y.if-forced-colors {
     --sbb-pearl-chain-bullet-color: CanvasText;
@@ -63,15 +64,13 @@
 
 @mixin pearl-chain-bullet-disruption {
   --sbb-pearl-chain-bullet-color: var(--sbb-pearl-chain-bullet-color-disruption);
+
   @include a11y.if-forced-colors {
     --sbb-pearl-chain-bullet-color: Highlight;
   }
 }
 
 @mixin pearl-chain-bullet-skipped {
-  border: var(--sbb-pearl-chain-bullet-border-width) solid var(--sbb-pearl-chain-bullet-color);
-  background: var(--sbb-pearl-chain-bullet-background-color);
-
   &::before {
     content: '';
     position: absolute;
@@ -91,18 +90,18 @@
 }
 
 @mixin pearl-chain-bullet-skipped-transparent {
-  @include pearl-chain-bullet-skipped;
-
-  mask: linear-gradient(
+  border: var(--sbb-pearl-chain-bullet-border-width) solid var(--sbb-pearl-chain-bullet-color);
+  background: var(--sbb-pearl-chain-bullet-background-color);
+  mask-image: linear-gradient(
     45deg,
     var(--sbb-color-black) 0%,
-    var(--sbb-color-black) 48%,
-    transparent 48%,
+    var(--sbb-color-black) 39%,
+    transparent 39%,
     transparent 60%,
     var(--sbb-color-black) 60%,
     var(--sbb-color-black) 100%
   );
-  mask-clip: no-clip;
+  mask-size: 100% 100%;
 }
 
 @mixin pearl-chain-bullet-skipped-stop {
