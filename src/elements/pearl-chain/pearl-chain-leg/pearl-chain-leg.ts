@@ -102,7 +102,9 @@ class SbbPearlChainLegElement extends LitElement {
 
   protected override render(): TemplateResult {
     return html` <div class="sbb-pearl-chain__leg">
-      <span class="sbb-pearl-chain__stop"></span>
+      <span class="sbb-pearl-chain__stop">
+        <span class="sbb-pearl-chain__stop-inner"></span>
+      </span>
     </div>`;
   }
 }

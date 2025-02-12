@@ -174,9 +174,13 @@ class SbbPearlChainElement extends LitElement {
     return html`
       <div class="sbb-pearl-chain__wrapper">
         <div class="sbb-pearl-chain">
-          <span class="sbb-pearl-chain__bullet"></span>
+          <span class="sbb-pearl-chain__bullet">
+            <span class="sbb-pearl-chain__stop-inner"></span>
+          </span>
           <slot></slot>
-          <span class="sbb-pearl-chain__bullet"></span>
+          <span class="sbb-pearl-chain__bullet">
+            <span class="sbb-pearl-chain__stop-inner"></span>
+          </span>
         </div>
       </div>
     `;

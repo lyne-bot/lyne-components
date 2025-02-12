@@ -141,10 +141,13 @@
   z-index: 2;
   left: calc(-1 * var(--sbb-pearl-chain-leg-offset));
 
-  @include sbb.pearl-chain-bullet;
-
-  & {
+  .sbb-pearl-chain__stop-inner {
+    @include sbb.pearl-chain-bullet;
     @include sbb.pearl-chain-bullet-stop;
+
+    :host(:is([departure-skipped], [data-skip-departure])) & {
+      @include sbb.pearl-chain-bullet-skipped-transparent;
+    }
   }
 
   :host(:is([past], [data-progress])) & {
@@ -152,7 +155,7 @@
   }
 
   :host(:is([departure-skipped], [data-skip-departure])) & {
-    @include sbb.pearl-chain-bullet-skipped-transparent;
+    @include sbb.pearl-chain-bullet-skipped;
   }
 
   :host([disruption]) & {

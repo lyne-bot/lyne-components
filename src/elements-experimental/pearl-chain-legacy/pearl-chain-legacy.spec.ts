@@ -4,7 +4,7 @@ import { html } from 'lit/static-html.js';
 
 import { SbbPearlChainLegacyElement } from './pearl-chain-legacy.js';
 
-describe(`sbb-pearl-chain`, () => {
+describe(`sbb-pearl-chain-legacy`, () => {
   let element: SbbPearlChainLegacyElement;
 
   it('renders', async () => {

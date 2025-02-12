@@ -59,15 +59,15 @@
 
 // First and last bullet
 .sbb-pearl-chain__bullet {
-  @include sbb.pearl-chain-bullet-start-end;
-  @include sbb.pearl-chain-bullet;
+  .sbb-pearl-chain__stop-inner {
+    @include sbb.pearl-chain-bullet-start-end;
+    @include sbb.pearl-chain-bullet;
+  }
 
   & {
     content: '';
     position: absolute;
-    background-color: var(--sbb-pearl-chain-bullet-color);
     inset-block-start: 0;
-    z-index: 3;
   }
 
   &:first-of-type {
@@ -88,5 +88,9 @@
 }
 
 .sbb-pearl-chain__bullet[data-skipped] {
-  @include sbb.pearl-chain-bullet-skipped-transparent;
+  @include sbb.pearl-chain-bullet-skipped;
+
+  .sbb-pearl-chain__stop-inner {
+    @include sbb.pearl-chain-bullet-skipped-transparent;
+  }
 }
