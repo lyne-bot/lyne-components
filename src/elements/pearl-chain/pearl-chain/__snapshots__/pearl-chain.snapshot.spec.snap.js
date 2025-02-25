@@ -21,6 +21,8 @@ snapshots["sbb-pearl-chain renders with one leg Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
@@ -28,6 +30,8 @@ snapshots["sbb-pearl-chain renders with one leg Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
@@ -61,6 +65,8 @@ snapshots["sbb-pearl-chain renders with two legs Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
@@ -68,6 +74,8 @@ snapshots["sbb-pearl-chain renders with two legs Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
@@ -102,6 +110,8 @@ snapshots["sbb-pearl-chain renders with departure stop skipped Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
@@ -109,6 +119,8 @@ snapshots["sbb-pearl-chain renders with departure stop skipped Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
@@ -143,6 +155,8 @@ snapshots["sbb-pearl-chain renders with arrival stop skipped Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
@@ -151,6 +165,8 @@ snapshots["sbb-pearl-chain renders with arrival stop skipped Shadow DOM"] =
       data-past=""
       data-skipped=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
@@ -184,10 +200,14 @@ snapshots["sbb-pearl-chain renders with progress leg Shadow DOM"] =
       class="sbb-pearl-chain__bullet"
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
     <span class="sbb-pearl-chain__bullet">
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
@@ -222,10 +242,14 @@ snapshots["sbb-pearl-chain renders with cancelled instead of progress leg Shadow
       data-disrupted=""
       data-past=""
     >
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
     <slot>
     </slot>
     <span class="sbb-pearl-chain__bullet">
+      <span class="sbb-pearl-chain__stop-inner">
+      </span>
     </span>
   </div>
 </div>
