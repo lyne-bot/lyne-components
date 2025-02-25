@@ -10,6 +10,8 @@ snapshots["sbb-pearl-chain-leg renders DOM"] =
 snapshots["sbb-pearl-chain-leg renders Shadow DOM"] = 
 `<div class="sbb-pearl-chain__leg">
   <span class="sbb-pearl-chain__stop">
+    <span class="sbb-pearl-chain__stop-inner">
+    </span>
   </span>
 </div>
 `;
