@@ -8,6 +8,8 @@
 @use './mixins/typo';
 @use './mixins/helpers';
 
+@use '../../action-group/action-group.global' as action-group;
+
 @include helpers.box-sizing;
 
 // Core variables, are always needed
@@ -62,6 +64,8 @@ html {
 
   color: var(--sbb-font-default-color);
 }
+
+@include action-group.rules;
 
 // TODO: Remove if webkit bug is resolved: https://bugs.webkit.org/show_bug.cgi?id=223814
 ::placeholder {

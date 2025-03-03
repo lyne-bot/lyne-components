@@ -1,2 +1,3 @@
 @forward 'core/styles' hide development-style, link-base, link-focus-visible, link-hover,
   link-active, link-consolidation, base-marker-list;
+@forward 'core/styles/mixins/theme';
