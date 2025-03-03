@@ -325,3 +325,9 @@ sbb-train-formation[view='top'] sbb-train-wagon {
   --sbb-train-wagon-locomotive-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M20,0.5 h40 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-40 a19.5,19.5 0 0 1 -19.5,-19.5 v0 a19.5,19.5 0 0 1 19.5,-19.5 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E%0A");
   --sbb-train-wagon-wagon-end-right-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M8.5,0.5 h51.5 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-51.5 a8,8 0 0 1 -8,-8 v-23 a8,8 0 0 1 8,-8 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E");
 }
+
+.sbb-overlay-outlet {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}

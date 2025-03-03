@@ -1,0 +1,100 @@
+@use '../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  display: inline-block;
+  position: fixed;
+  pointer-events: auto;
+
+  --sbb-tooltip-padding: var(--sbb-spacing-fixed-2x) var(--sbb-spacing-fixed-4x);
+  --sbb-tooltip-margin: var(--sbb-spacing-fixed-4x);
+  --sbb-tooltip-border-radius: var(--sbb-spacing-fixed-6x);
+  --sbb-tooltip-font-size: var(--sbb-font-size-text-s);
+  --sbb-tooltip-color: var(--sbb-color-white);
+  --sbb-tooltip-background-color: var(--sbb-color-midnight);
+  --sbb-tooltip-arrow-content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 7' fill='none'%3E%3Cpath d='M6.99382e-07 -1.39876e-06L16 0L10.8284 5.17157C9.26633 6.73367 6.73367 6.73367 5.17158 5.17157L6.99382e-07 -1.39876e-06Z' fill='%23151515'/%3E%3C/svg%3E");
+
+  // The pixel values are hardcoded to work with the above svg image.
+  --sbb-tooltip-arrow-width: #{sbb.px-to-rem-build(16)};
+  --sbb-tooltip-arrow-height: #{sbb.px-to-rem-build(7)};
+  --sbb-tooltip-arrow-inset-block-offset: #{sbb.px-to-rem-build(-7)};
+  --sbb-tooltip-arrow-inset-inline-offset: #{sbb.px-to-rem-build(-10)};
+
+  // These values are read by SbbOverlayController, if anchor positioning is not supported.
+  --sbb-overlay-controller-inset-area: block-start;
+  --sbb-overlay-controller-position-try-fallbacks: block-end, inline-start, inline-end;
+
+  // TODO: Not currently used, as we force usage of polyfill in tooltip. Revisit when ::tether
+  // or inset-area transition is supported. https://github.com/w3c/csswg-drafts/issues/9271
+
+  // position-anchor will be defined by the component.
+  inset-area: var(--sbb-overlay-controller-inset-area);
+
+  // TODO: Only necessary for chromium browser. Can be removed once position-try-fallbacks is fully supported.
+  position-try-options: inset-area(block-end), inset-area(inline-start), inset-area(inline-end);
+  // stylelint-disable-next-line property-no-unknown
+  position-try-fallbacks: var(--sbb-overlay-controller-position-try-fallbacks);
+
+  // We are using the transitionstart event in tooltip to place the arrow in the correct position.
+  transition:
+    // TODO: Not supported yet.
+    inset-area 1ms,
+    // Workaround for missing transition support for inset-area.
+    inset 1ms;
+}
+
+:host([negative]) {
+  --sbb-tooltip-color: var(--sbb-color-charcoal);
+  --sbb-tooltip-background-color: var(--sbb-color-milk);
+}
+
+:host(:not([data-show])) {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sbb-tooltip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: var(--sbb-tooltip-padding);
+  margin: var(--sbb-tooltip-margin);
+  border-radius: var(--sbb-tooltip-border-radius);
+  background-color: var(--sbb-tooltip-background-color);
+  font-size: var(--sbb-tooltip-font-size);
+  color: var(--sbb-tooltip-color);
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    background-color: var(--sbb-tooltip-background-color);
+    mask-image: var(--sbb-tooltip-arrow-content);
+    mask-type: alpha;
+    height: var(--sbb-tooltip-arrow-height);
+    width: var(--sbb-tooltip-arrow-width);
+
+    :host(:is(:not([data-position]), [data-position='block-start'])) & {
+      inset-block-end: var(--sbb-tooltip-arrow-inset-block-offset);
+    }
+
+    :host([data-position='block-end']) & {
+      inset-block-start: var(--sbb-tooltip-arrow-inset-block-offset);
+      rotate: 180deg;
+    }
+
+    :host([data-position='inline-start']) & {
+      inset-inline-end: var(--sbb-tooltip-arrow-inset-inline-offset);
+      rotate: -90deg;
+    }
+
+    :host([data-position='inline-end']) & {
+      inset-inline-start: var(--sbb-tooltip-arrow-inset-inline-offset);
+      rotate: 90deg;
+    }
+  }
+}
