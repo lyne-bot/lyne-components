@@ -4,18 +4,18 @@ import { html } from 'lit/static-html.js';
 
 import type { PtRideLeg } from '../core/timetable.js';
 
-import type { SbbPearlChainElement } from './pearl-chain.js';
-import './pearl-chain.js';
+import type { SbbPearlChainLegacyElement } from './pearl-chain-legacy.js';
+import './pearl-chain-legacy.js';
 
 const now = '2022-08-16T15:00:00';
 
-describe(`sbb-pearl-chain`, () => {
-  let element: SbbPearlChainElement;
+describe(`sbb-pearl-chain-legacy`, () => {
+  let element: SbbPearlChainLegacyElement;
 
   describe('renders with one leg', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .legs=${[
             {
               __typename: 'PTRideLeg',
@@ -23,7 +23,7 @@ describe(`sbb-pearl-chain`, () => {
               departure: { time: '2022-08-18T04:00' },
             },
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 
@@ -39,7 +39,7 @@ describe(`sbb-pearl-chain`, () => {
   describe('renders with two legs', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .legs=${[
             {
               __typename: 'PTRideLeg',
@@ -62,7 +62,7 @@ describe(`sbb-pearl-chain`, () => {
               },
             } as PtRideLeg,
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 
@@ -78,7 +78,7 @@ describe(`sbb-pearl-chain`, () => {
   describe('renders with departure stop skipped', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .legs=${[
             {
               __typename: 'PTRideLeg',
@@ -109,7 +109,7 @@ describe(`sbb-pearl-chain`, () => {
               },
             } as PtRideLeg,
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 
@@ -125,7 +125,7 @@ describe(`sbb-pearl-chain`, () => {
   describe('renders with arrival stop skipped', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .legs=${[
             {
               __typename: 'PTRideLeg',
@@ -156,7 +156,7 @@ describe(`sbb-pearl-chain`, () => {
               },
             } as PtRideLeg,
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 
@@ -172,7 +172,7 @@ describe(`sbb-pearl-chain`, () => {
   describe('renders with progress leg', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .now=${now}
           .legs=${[
             {
@@ -196,7 +196,7 @@ describe(`sbb-pearl-chain`, () => {
               },
             } as PtRideLeg,
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 
@@ -212,7 +212,7 @@ describe(`sbb-pearl-chain`, () => {
   describe('renders with cancelled instead of progress leg', () => {
     beforeEach(async () => {
       element = await fixture(html`
-        <sbb-pearl-chain
+        <sbb-pearl-chain-legacy
           .now=${now}
           .legs=${[
             {
@@ -244,7 +244,7 @@ describe(`sbb-pearl-chain`, () => {
               },
             } as PtRideLeg,
           ]}
-        ></sbb-pearl-chain>
+        ></sbb-pearl-chain-legacy>
       `);
     });
 

@@ -11,7 +11,7 @@ import { removeTimezoneFromISOTimeString } from '../core/datetime.js';
 import type { Leg, PtRideLeg } from '../core/timetable.js';
 import { isRideLeg } from '../core/timetable.js';
 
-import style from './pearl-chain.scss?lit&inline';
+import style from './pearl-chain-legacy.scss?lit&inline';
 
 type Status = 'progress' | 'future' | 'past';
 type Time = {
@@ -23,12 +23,12 @@ type Time = {
  * It visually displays journey information.
  */
 export
-@customElement('sbb-pearl-chain')
-class SbbPearlChainElement extends LitElement {
+@customElement('sbb-pearl-chain-legacy')
+class SbbPearlChainLegacyElement extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /**
-   * Define the legs of the pearl-chain.
+   * Define the legs of the pearl-chain-legacy.
    * Format:
    * `{"legs": [{"duration": 25}, ...]}`
    * `duration` in minutes. Duration of the leg is relative
@@ -289,6 +289,6 @@ class SbbPearlChainElement extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    'sbb-pearl-chain': SbbPearlChainElement;
+    'sbb-pearl-chain-legacy': SbbPearlChainLegacyElement;
   }
 }

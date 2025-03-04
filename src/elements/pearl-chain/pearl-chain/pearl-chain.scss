@@ -1,0 +1,96 @@
+@use '../../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-pearl-chain-leg-height: var(--sbb-border-width-2x);
+  --sbb-pearl-chain-leg-spacing-small: #{sbb.px-to-rem-build(2)};
+  --sbb-pearl-chain-color: var(--sbb-pearl-chain-bullet-color);
+  --sbb-pearl-chain-leg-color-disruption: var(--sbb-pearl-chain-bullet-color-disruption);
+  --sbb-pearl-chain-leg-color-past: var(--sbb-pearl-chain-bullet-color-past);
+  --sbb-pearl-chain-leg-width: 100%;
+
+  display: block;
+
+  @include sbb.pearl-chain-bullet-variables;
+
+  --sbb-pearl-chain-bullet-background-color: transparent;
+
+  @include sbb.if-forced-colors {
+    --sbb-pearl-chain-bullet-color: Highlight !important;
+  }
+}
+
+:host([marker='pulsing']) {
+  --sbb-pearl-chain-leg-animation: pearl-chain-bullet-position-pulse;
+}
+
+::slotted(sbb-pearl-chain-leg:first-of-type) {
+  --sbb-pearl-chain-leg-stop-display: none;
+}
+
+::slotted(sbb-pearl-chain-leg:last-of-type) {
+  --sbb-pearl-chain-last-leg-margin: none;
+  --sbb-pearl-chain-last-leg-inset-inline-end: calc(-1 * var(--sbb-pearl-chain-leg-height));
+}
+
+.sbb-pearl-chain__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--sbb-pearl-chain-time-height);
+  flex-direction: row;
+  gap: var(--sbb-spacing-fixed-3x);
+}
+
+.sbb-pearl-chain {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: var(--sbb-pearl-chain-bullet-size-stop);
+  padding-block: calc(
+    (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-leg-height)) / 2
+  );
+  padding-inline: var(--sbb-pearl-chain-bullet-size-start-end);
+}
+
+// First and last bullet
+.sbb-pearl-chain__bullet {
+  .sbb-pearl-chain__stop-inner {
+    @include sbb.pearl-chain-bullet-start-end;
+    @include sbb.pearl-chain-bullet;
+  }
+
+  & {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+  }
+
+  &:first-of-type {
+    inset-inline-start: 0;
+  }
+
+  &:last-of-type {
+    inset-inline-end: 0;
+  }
+}
+
+.sbb-pearl-chain__bullet[data-past] {
+  @include sbb.pearl-chain-bullet-past;
+}
+
+.sbb-pearl-chain__bullet[data-disrupted] {
+  --sbb-pearl-chain-bullet-color: var(--sbb-pearl-chain-leg-color-disruption);
+}
+
+.sbb-pearl-chain__bullet[data-skipped] {
+  @include sbb.pearl-chain-bullet-skipped;
+
+  .sbb-pearl-chain__stop-inner {
+    @include sbb.pearl-chain-bullet-skipped-transparent;
+  }
+}
