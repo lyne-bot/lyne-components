@@ -40,6 +40,16 @@ const wide: InputType = {
   },
 };
 
+const orientation: InputType = {
+  control: {
+    type: 'inline-radio',
+  },
+  options: ['horizontal', 'vertical'],
+  table: {
+    category: 'Calendar',
+  },
+};
+
 const selected: InputType = {
   control: {
     type: 'date',
@@ -110,6 +120,7 @@ const dateFilter: InputType = {
 
 const defaultArgTypes: ArgTypes = {
   wide,
+  orientation,
   selected,
   min,
   max,
@@ -123,6 +134,7 @@ today.setDate(today.getDate() >= 15 ? 8 : 18);
 
 const defaultArgs: Args = {
   wide: false,
+  orientation: orientation.options![0],
   selected: today,
   now: undefined,
   view: view.options![0],
@@ -148,6 +160,18 @@ export const CalendarWide: StoryObj = {
   render: Template,
   argTypes: { ...defaultArgTypes },
   args: { ...defaultArgs, wide: true },
+};
+
+export const CalendarVertical: StoryObj = {
+  render: Template,
+  argTypes: { ...defaultArgTypes },
+  args: { ...defaultArgs, orientation: orientation.options![1] },
+};
+
+export const CalendarVerticalWide: StoryObj = {
+  render: Template,
+  argTypes: { ...defaultArgTypes },
+  args: { ...defaultArgs, orientation: orientation.options![1], wide: true },
 };
 
 export const CalendarFilterFunction: StoryObj = {

@@ -20,7 +20,7 @@ describe('NativeDateAdapter', () => {
   });
 
   it('should return the right value for year month, date and weekday', () => {
-    const date: Date = new Date(2023, 0, 1);
+    const date: Date = new Date('2023-01-01T00:00:00.000Z');
     expect(nativeDateAdapter.getYear(date)).to.be.equal(2023);
     expect(nativeDateAdapter.getMonth(date)).to.be.equal(1);
     expect(nativeDateAdapter.getDate(date)).to.be.equal(1);

@@ -26,7 +26,7 @@ snapshots["sbb-datepicker-toggle renders Shadow DOM"] =
   id="sbb-popover-2"
   popover="manual"
 >
-  <sbb-calendar>
+  <sbb-calendar orientation="horizontal">
   </sbb-calendar>
 </sbb-popover>
 `;
@@ -57,7 +57,7 @@ snapshots["sbb-datepicker-toggle in form-field renders Shadow DOM"] =
   id="sbb-popover-4"
   popover="manual"
 >
-  <sbb-calendar>
+  <sbb-calendar orientation="horizontal">
   </sbb-calendar>
 </sbb-popover>
 `;
@@ -88,7 +88,7 @@ snapshots["sbb-datepicker-toggle in form-field renders disabled Shadow DOM"] =
   id="sbb-popover-6"
   popover="manual"
 >
-  <sbb-calendar>
+  <sbb-calendar orientation="horizontal">
   </sbb-calendar>
 </sbb-popover>
 `;
@@ -119,7 +119,10 @@ snapshots["sbb-datepicker-toggle in form-field with calendar parameters Shadow D
   id="sbb-popover-8"
   popover="manual"
 >
-  <sbb-calendar wide="">
+  <sbb-calendar
+    orientation="horizontal"
+    wide=""
+  >
   </sbb-calendar>
 </sbb-popover>
 `;

@@ -21,6 +21,7 @@ import type { DateAdapter } from '../core/datetime.js';
 import {
   DAYS_PER_ROW,
   defaultDateAdapter,
+  MONTHS_PER_PAGE,
   MONTHS_PER_ROW,
   YEARS_PER_PAGE,
   YEARS_PER_ROW,
@@ -47,20 +48,15 @@ import '../icon.js';
 import '../screen-reader-only.js';
 
 /**
- * In keyboard navigation, the cell's index and the element's index in its month / year batch must be distinguished;
- * this is necessary because the navigation in the vertical direction using some keys is restricted to a single month for days,
- * and to a single range of 24 years for years. While the latter is easy to understand, the cell's index is the index
- * of the element in the array of all the rendered cells. In non-wide mode, there's no issue because the element index
- * is basically the cell's index plus 1 (element with index 0 displays the 1st of month, element with index 1 displays the 2nd and so on).
- * In wide mode, the cell's index can go from 0 to 47 for years (two batches of 24 years), and from 0 to a maximum of 61 for days
- * (two consecutive months of 31 days, as July-August or December-January), depending on the lengths of the rendered months;
- * the element index instead goes from 0 to a max value of 24 for years and 31 for days.
- * Moreover, in day view, the index of the first day of the second rendered month and the index of the last rendered day
- * can also vary depending on which months are rendered; for July-August they are equals to 31 and 61, while for February-March they are 28 and 58.
- * So, some additional parameters are needed, beside the cell's index, to correctly calculate the element to navigate to.
+ * Parameters needed in year and month views to correctly calculate the next element in keyboard navigation.
+ *
+ * The cell's index and the element's index in its month / year batch must be distinguished:
+ * the first is the index of the element in the array of all the rendered cells, while the second is the index of the element relative to its table.
+ * In non-wide mode, the wto are the same, while in wide mode the cell's index can go from 0 to 47 for years and from 0 to 23 for months,
+ * while the element index goes from 0 to, respectively, 23 and 11.
  */
-interface CalendarKeyboardNavigationParameters {
-  /** The element index within its month (or year range). */
+interface CalendarKeyboardNavigationMonthYearViewsParameters {
+  /** The element index within its year or month range. */
   elementIndexForWideMode: number;
   /** In wide mode, the index of the first element in the second panel, or, alternatively, the number of elements in the first panel. */
   offsetForWideMode: number;
@@ -70,11 +66,31 @@ interface CalendarKeyboardNavigationParameters {
   verticalOffset: number;
 }
 
-export interface Day {
+/**
+ * Parameters needed in day view to correctly calculate the next element in keyboard navigation.
+ *
+ * In orientation='vertical', it's not possible to rely on any array/index to calculate the element to navigate to,
+ * so calculations on dates must be done, which should consider view boundaries, offsets and month's length.
+ */
+interface CalendarKeyboardNavigationDayViewParameters {
+  /** The first day rendered. */
+  firstDayInView: string | null;
+  /** The last day rendered. It depends on the 'wide' value. */
+  lastDayInView: string | null;
+  /** The offset from the first day of the week (Monday) of the first rendered month. */
+  firstMonthOffset: number;
+  /** The number of days in the first rendered month. */
+  firstMonthLength: number;
+  /** The offset from the first day of the week (Monday) of the second rendered month. If wide is false, it's equal to zero. */
+  secondMonthOffset: number;
+}
+
+export interface Day<T = Date> {
   value: string;
   dayValue: string;
   monthValue: string;
   yearValue: string;
+  dateValue?: T;
 }
 
 export interface Month {
@@ -161,9 +177,12 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
   private _selectedDate?: T | null;
 
   /** A function used to filter out dates. */
-  @property({ attribute: 'date-filter' }) public accessor dateFilter:
-    | ((date: T | null) => boolean)
-    | null = null;
+  @property({ attribute: 'date-filter' })
+  public accessor dateFilter: ((date: T | null) => boolean) | null = null;
+
+  /** The orientation of days in the calendar. */
+  @property({ reflect: true }) public accessor orientation: 'horizontal' | 'vertical' =
+    'horizontal';
 
   private _dateAdapter: DateAdapter<T> = readConfig().datetime?.dateAdapter ?? defaultDateAdapter;
 
@@ -192,11 +211,20 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
 
   private _nextCalendarView: CalendarView = 'day';
 
+  /** Information about the rendered day view; used in keyboard navigation. */
+  private _keyboardNavigationDayViewParameters: CalendarKeyboardNavigationDayViewParameters = {
+    firstDayInView: null,
+    lastDayInView: null,
+    firstMonthOffset: 0,
+    firstMonthLength: 0,
+    secondMonthOffset: 0,
+  };
+
   /** A list of days, in two formats (long and single char). */
   private _weekdays!: Weekday[];
 
   /** Grid of calendar cells representing the dates of the month. */
-  private _weeks: Day[][] = [];
+  private _weeks: Day<T>[][] = [];
 
   /** Grid of calendar cells representing months. */
   private _months!: Month[][];
@@ -208,7 +236,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
   private _nextMonthYears!: number[][];
 
   /** Grid of calendar cells representing the dates of the next month. */
-  private _nextMonthWeeks!: Day[][];
+  private _nextMonthWeeks!: Day<T>[][];
 
   /** An array containing all the month names in the current language. */
   private _monthNames: string[] = this._dateAdapter.getMonthNames('long');
@@ -272,7 +300,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
       return;
     }
 
-    if (changedProperties.has('wide')) {
+    if (changedProperties.has('wide') || changedProperties.has('orientation')) {
       this.resetPosition();
     }
 
@@ -317,7 +345,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     this._nextMonthYears = [[]];
     if (this._wide) {
       const nextMonthDate = this._dateAdapter.addCalendarMonths(this._activeDate, 1);
-      this._nextMonthWeeks = this._createWeekRows(nextMonthDate);
+      this._nextMonthWeeks = this._createWeekRows(nextMonthDate, true);
       this._nextMonthYears = this._createYearRows(YEARS_PER_PAGE);
     }
     this._initialized = true;
@@ -345,12 +373,58 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     this._weekdays = weekdays.slice(firstDayOfWeek).concat(weekdays.slice(0, firstDayOfWeek));
   }
 
-  /** Creates the rows for each week. */
-  private _createWeekRows(value: T): Day[][] {
-    const daysInMonth: number = this._dateAdapter.getNumDaysInMonth(value);
+  /** Creates the rows for each week and sets the parameters used in keyboard navigation. */
+  private _createWeekRows(value: T, isSecondMonthInView = false): Day<T>[][] {
     const dateNames: string[] = this._dateAdapter.getDateNames();
-    const weeks: Day[][] = [[]];
-    const weekOffset = this._dateAdapter.getFirstWeekOffset(value);
+    const daysInMonth: number = this._dateAdapter.getNumDaysInMonth(value);
+    const weekOffset: number = this._dateAdapter.getFirstWeekOffset(value);
+    if (!isSecondMonthInView) {
+      this._keyboardNavigationDayViewParameters.firstMonthLength = daysInMonth;
+      this._keyboardNavigationDayViewParameters.firstMonthOffset = weekOffset;
+      this._keyboardNavigationDayViewParameters.firstDayInView = this._dateAdapter.toIso8601(
+        this._dateAdapter.createDate(
+          this._dateAdapter.getYear(value),
+          this._dateAdapter.getMonth(value),
+          1,
+        ),
+      );
+      this._keyboardNavigationDayViewParameters.lastDayInView = this._dateAdapter.toIso8601(
+        this._dateAdapter.createDate(
+          this._dateAdapter.getYear(value),
+          this._dateAdapter.getMonth(value),
+          daysInMonth,
+        ),
+      );
+    } else {
+      this._keyboardNavigationDayViewParameters.secondMonthOffset = weekOffset;
+      this._keyboardNavigationDayViewParameters.lastDayInView = this._dateAdapter.toIso8601(
+        this._dateAdapter.createDate(
+          this._dateAdapter.getYear(value),
+          this._dateAdapter.getMonth(value),
+          daysInMonth,
+        ),
+      );
+    }
+    return this.orientation === 'horizontal'
+      ? this._createWeekRowsHorizontal(value, dateNames, daysInMonth, weekOffset)
+      : this._createWeekRowsVertical(value, dateNames, daysInMonth, weekOffset);
+  }
+
+  /**
+   * Creates the rows for each week in orientation='horizontal'.
+   *
+   * Iterates through the days of the months, creates a Day object for each and pushes it into and array.
+   * Each seven days (considering the offset at the beginning of the month) restarts from an empty array.
+   *
+   * The result is a matrix in which every row is a week (or part of it, considering offset).
+   */
+  private _createWeekRowsHorizontal(
+    value: T,
+    dateNames: string[],
+    daysInMonth: number,
+    weekOffset: number,
+  ): Day<T>[][] {
+    const weeks: Day<T>[][] = [[]];
     for (let i = 0, cell = weekOffset; i < daysInMonth; i++, cell++) {
       if (cell === DAYS_PER_ROW) {
         weeks.push([]);
@@ -363,6 +437,48 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
       )!;
       weeks[weeks.length - 1].push({
         value: this._dateAdapter.toIso8601(date),
+        dateValue: date,
+        dayValue: dateNames[i],
+        monthValue: String(this._dateAdapter.getMonth(date)),
+        yearValue: String(this._dateAdapter.getYear(date)),
+      });
+    }
+    return weeks;
+  }
+
+  /**
+   * Creates the rows for each week in orientation='vertical'.
+   *
+   * Creates a matrix with seven empty rows.
+   * Iterates through the days of the months, creates a Day object for each
+   * and pushes it into the correct array considering the offset at the beginning of the month.
+   * Each seven days (including offset) restarts from the first.
+   *
+   * The result is a matrix in which every row is a set of weekdays, so:
+   * - row 0: all the Mondays;
+   * - row 1: all the Tuesdays;
+   * - ...
+   * - row 7: all the Sundays.
+   */
+  private _createWeekRowsVertical(
+    value: T,
+    dateNames: string[],
+    daysInMonth: number,
+    weekOffset: number,
+  ): Day<T>[][] {
+    const weeks: Day<T>[][] = Array.from({ length: DAYS_PER_ROW }, () => []);
+    for (let i = 0, cell = weekOffset; i < daysInMonth; i++, cell++) {
+      if (cell === DAYS_PER_ROW) {
+        cell = 0;
+      }
+      const date = this._dateAdapter.createDate(
+        this._dateAdapter.getYear(value),
+        this._dateAdapter.getMonth(value),
+        i + 1,
+      )!;
+      weeks[cell].push({
+        value: this._dateAdapter.toIso8601(date),
+        dateValue: date,
         dayValue: dateNames[i],
         monthValue: String(this._dateAdapter.getMonth(date)),
         yearValue: String(this._dateAdapter.getYear(date)),
@@ -441,6 +557,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     return !(isBeforeMin || isAfterMax);
   }
 
+  /** Checks if date is within the min-max range in month view. */
   private _isMonthInRange(month: number, year: number): boolean {
     if (!this.min && !this.max) {
       return true;
@@ -461,6 +578,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     return !(isBeforeMin || isAfterMax);
   }
 
+  /** Checks if date is within the min-max range in year view. */
   private _isYearInRange(year: number): boolean {
     if (!this.min && !this.max) {
       return true;
@@ -598,6 +716,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     return this._nextDisabled(nextMonth);
   }
 
+  /** Checks if the "previous year" button should be disabled. */
   private _previousYearDisabled(): boolean {
     const prevYear = this._dateAdapter.createDate(
       this._dateAdapter.getYear(this._activeDate) - 1,
@@ -607,6 +726,7 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     return this._prevDisabled(prevYear);
   }
 
+  /** Checks if the "next year" button should be disabled. */
   private _nextYearDisabled(): boolean {
     const nextYear = this._dateAdapter.createDate(
       this._dateAdapter.getYear(this._activeDate) + (this._wide ? 2 : 1),
@@ -616,11 +736,13 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     return this._nextDisabled(nextYear);
   }
 
+  /** Checks if the "previous year" button should be disabled in year view. */
   private _previousYearRangeDisabled(): boolean {
     const prevYear = this._dateAdapter.createDate(this._years[0][0] - 1, 12, 31);
     return this._prevDisabled(prevYear);
   }
 
+  /** Checks if the "next year" button should be disabled in year view. */
   private _nextYearRangeDisabled(): boolean {
     const years = this._wide ? this._nextMonthYears : this._years;
     const lastYearRange = years[years.length - 1];
@@ -645,24 +767,43 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     }
   }
 
+  /** Get the element in the calendar to assign focus. */
   private _getFirstFocusable(): HTMLButtonElement {
     const active = this._selected ? this._dateAdapter.deserialize(this._selected)! : this.now;
     let firstFocusable =
       this.shadowRoot!.querySelector('.sbb-calendar__selected') ??
-      this.shadowRoot!.querySelector(
-        `[data-day="${this._dateAdapter.getDate(active)} ${this._dateAdapter.getMonth(
-          active,
-        )} ${this._dateAdapter.getYear(active)}"]`,
-      ) ??
+      this.shadowRoot!.querySelector(`[value="${this._dateAdapter.toIso8601(active)}"]`) ??
       this.shadowRoot!.querySelector(`[data-month="${this._dateAdapter.getMonth(active)}"]`) ??
       this.shadowRoot!.querySelector(`[data-year="${this._dateAdapter.getYear(active)}"]`);
     if (!firstFocusable || (firstFocusable as HTMLButtonElement)?.disabled) {
-      firstFocusable = this.shadowRoot!.querySelector('.sbb-calendar__cell:not([disabled])');
+      firstFocusable =
+        this._calendarView === 'day'
+          ? this._getFirstFocusableDay()
+          : this.shadowRoot!.querySelector('.sbb-calendar__cell:not([disabled])');
     }
     return (firstFocusable as HTMLButtonElement) || null;
   }
 
-  private _handleKeyboardEvent(event: KeyboardEvent, day?: Day): void {
+  /**
+   * In `day` view in `vertical` orientation,
+   * if the first of the month is not a Monday, it is not the first rendered element in the table,
+   * so `this.shadowRoot!.querySelector('.sbb-calendar__cell:not([disabled])')` will return a wrong value.
+   *
+   * To solve this, the element with the lowest `value` is taken (ISO String are ordered).
+   */
+  private _getFirstFocusableDay(): HTMLButtonElement | null {
+    const daysInView: HTMLButtonElement[] = Array.from(
+      this.shadowRoot!.querySelectorAll('.sbb-calendar__cell:not([disabled])'),
+    );
+    if (!daysInView || daysInView.length === 0) {
+      return null;
+    } else {
+      const firstElement = daysInView.map((e: HTMLButtonElement): string => e.value).sort()[0];
+      return this.shadowRoot!.querySelector(`.sbb-calendar__cell[value="${firstElement}"]`);
+    }
+  }
+
+  private _handleKeyboardEvent(event: KeyboardEvent, day?: Day<T>): void {
     if (isArrowKeyOrPageKeysPressed(event)) {
       event.preventDefault();
     }
@@ -671,13 +812,169 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     // If `wide` is true, years are doubled in number and days are (roughly) doubled too, affecting the `index` calculation.
     const cells: HTMLButtonElement[] = this._cells;
     const index: number = cells.findIndex((e: HTMLButtonElement) => e === event.target);
-    const nextEl: HTMLButtonElement = this._navigateByKeyboard(event, index, cells, day);
+    let nextEl: HTMLButtonElement;
+    if (day) {
+      nextEl = this._navigateByKeyboardDayView(event, index, cells, day);
+    } else {
+      nextEl = this._navigateByKeyboard(event, index, cells);
+    }
     const activeEl: HTMLButtonElement = this.shadowRoot!.activeElement as HTMLButtonElement;
     if (nextEl !== activeEl) {
       (nextEl as HTMLButtonElement).tabIndex = 0;
       nextEl?.focus();
       (activeEl as HTMLButtonElement).tabIndex = -1;
     }
+  }
+
+  private _navigateByKeyboardDayView(
+    evt: KeyboardEvent,
+    index: number,
+    cells: HTMLButtonElement[],
+    day: Day<T>,
+  ): HTMLButtonElement {
+    const arrowsOffset =
+      this.orientation === 'horizontal'
+        ? { leftRight: 1, upDown: DAYS_PER_ROW }
+        : { leftRight: DAYS_PER_ROW, upDown: 1 };
+    const offsetForVertical: number =
+      index < this._keyboardNavigationDayViewParameters.firstMonthLength
+        ? this._keyboardNavigationDayViewParameters.firstMonthOffset
+        : this._keyboardNavigationDayViewParameters.secondMonthOffset;
+
+    switch (evt.key) {
+      case 'ArrowUp':
+        return this._findDayArrows(cells, index, day.dateValue!, -arrowsOffset.upDown);
+      case 'ArrowDown':
+        return this._findDayArrows(cells, index, day.dateValue!, arrowsOffset.upDown);
+      case 'ArrowLeft':
+        return this._findDayArrows(cells, index, day.dateValue!, -arrowsOffset.leftRight);
+      case 'ArrowRight':
+        return this._findDayArrows(cells, index, day.dateValue!, arrowsOffset.leftRight);
+      case 'PageUp': {
+        if (this.orientation === 'horizontal') {
+          const firstOfWeek: number = +day.dayValue % DAYS_PER_ROW || DAYS_PER_ROW;
+          const delta: number = firstOfWeek - +day.dayValue;
+          return this._findDayPageUpDown(cells, index, day, delta, arrowsOffset.upDown);
+        } else {
+          const weekNumber: number = Math.ceil((+day.dayValue + offsetForVertical) / DAYS_PER_ROW);
+          const firstOfWeek: number = (weekNumber - 1) * DAYS_PER_ROW - offsetForVertical + 1;
+          const delta: number = firstOfWeek - +day.dayValue;
+          return this._findDayPageUpDown(cells, index, day, delta, arrowsOffset.upDown);
+        }
+      }
+      case 'PageDown': {
+        if (this.orientation === 'horizontal') {
+          const monthInBounds = +day.monthValue + 1 > 12 ? 1 : +day.monthValue + 1;
+          const yearInBounds = +day.monthValue + 1 > 12 ? +day.yearValue + 1 : +day.yearValue;
+          const firstNextMonth: T = this._dateAdapter.createDate(yearInBounds, monthInBounds, 1);
+          const lastOfMonth: number = this._dateAdapter.getDate(
+            this._dateAdapter.addCalendarDays(firstNextMonth, -1),
+          );
+          const delta: number =
+            Math.trunc((lastOfMonth - +day.dayValue!) / DAYS_PER_ROW) * DAYS_PER_ROW;
+          return this._findDayPageUpDown(cells, index, day, delta, -arrowsOffset.upDown);
+        } else {
+          const weekNumber: number = Math.ceil((+day.dayValue + offsetForVertical) / DAYS_PER_ROW);
+          const lastOfWeek: number = weekNumber * DAYS_PER_ROW - offsetForVertical;
+          const delta: number = lastOfWeek - +day.dayValue;
+          return this._findDayPageUpDown(cells, index, day, delta, -arrowsOffset.upDown);
+        }
+      }
+      case 'Home': {
+        return this._findDayFirst(cells, index, day, 1);
+      }
+      case 'End': {
+        const monthInBounds = +day.monthValue + 1 > 12 ? 1 : +day.monthValue + 1;
+        const yearInBounds = +day.monthValue + 1 > 12 ? +day.yearValue + 1 : +day.yearValue;
+        const firstNextMonth: T = this._dateAdapter.createDate(yearInBounds, monthInBounds, 1);
+        return this._findDayLast(cells, index, firstNextMonth);
+      }
+      default:
+        return cells[index];
+    }
+  }
+
+  private _isDayOutOfView(date: string): boolean {
+    return (
+      date < this._keyboardNavigationDayViewParameters.firstDayInView! ||
+      date > this._keyboardNavigationDayViewParameters.lastDayInView!
+    );
+  }
+
+  private _findDayArrows(
+    cells: HTMLButtonElement[],
+    index: number,
+    date: T,
+    delta: number,
+  ): HTMLButtonElement {
+    const newDateValue = this._dateAdapter.toIso8601(
+      this._dateAdapter.addCalendarDays(date, delta),
+    );
+    if (this._isDayOutOfView(newDateValue)) {
+      return cells[index];
+    }
+    const nextCell = cells.find((e) => e.value === newDateValue);
+    if (!nextCell || nextCell.disabled) {
+      return this._findDayArrows(cells, index, this._dateAdapter.deserialize(newDateValue)!, delta);
+    }
+    return nextCell;
+  }
+
+  private _findDayPageUpDown(
+    cells: HTMLButtonElement[],
+    index: number,
+    day: Day<T>,
+    delta: number,
+    deltaIfDisabled: number,
+  ): HTMLButtonElement {
+    const newDateValue = this._dateAdapter.toIso8601(
+      this._dateAdapter.addCalendarDays(day.dateValue!, delta),
+    );
+    if (this._isDayOutOfView(newDateValue)) {
+      return cells[index];
+    }
+    const nextCell = cells.find((e) => e.value === newDateValue);
+    if (!nextCell || nextCell.disabled) {
+      return this._findDayPageUpDown(cells, index, day, delta + deltaIfDisabled, deltaIfDisabled);
+    }
+    return nextCell;
+  }
+
+  private _findDayFirst(
+    cells: HTMLButtonElement[],
+    index: number,
+    day: Day<T>,
+    date: number,
+  ): HTMLButtonElement {
+    const newDateValue = this._dateAdapter.toIso8601(
+      this._dateAdapter.createDate(+day.yearValue, +day.monthValue, date),
+    );
+    if (this._isDayOutOfView(newDateValue)) {
+      return cells[index];
+    }
+    const nextCell = cells.find((e) => e.value === newDateValue);
+    if (!nextCell || nextCell.disabled) {
+      return this._findDayFirst(cells, index, day, date + 1);
+    }
+    return nextCell;
+  }
+
+  private _findDayLast(
+    cells: HTMLButtonElement[],
+    index: number,
+    firstNextMonth: T,
+  ): HTMLButtonElement {
+    const newDateValue = this._dateAdapter.toIso8601(
+      this._dateAdapter.addCalendarDays(firstNextMonth, -1),
+    );
+    if (this._isDayOutOfView(newDateValue)) {
+      return cells[index];
+    }
+    const nextCell = cells.find((e) => e.value === newDateValue);
+    if (!nextCell || nextCell.disabled) {
+      return this._findDayLast(cells, index, this._dateAdapter.deserialize(newDateValue)!);
+    }
+    return nextCell;
   }
 
   /**
@@ -690,18 +987,14 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
     evt: KeyboardEvent,
     index: number,
     cells: HTMLButtonElement[],
-    day?: Day,
   ): HTMLButtonElement {
     const {
       elementIndexForWideMode,
       offsetForWideMode,
       lastElementIndexForWideMode,
       verticalOffset,
-    }: CalendarKeyboardNavigationParameters = this._calculateParametersForKeyboardNavigation(
-      cells,
-      index,
-      day,
-    );
+    }: CalendarKeyboardNavigationMonthYearViewsParameters =
+      this._calculateParametersForKeyboardNavigation(index, this._calendarView === 'year');
 
     switch (evt.key) {
       case 'ArrowUp':
@@ -731,56 +1024,23 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
   }
 
   /**
-   * Calculates the parameter needed in keyboard navigation.
-   * Since three views are now available, the function creates and returns the correct parameters for each of them
-   * by considering the number of cells per each row and the correction for the wide mode.
-   * @param cells The array of rendered table cells; they are buttons that can represent days, months or years.
+   * Calculates the parameters needed in keyboard navigation in year and month view.
    * @param index The starting element's index in the cell array.
-   * @param day (optional) Only in the day view, the day represented by the starting cell.
+   * @param isYearView Whether the displayed `view` is the year one.
    */
   private _calculateParametersForKeyboardNavigation(
-    cells: HTMLButtonElement[],
     index: number,
-    day?: Day,
-  ): CalendarKeyboardNavigationParameters {
-    switch (this._calendarView) {
-      case 'day': {
-        const indexInView = +day!.dayValue - 1;
-        return {
-          verticalOffset: DAYS_PER_ROW,
-          elementIndexForWideMode: indexInView,
-          offsetForWideMode: index - indexInView,
-          lastElementIndexForWideMode:
-            index === indexInView
-              ? this._dateAdapter.getNumDaysInMonth(
-                  this._dateAdapter.addCalendarMonths(
-                    this._dateAdapter.deserialize(day!.value)!,
-                    -1,
-                  ),
-                )
-              : cells.length,
-        };
-      }
-      // Month view is not dependent from `wide` value, so some parameters are fixed.
-      case 'month': {
-        return {
-          verticalOffset: MONTHS_PER_ROW,
-          elementIndexForWideMode: index,
-          offsetForWideMode: 0,
-          lastElementIndexForWideMode: 12,
-        };
-      }
-      case 'year': {
-        const offset: number = Math.trunc(index / YEARS_PER_PAGE) * YEARS_PER_PAGE;
-        const indexInView: number = offset === 0 ? index : index - YEARS_PER_PAGE;
-        return {
-          verticalOffset: YEARS_PER_ROW,
-          elementIndexForWideMode: indexInView,
-          offsetForWideMode: index - indexInView,
-          lastElementIndexForWideMode: offset === 0 ? YEARS_PER_PAGE : YEARS_PER_PAGE * 2,
-        };
-      }
-    }
+    isYearView: boolean,
+  ): CalendarKeyboardNavigationMonthYearViewsParameters {
+    const elementsPerPage = isYearView ? YEARS_PER_PAGE : MONTHS_PER_PAGE;
+    const offset: number = Math.trunc(index / elementsPerPage) * elementsPerPage;
+    const indexInView: number = offset === 0 ? index : index - elementsPerPage;
+    return {
+      verticalOffset: isYearView ? YEARS_PER_ROW : MONTHS_PER_ROW,
+      elementIndexForWideMode: indexInView,
+      offsetForWideMode: index - indexInView,
+      lastElementIndexForWideMode: offset === 0 ? elementsPerPage : elementsPerPage * 2,
+    };
   }
 
   /**
@@ -875,8 +1135,17 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
         )}
       </div>
       <div class="sbb-calendar__table-container sbb-calendar__table-day-view">
-        ${this._createDayTable(this._weeks)}
-        ${this._wide ? this._createDayTable(this._nextMonthWeeks) : nothing}
+        ${this.orientation === 'horizontal'
+          ? html`
+              ${this._createDayTable(this._weeks)}
+              ${this._wide ? this._createDayTable(this._nextMonthWeeks) : nothing}
+            `
+          : html`
+              ${this._createDayTableVertical(this._weeks)}
+              ${this._wide
+                ? this._createDayTableVertical(this._nextMonthWeeks, nextMonthActiveDate)
+                : nothing}
+            `}
       </div>
     `;
   }
@@ -917,7 +1186,8 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
   }
 
   /** Creates the calendar table for the daily view. */
-  private _createDayTable(weeks: Day[][]): TemplateResult {
+  private _createDayTable(weeks: Day<T>[][]): TemplateResult {
+    const today: string = this._dateAdapter.toIso8601(this.now);
     return html`
       <table
         class="sbb-calendar__table"
@@ -927,60 +1197,80 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
       >
         <thead class="sbb-calendar__table-header">
           <tr class="sbb-calendar__table-header-row">
-            ${this._createDayTableHeader()}
+            ${this._weekdays.map(
+              (day: Weekday) => html`
+                <th class="sbb-calendar__table-header">
+                  <sbb-screen-reader-only>${day.long}</sbb-screen-reader-only>
+                  <span aria-hidden="true">${day.narrow}</span>
+                </th>
+              `,
+            )}
           </tr>
         </thead>
         <tbody class="sbb-calendar__table-body">
-          ${this._createDayTableBody(weeks)}
+          ${weeks.map((week: Day<T>[], rowIndex: number) => {
+            const firstRowOffset: number = DAYS_PER_ROW - week.length;
+            if (rowIndex === 0 && firstRowOffset) {
+              return html`
+                <tr>
+                  ${[...Array(firstRowOffset).keys()].map(
+                    () => html`<td class="sbb-calendar__table-data"></td>`,
+                  )}
+                  ${this._createDayCells(week, today)}
+                </tr>
+              `;
+            }
+            return html`<tr>
+              ${this._createDayCells(week, today)}
+            </tr>`;
+          })}
         </tbody>
       </table>
     `;
   }
 
-  /** Creates the table header with the month header cells. */
-  private _createDayTableHeader(): TemplateResult[] {
-    return this._weekdays.map(
-      (day: Weekday) => html`
-        <th class="sbb-calendar__table-header">
-          <sbb-screen-reader-only>${day.long}</sbb-screen-reader-only>
-          <span aria-hidden="true">${day.narrow}</span>
-        </th>
-      `,
-    );
-  }
-
-  /** Creates the table body with the day cells. For the first row, it also considers the possible day's offset. */
-  private _createDayTableBody(weeks: Day[][]): TemplateResult[] {
+  /* Creates the table in orientation='vertical'. */
+  private _createDayTableVertical(weeks: Day<T>[][], nextMonthActiveDate?: T): TemplateResult {
     const today: string = this._dateAdapter.toIso8601(this.now);
-    return weeks.map((week: Day[], rowIndex: number) => {
-      const firstRowOffset: number = DAYS_PER_ROW - week.length;
-      if (rowIndex === 0 && firstRowOffset) {
-        return html`
-          <tr>
-            ${[...Array(firstRowOffset).keys()].map(
-              () =>
-                html`<td
-                  class="sbb-calendar__table-data"
-                  data-day=${`0 ${week[0].monthValue} ${week[0].yearValue}`}
-                ></td>`,
-            )}
-            ${this._createDayCells(week, today)}
-          </tr>
-        `;
-      }
-      return html`<tr>
-        ${this._createDayCells(week, today)}
-      </tr>`;
-    });
+    const weekOffset = this._dateAdapter.getFirstWeekOffset(
+      nextMonthActiveDate ?? this._activeDate,
+    );
+    return html`
+      <table
+        class="sbb-calendar__table"
+        @focusout=${(event: FocusEvent) =>
+          this._handleTableBlur(event.relatedTarget as HTMLElement)}
+        @animationend=${(e: AnimationEvent) => this._tableAnimationEnd(e)}
+      >
+        <tbody class="sbb-calendar__table-body">
+          ${weeks.map((week: Day<T>[], rowIndex: number) => {
+            const weekday = this._weekdays[rowIndex];
+            return html`
+              <tr>
+                ${!nextMonthActiveDate
+                  ? html` <td class="sbb-calendar__table-header">
+                      <sbb-screen-reader-only>${weekday.long}</sbb-screen-reader-only>
+                      <span aria-hidden="true">${weekday.narrow}</span>
+                    </td>`
+                  : nothing}
+                ${rowIndex < weekOffset
+                  ? html`<td class="sbb-calendar__table-data"></td>`
+                  : nothing}
+                ${this._createDayCells(week, today)}
+              </tr>
+            `;
+          })}
+        </tbody>
+      </table>
+    `;
   }
 
   /** Creates the cells for the daily view. */
-  private _createDayCells(week: Day[], today: string): TemplateResult[] {
-    return week.map((day: Day) => {
+  private _createDayCells(week: Day<T>[], today: string): TemplateResult[] {
+    return week.map((day: Day<T>) => {
       const isOutOfRange = !this._isDayInRange(day.value);
       const isFilteredOut = !this._dateFilter(this._dateAdapter.deserialize(day.value)!);
       const selected: boolean = !!this._selected && day.value === this._selected;
-      const dayValue = `${day.dayValue} ${day.monthValue} ${day.yearValue}`;
       const isToday = day.value === today;
       return html`
         <td
@@ -999,11 +1289,12 @@ class SbbCalendarElement<T = Date> extends SbbHydrationMixin(LitElement) {
             })}
             @click=${() => this._selectDate(day.value)}
             ?disabled=${isOutOfRange || isFilteredOut}
+            value=${day.value}
+            type="button"
             aria-label=${this._dateAdapter.getAccessibilityFormatDate(day.value)}
             aria-pressed=${selected}
             aria-disabled=${isOutOfRange || isFilteredOut}
             aria-current=${isToday ? 'date' : nothing}
-            data-day=${dayValue || nothing}
             tabindex="-1"
             @keydown=${(evt: KeyboardEvent) => this._handleKeyboardEvent(evt, day)}
             sbb-popover-close

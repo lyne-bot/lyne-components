@@ -1,6 +1,7 @@
 export const DAYS_PER_ROW: number = 7;
 export const MONTHS_PER_ROW: number = 4;
 export const YEARS_PER_ROW: number = 4;
+export const MONTHS_PER_PAGE: number = 12;
 export const YEARS_PER_PAGE: number = 24;
 export const FORMAT_DATE =
   /(^0?[1-9]?|[12]?[0-9]?|3?[01]?)[.,\\/\-\s](0?[1-9]?|1?[0-2]?)?[.,\\/\-\s](\d{1,4}$)?/;

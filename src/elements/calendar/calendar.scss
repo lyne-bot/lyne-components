@@ -145,6 +145,23 @@
     );
     --sbb-calendar-margin: calc(0.5 * var(--sbb-calendar-start-offset));
   }
+
+  // The container's min-width is set in vertical mode;
+  // the value `calc(7 * var(--sbb-calendar-cell-size))` is fine
+  // considering that the maximum number of weeks in a month is 6, plus 1 for the header at the table's left side.
+  :host([orientation='vertical']) & {
+    min-width: var(--sbb-calendar-min-width);
+
+    // The variable that defines the margin is set to 0 to correctly display the table if consumers set a custom width.
+    --sbb-calendar-start-offset: 0;
+  }
+
+  // The min-width in wide is calculated as (max number of weeks in a month) * (displayed months) + (header column) = 6 * 2 + 1 = 13.
+  :host([orientation='vertical'][data-wide]) & {
+    --sbb-calendar-min-width: calc(
+      13 * var(--sbb-calendar-cell-size) + var(--sbb-calendar-tables-gap)
+    );
+  }
 }
 
 .sbb-calendar__table {
@@ -179,10 +196,17 @@
   color: var(--sbb-calendar-header-color);
   width: var(--sbb-calendar-cell-size);
   padding: 0;
-  padding-block-end: var(--sbb-spacing-fixed-4x);
 
   // Depending where in the DOM it's used, it's possible that browser defaults set text-align to left.
   text-align: center;
+
+  :host([orientation='horizontal']) & {
+    padding-block-end: var(--sbb-spacing-fixed-4x);
+  }
+
+  :host([orientation='vertical']) & {
+    padding-inline-end: var(--sbb-spacing-fixed-1x);
+  }
 }
 
 .sbb-calendar__table-data {

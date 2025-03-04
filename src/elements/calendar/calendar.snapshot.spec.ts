@@ -26,4 +26,26 @@ describe(`sbb-calendar`, () => {
 
     testA11yTreeSnapshot();
   });
+
+  describe('renders vertical', () => {
+    let element: SbbCalendarElement;
+
+    beforeEach(async () => {
+      element = await fixture(html`
+        <sbb-calendar
+          selected="2023-01-20T00:00:00"
+          now="2023-01-04T00:00:00"
+          orientation="vertical"
+        ></sbb-calendar>
+      `);
+    });
+
+    it('DOM', async () => {
+      await expect(element).dom.to.be.equalSnapshot();
+    });
+
+    it('Shadow DOM', async () => {
+      await expect(element).shadowDom.to.be.equalSnapshot();
+    });
+  });
 });
