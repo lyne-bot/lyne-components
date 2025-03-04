@@ -5,34 +5,52 @@ import {
   describeViewports,
   visualDiffDefault,
   visualDiffStandardStates,
+  visualRegressionFixture,
 } from '../../core/testing/private.js';
 
 import './block-link.js';
 
 describe(`sbb-block-link`, () => {
+  const cases = {
+    negative: [false, true],
+    active: [false, true],
+    forcedColors: [false, true],
+  };
+
   const iconState = {
     iconPlacement: ['start', 'end'],
     slotted: [false, true],
   };
 
   describeViewports({ viewports: ['zero', 'medium'] }, () => {
-    for (const negative of [true, false]) {
+    describeEach(cases, ({ negative, active, forcedColors }) => {
+      let root: HTMLElement;
+
+      beforeEach(async function () {
+        root = await visualRegressionFixture(
+          html`<sbb-block-link
+            href="#"
+            ?negative=${negative}
+            class=${active ? 'sbb-active' : nothing}
+          >
+            Travelcards & tickets
+          </sbb-block-link>`,
+          {
+            backgroundColor: negative ? 'var(--sbb-color-charcoal)' : undefined,
+            forcedColors,
+          },
+        );
+      });
+
       for (const state of visualDiffStandardStates) {
         it(
-          `negative=${negative} ${state.name}`,
-          state.with(async (setup) => {
-            await setup.withFixture(
-              html`<sbb-block-link href="#" ?negative=${negative}
-                >Travelcards & tickets</sbb-block-link
-              >`,
-              {
-                backgroundColor: negative ? 'var(--sbb-color-charcoal)' : undefined,
-              },
-            );
+          state.name,
+          state.with((setup) => {
+            setup.withSnapshotElement(root);
           }),
         );
       }
-    }
+    });
 
     describeEach(iconState, ({ iconPlacement, slotted }) => {
       it(

@@ -30,6 +30,20 @@
   --sbb-link-color-active: var(--sbb-color-silver);
 }
 
+// To display a current active page, e.g. if the CSS class sbb-active is set
+@mixin block-link-variables--active {
+  --sbb-link-color-normal: var(--sbb-color-black);
+  --sbb-link-text-decoration: underline;
+  --sbb-link-text-decoration-color: currentcolor;
+}
+
+// To display a current active page, e.g. if the CSS class sbb-active is set
+@mixin block-link-variables--active-negative {
+  --sbb-link-color-normal: var(--sbb-color-cement);
+  --sbb-link-text-decoration: underline;
+  --sbb-link-text-decoration-color: currentcolor;
+}
+
 @mixin link-variables {
   @include link-common-variables;
 

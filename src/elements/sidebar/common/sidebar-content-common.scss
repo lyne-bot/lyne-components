@@ -1,0 +1,15 @@
+@use '../../core/styles/index' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  position: relative;
+  display: block;
+  height: 100%;
+  overflow: auto;
+
+  // If the element is scrollable but has no focusable content, the it gets focused.
+  // To adapt to lyne styles we colorize it
+  outline-color: var(--sbb-focus-outline-color);
+}

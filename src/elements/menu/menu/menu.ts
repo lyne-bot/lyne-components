@@ -297,6 +297,9 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
     super.connectedCallback();
     // Validate trigger element and attach event listeners
     this._configure(this.trigger);
+    if (this.isOpen) {
+      this._inertController.activate();
+    }
   }
 
   public override disconnectedCallback(): void {

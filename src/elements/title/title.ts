@@ -1,6 +1,8 @@
 import type { CSSResultGroup } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
+import { SbbNegativeMixin } from '../core/mixins.js';
+
 import { SbbTitleBase } from './title-base.js';
 import style from './title.scss?lit&inline';
 
@@ -10,7 +12,7 @@ import style from './title.scss?lit&inline';
  */
 export
 @customElement('sbb-title')
-class SbbTitleElement extends SbbTitleBase {
+class SbbTitleElement extends SbbNegativeMixin(SbbTitleBase) {
   public static override styles: CSSResultGroup = [SbbTitleBase.styles, style];
 }
 

@@ -366,6 +366,9 @@ class SbbNavigationElement extends SbbUpdateSchedulerMixin(SbbOpenCloseBaseEleme
     super.connectedCallback();
     this.id ||= `sbb-navigation-${nextId++}`;
     this._configure(this.trigger);
+    if (this.isOpen) {
+      this._inertController.activate();
+    }
   }
 
   public override disconnectedCallback(): void {

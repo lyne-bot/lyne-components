@@ -1,0 +1,116 @@
+@use '../../core/styles/index' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  display: block;
+  width: #{sbb.px-to-rem-build(320)};
+
+  --sbb-link-text-decoration: none;
+  --sbb-sidebar-background-color: var(--sbb-color-white);
+  --sbb-sidebar-title-padding-block: var(--sbb-spacing-fixed-3x);
+  --sbb-sidebar-padding: var(--sbb-spacing-responsive-xs);
+  --sbb-sidebar-scrollbar-placeholder-width: var(--sbb-spacing-fixed-3x);
+  --sbb-sidebar-border-radius: var(--sbb-border-radius-8x);
+  --sbb-sidebar-margin: var(--sbb-spacing-fixed-3x);
+  --sbb-sidebar__margin: 0;
+  --sbb-sidebar__margin-block-start: var(--sbb-sidebar-margin);
+  --sbb-sidebar__translate-x: -100%;
+  --sbb-sidebar__z-index: 2;
+  --sbb-sidebar__padding-inline-end: var(--sbb-sidebar-padding);
+  --sbb-sidebar__padding-block-start: var(--sbb-sidebar-padding);
+  --sbb-sidebar__border-radius-start: var(--sbb-sidebar-border-radius);
+  --sbb-sidebar__border-radius-end: 0;
+
+  @supports (scrollbar-gutter: stable) {
+    --sbb-sidebar__padding-inline-end: calc(
+      var(--sbb-sidebar-padding) - var(--sbb-sidebar-scrollbar-placeholder-width)
+    );
+  }
+}
+
+:host([color='milk']) {
+  --sbb-sidebar-background-color: var(--sbb-color-milk);
+}
+
+:host(:is([mode='over'], [data-minimum-space]:not([data-minimum-space-closing]))) {
+  --sbb-sidebar__margin: var(--sbb-sidebar-margin);
+  --sbb-sidebar__border-radius-end: var(--sbb-sidebar-border-radius);
+  --sbb-sidebar__z-index: 3;
+}
+
+:host(:is(:dir(rtl), [position='end'])) {
+  --sbb-sidebar__translate-x: 100%;
+}
+
+:host(:dir(rtl)[position='end']) {
+  --sbb-sidebar__translate-x: -100%;
+}
+
+.sbb-sidebar {
+  width: inherit;
+  max-width: calc(100% - 2 * var(--sbb-sidebar__margin));
+  background-color: var(--sbb-sidebar-background-color);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  overflow: hidden;
+  inset-block: 0;
+  z-index: var(--sbb-sidebar__z-index);
+  border-start-start-radius: var(--sbb-sidebar__border-radius-start);
+  border-start-end-radius: var(--sbb-sidebar__border-radius-start);
+  border-end-start-radius: var(--sbb-sidebar__border-radius-end);
+  border-end-end-radius: var(--sbb-sidebar__border-radius-end);
+  margin: var(--sbb-sidebar__margin);
+  margin-block-start: var(--sbb-sidebar__margin-block-start);
+  transition-duration: var(--sbb-sidebar-container-animation-duration);
+  transition-timing-function: var(--sbb-sidebar-container-animation-easing);
+  transition-property: width, translate;
+  translate: none;
+
+  :host([position='end']) & {
+    inset-inline-end: 0;
+  }
+
+  :host([data-state='closed']) & {
+    // Stops the sidenav from poking out (e.g. with the box shadow) while it's off-screen.
+    // We can't use `display` because it interrupts the transition and `transition-behavior`
+    // isn't available in all browsers.
+    visibility: hidden;
+  }
+
+  :host(:is([data-state='closing'], [data-state='closed'])) & {
+    translate: var(--sbb-sidebar__translate-x) 0;
+  }
+}
+
+.sbb-sidebar-title-section {
+  background-color: var(--sbb-sidebar-background-color);
+  padding-inline: var(--sbb-sidebar-padding);
+  transition: box-shadow var(--sbb-animation-easing) var(--sbb-sidebar-container-animation-duration);
+  box-shadow: none;
+
+  :host([data-scrolled]) & {
+    @include sbb.shadow-level-5-soft;
+  }
+}
+
+.sbb-sidebar-content-section {
+  @include sbb.scrollbar;
+
+  & {
+    padding-block-start: var(--sbb-sidebar__padding-block-start);
+    padding-inline: var(--sbb-sidebar-padding) var(--sbb-sidebar__padding-inline-end);
+    overflow-y: auto;
+    flex-grow: 1;
+
+    // If the element is scrollable but has no focusable content, it gets focused.
+    // To adapt to lyne styles we colorize it
+    outline-color: var(--sbb-focus-outline-color);
+
+    @supports (scrollbar-gutter: stable) {
+      scrollbar-gutter: stable;
+    }
+  }
+}

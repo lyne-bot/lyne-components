@@ -1,0 +1,30 @@
+@use '../../core/styles' as sbb;
+
+:host {
+  --sbb-sidebar-title-gap: var(--sbb-spacing-fixed-2x);
+  --sbb-sidebar-title__close-button-size: var(--sbb-size-element-xs);
+  --sbb-sidebar-title__close-button-placeholder: calc(
+    var(--sbb-sidebar-title__close-button-size) + var(--sbb-sidebar-title-gap)
+  );
+
+  display: contents;
+}
+
+.sbb-title {
+  display: flex;
+  align-items: center;
+
+  // Variable inherited from sbb-sidebar
+  padding-block: var(--sbb-sidebar-title-padding-block);
+  min-height: calc(
+    var(--sbb-sidebar-title__close-button-size) + 2 * var(--sbb-sidebar-title-padding-block)
+  );
+  hyphens: auto;
+
+  // Overwrite sbb-title default margin
+  margin-block: 0 !important;
+
+  // Reserve space to the right to avoid colliding with the close button.
+  // --sbb-sidebar-title__close-button-placeholder is toggled in core.scss depending on presence of the close button
+  margin-inline-end: var(--sbb-sidebar-title__close-button-placeholder, 0) !important;
+}

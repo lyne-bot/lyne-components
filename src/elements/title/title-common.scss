@@ -12,10 +12,6 @@
   display: block;
 }
 
-:host([negative]) {
-  @include sbb.title--negative;
-}
-
 :host([id]) {
   @include sbb.scroll-margin-block-start;
 }

@@ -48,7 +48,7 @@
 }
 
 @include sbb.hover-mq($hover: true) {
-  :host(:hover:not(:active, [data-active], [aria-expanded='true'])) {
+  :host(:hover:not(:active, [data-active])) {
     --sbb-header-action-background-color: var(--sbb-color-milk);
     --sbb-header-action-translate-y: #{sbb.px-to-rem-build(-1)};
     --sbb-header-action-background-inset: calc(var(--sbb-border-width-2x) * -1);

@@ -7,6 +7,10 @@
   margin-block: var(--sbb-title-margin-block-start) var(--sbb-title-margin-block-end);
 }
 
+:host([negative]) {
+  @include sbb.title--negative;
+}
+
 :host(:where(:not([visually-hidden]))) {
   --sbb-title-margin-block-start: var(--sbb-spacing-responsive-m);
   --sbb-title-margin-block-end: var(--sbb-spacing-responsive-s);

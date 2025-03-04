@@ -42,6 +42,15 @@ The component has three sizes (`xs`, `s`, which is the default, and `m`).
 <sbb-block-link-button size="m">Refunds</sbb-block-link-button>
 ```
 
+### Active state
+
+To show a currently active link, the CSS class `sbb-active` can be placed on the `sbb-block-link-button`.
+One possible use case would be to use it within the `sbb-sidebar`.
+
+```html
+<sbb-block-link-button class="sbb-active" aria-current="page">Refunds</sbb-block-link-button>
+```
+
 ## Accessibility
 
 ### Interactive disabled buttons

@@ -1,0 +1,20 @@
+@use '../../core/styles/index' as sbb;
+
+:host {
+  // The variables have to be set to `initial`. Otherwise, in nested containers,
+  // outer variables can bleed into the inner container / content.
+  --sbb-sidebar-content__margin-inline-start: initial;
+  --sbb-sidebar-content__margin-inline-end: initial;
+
+  // The margin must be equal to the width of the sidebar
+  // either at the start (--sbb-sidebar-container__start-width) or at the end (--sbb-sidebar-content__margin-inline-end).
+  // However, in over mode, or if there is not enough space, the margin must be overridden to 0.
+  // Overriding is done in core.scss via the --sbb-sidebar-content__margin-inline-start / --sbb-sidebar-content__margin-inline-end variable.
+  margin-inline: var(
+      --sbb-sidebar-content__margin-inline-start,
+      var(--sbb-sidebar-container__start-width, 0)
+    )
+    var(--sbb-sidebar-content__margin-inline-end, var(--sbb-sidebar-container__end-width, 0));
+  transition: margin var(--sbb-sidebar-container-animation-duration)
+    var(--sbb-sidebar-container-animation-easing);
+}

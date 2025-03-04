@@ -61,6 +61,6 @@ If a back button is displayed it emits a `requestBackAction` event on click.
 
 ## Slots
 
-| Name | Description                                |
-| ---- | ------------------------------------------ |
-|      | Use the unnamed slot to display the title. |
+| Name | Description                                             |
+| ---- | ------------------------------------------------------- |
+|      | Use the unnamed slot to place the content of the title. |

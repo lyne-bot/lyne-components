@@ -6,6 +6,10 @@
   display: contents;
 }
 
+:host([negative]) {
+  @include sbb.title--negative;
+}
+
 :host([data-overflows]) {
   --sbb-dialog-title-padding-block: var(--sbb-spacing-responsive-s);
 }
