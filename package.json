@@ -62,6 +62,8 @@
     "test:csr": "yarn -s wtr --group default",
     "test:ssr": "yarn -s wtr --group ssr",
     "test:visual-regression": "yarn -s wtr --group visual-regression --all-browsers",
+    "// test:path usage": "yarn test:path ./src/elements/alert --watch",
+    "test:path": "./scripts/module-tests.sh",
     "test:playwright-server": "yarn -s ts-hooks tools/web-test-runner/start-playwright-server.ts",
     "wtr": "yarn -s ts-hooks node_modules/@web/test-runner/dist/bin.js --config=web-test-runner.config.ts",
     "ts-hooks": "node --no-deprecation --enable-source-maps --import ./tools/node-esm-hook/register-hooks.js",
