@@ -19,6 +19,7 @@ import '../../link.js';
 import '../../form-field.js';
 import '../../image.js';
 import '../../popover.js';
+import '../../stepper.js';
 import '../dialog-content.js';
 import '../dialog-actions.js';
 
@@ -380,6 +381,50 @@ const NestedTemplate = ({
   </sbb-dialog>
 `;
 
+const StepperTemplate = ({
+  level,
+  backButton,
+  hideOnScroll,
+  accessibilityCloseLabel,
+  accessibilityBackLabel,
+  ...args
+}: Args): TemplateResult => html`
+  ${triggerButton('stepper')}
+  <sbb-dialog id="stepper" ${sbbSpread(args)}>
+    ${dialogTitle(level, backButton, hideOnScroll, accessibilityCloseLabel, accessibilityBackLabel)}
+    <sbb-dialog-content>
+      <sbb-stepper linear orientation="horizontal" size="m">
+        ${['First', 'Second', 'Third', 'Fourth'].map(
+          (element, index, arr) => html`
+            <sbb-step-label>${element} step</sbb-step-label></sbb-step-label>
+            <sbb-step>
+              <div
+                tabindex="0"
+                class="sbb-focus-outline"
+                style="margin-block-end: var(--sbb-spacing-fixed-4x)"
+              >
+                ${element} step content
+              </div>
+              ${
+                index !== 0
+                  ? html`<sbb-secondary-button size="m" sbb-stepper-previous
+                      >Back</sbb-secondary-button
+                    >`
+                  : nothing
+              }
+              ${
+                index !== arr.length - 1
+                  ? html`<sbb-button size="m" sbb-stepper-next>Next</sbb-button>`
+                  : html`<sbb-button size="m" sbb-stepper-next>Submit</sbb-button>`
+              }
+            </sbb-step>
+          `,
+        )}
+      </sbb-stepper>
+    </sbb-dialog-content>
+  </sbb-dialog>
+`;
+
 export const Default: StoryObj = {
   render: DefaultTemplate,
   argTypes: basicArgTypes,
@@ -448,6 +493,12 @@ export const Nested: StoryObj = {
   render: NestedTemplate,
   argTypes: basicArgTypes,
   args: { ...basicArgs },
+};
+
+export const Stepper: StoryObj = {
+  render: StepperTemplate,
+  argTypes: basicArgTypes,
+  args: basicArgs,
 };
 
 const meta: Meta = {

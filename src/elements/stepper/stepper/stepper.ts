@@ -1,3 +1,4 @@
+import { IntersectionController } from '@lit-labs/observers/intersection-controller.js';
 import {
   type CSSResultGroup,
   html,
@@ -28,6 +29,22 @@ export
 @customElement('sbb-stepper')
 class SbbStepperElement extends SbbHydrationMixin(LitElement) {
   public static override styles: CSSResultGroup = style;
+
+  /**
+   * If the sbb-stepper is used in a sbb-dialog, the marker on the selected element will not appear,
+   * because the calculations are done when the dialog is closed, so the marker has a width of 0.
+   * We need to recalculate it when the element becomes visible.
+   */
+  private _observer = new IntersectionController(this, {
+    target: null,
+    callback: (entries) => {
+      entries.forEach((e) => {
+        if (e.intersectionRatio === 1) {
+          this._setMarkerSize();
+        }
+      });
+    },
+  });
 
   /** If set to true, only the current and previous labels can be clicked and selected. */
   @forceType()
@@ -272,7 +289,8 @@ class SbbStepperElement extends SbbHydrationMixin(LitElement) {
     super.firstUpdated(changedProperties);
     await this.updateComplete;
     this._loaded = true;
-    this.selectedIndex = !this.linear ? Number(this.getAttribute('selected-index')) || 0 : 0;
+    this.selectedIndex = this.linear ? 0 : Number(this.getAttribute('selected-index')) || 0;
+    this._observer.observe(this);
     this._checkOrientation();
     // Remove [data-disable-animation] after component init
     setTimeout(() => this.toggleAttribute('data-disable-animation', false), DEBOUNCE_TIME);
