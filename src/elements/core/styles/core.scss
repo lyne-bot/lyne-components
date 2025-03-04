@@ -2,11 +2,12 @@
   sbb-css-tokens;
 @use './core/mediaqueries';
 @use './core/functions';
-@use './mixins/font-face';
 @use './mixins/a11y';
+@use './mixins/font-face';
+@use './mixins/helpers';
+@use './mixins/inputs';
 @use './mixins/scrollbar';
 @use './mixins/typo';
-@use './mixins/helpers';
 
 @include helpers.box-sizing;
 
@@ -68,28 +69,79 @@ html {
   @include typo.placeholder;
 }
 
-// TODO: Remove if webkit bug is resolved: https://bugs.webkit.org/show_bug.cgi?id=223814
 sbb-form-field {
-  :where(input, textarea):disabled::placeholder {
+  :where(input, select, textarea, sbb-select) {
+    @include typo.text-m--regular;
+    @include helpers.ellipsis;
+    @include inputs.input-reset;
+
+    // Use !important here to not interfere with Firefox focus ring definition
+    // which appears in normalize CSS of several frameworks.
+    outline: none !important;
+    overflow: var(--sbb-form-field-overflow);
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--sbb-form-field-text-color);
+
+    // Fill color needed for Safari
+    -webkit-text-fill-color: var(--sbb-form-field-text-color);
+    opacity: 1;
+    background-color: transparent;
+
+    // To be more specific than the styles in normalize.scss we need to use !important
+    // TODO: Find a better solution
+    font-size: var(--sbb-form-field-input-text-size) !important;
+    font-family: var(--sbb-typo-font-family) !important;
+    line-height: var(--sbb-typo-line-height-body-text) !important;
+
+    &::placeholder {
+      @include typo.placeholder;
+    }
+  }
+
+  &[floating-label] :where(input, select, textarea, sbb-select)::placeholder {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+
+    @include a11y.if-forced-colors {
+      color: Canvas !important;
+      -webkit-text-fill-color: Canvas !important;
+    }
+  }
+
+  &:not([floating-label]) :where(input, select, textarea, sbb-select):disabled::placeholder {
     color: var(--sbb-color-granite);
     -webkit-text-fill-color: var(--sbb-color-granite);
   }
 
-  &[floating-label] :where(input, textarea)::placeholder {
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+  // Fix positioning issue for select which occurs in Safari
+  :where(select) {
+    vertical-align: middle;
+  }
 
-    @include a11y.if-forced-colors {
-      color: Canvas;
-      -webkit-text-fill-color: Canvas;
+  :where(select, sbb-select) {
+    padding-inline-end: var(--sbb-form-field-select-inline-padding-end);
+  }
+
+  :where(textarea) {
+    @include scrollbar.scrollbar;
+
+    & {
+      position: relative;
+      resize: none;
+
+      // White-space break needed for Firefox
+      white-space: break-spaces;
+      overflow-y: auto;
+      min-height: calc((var(--sbb-typo-line-height-body-text) * 1em));
     }
   }
 
-  textarea {
-    @include scrollbar.scrollbar;
+  &[size='l'] :where(textarea) {
+    padding-block-end: #{functions.px-to-rem-build(5.5)};
   }
 
-  &[negative] textarea {
+  &[negative] :where(textarea) {
     @include scrollbar.scrollbar($negative: true);
   }
 }

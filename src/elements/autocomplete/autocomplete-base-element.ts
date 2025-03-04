@@ -30,6 +30,11 @@ import style from './autocomplete-base-element.scss?lit&inline';
  */
 const ariaRoleOnHost = isSafari;
 
+/**
+ * Custom event emitted on the input when an option is selected
+ */
+export const inputAutocompleteEvent = 'inputAutocomplete';
+
 export
 @hostAttributes({
   popover: 'manual',
@@ -205,6 +210,9 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
       // Manually trigger the change events
       this.triggerElement.dispatchEvent(new Event('change', { bubbles: true }));
       this.triggerElement.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
+
+      // Custom input event emitted when input value changes after an option is selected
+      this.triggerElement.dispatchEvent(new Event(inputAutocompleteEvent));
       this.triggerElement.focus();
     }
 
@@ -327,7 +335,12 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     this.triggerElement?.addEventListener(
       'keydown',
       (event: KeyboardEvent) => this._closedPanelKeyboardInteraction(event),
-      { signal: this._triggerEventsController.signal },
+      {
+        signal: this._triggerEventsController.signal,
+        // We need key event to run before any other subscription to guarantee a correct
+        // interaction with other components (necessary for the 'sbb-chip-group' use case).
+        capture: true,
+      },
     );
   }
 
@@ -401,6 +414,9 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
       (event: KeyboardEvent) => this.openedPanelKeyboardInteraction(event),
       {
         signal: this._openPanelEventsController.signal,
+        // We need key event to run before any other subscription to guarantee a correct
+        // interaction with other components (necessary for the 'sbb-chip-group' use case).
+        capture: true,
       },
     );
   }

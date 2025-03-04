@@ -1,0 +1,117 @@
+@use '../../core/styles/index' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-chip-background-color: var(--sbb-color-milk);
+  --sbb-chip-border: var(--sbb-border-width-1x) solid var(--sbb-chip-border-color);
+  --sbb-chip-border-color: var(--sbb-color-cloud);
+  --sbb-chip-border-radius: var(--sbb-border-radius-2x);
+  --sbb-chip-color: var(--sbb-color-granite);
+  --sbb-chip-color-active: var(--sbb-color-charcoal);
+  --sbb-chip-color-hover: var(--sbb-color-charcoal);
+  --sbb-chip-background-color-active: var(--sbb-color-white);
+  --sbb-chip-background-color-hover: var(--sbb-color-white);
+  --sbb-chip-transition-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-2x)
+  );
+
+  display: inline-block;
+}
+
+:host([negative]) {
+  --sbb-chip-border-color: var(--sbb-color-iron);
+  --sbb-chip-background-color: var(--sbb-color-charcoal);
+  --sbb-chip-color: var(--sbb-color-cloud);
+  --sbb-chip-color-active: var(--sbb-color-white);
+  --sbb-chip-color-hover: var(--sbb-color-white);
+  --sbb-chip-background-color-active: var(--sbb-color-midnight);
+  --sbb-chip-background-color-hover: var(--sbb-color-midnight);
+  --sbb-focus-outline-color: var(--sbb-focus-outline-color-dark);
+}
+
+.sbb-chip {
+  background-color: var(--sbb-chip-background-color);
+  border-radius: var(--sbb-chip-border-radius);
+  color: var(--sbb-chip-color);
+  display: flex;
+  align-items: stretch;
+  height: #{sbb.px-to-rem-build(24)};
+
+  &:has(.sbb-chip__label-wrapper:focus) {
+    @include sbb.focus-outline;
+
+    --sbb-focus-outline-offset: #{sbb.px-to-rem-build(-1)}; // Outline overlaps the border
+  }
+}
+
+.sbb-chip__label-wrapper {
+  border: var(--sbb-chip-border);
+  border-right: none;
+  border-radius: var(--sbb-chip-border-radius) 0 0 var(--sbb-chip-border-radius);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--sbb-spacing-fixed-2x);
+  outline: none;
+  overflow: hidden;
+
+  :host(:is([disabled], [readonly])) & {
+    border: var(--sbb-chip-border);
+    border-radius: var(--sbb-chip-border-radius);
+  }
+
+  :host(:not([disabled])) & {
+    &:active {
+      color: var(--sbb-chip-color-active);
+      cursor: pointer;
+      background-color: var(--sbb-chip-background-color-active);
+    }
+
+    @include sbb.hover-mq($hover: true) {
+      &:hover:not(:active) {
+        color: var(--sbb-chip-color-hover);
+        cursor: pointer;
+        background-color: var(--sbb-chip-background-color-hover);
+
+        .sbb-chip__label {
+          transform: translateY(#{sbb.px-to-rem-build(-1)});
+        }
+      }
+    }
+  }
+}
+
+.sbb-chip__label {
+  @include sbb.text-xxs--regular;
+  @include sbb.ellipsis;
+
+  display: inline-block;
+  transition: transform var(--sbb-chip-transition-duration) var(--sbb-animation-easing);
+}
+
+.sbb-chip__delete {
+  --sbb-button-border-radius: 0 var(--sbb-chip-border-radius) var(--sbb-chip-border-radius) 0;
+  --sbb-button-color-text: var(--sbb-chip-color);
+  --sbb-button-color-active-background: var(--sbb-chip-background-color-active);
+  --sbb-button-color-hover-background: var(--sbb-chip-background-color-hover);
+  --sbb-icon-svg-width: calc(var(--sbb-size-icon-ui-small) - var(--sbb-border-width-1x) * 2);
+  --sbb-icon-svg-height: calc(var(--sbb-size-icon-ui-small) - var(--sbb-border-width-1x) * 2);
+  --sbb-focus-outline-offset: 0;
+
+  border: var(--sbb-chip-border);
+  border-radius: 0 var(--sbb-chip-border-radius) var(--sbb-chip-border-radius) 0;
+
+  :host(:is([disabled], [readonly])) & {
+    display: none;
+  }
+
+  @include sbb.hover-mq($hover: true) {
+    :host(:not([disabled])) & {
+      &:hover {
+        --sbb-button-color-text: var(--sbb-chip-color-hover);
+      }
+    }
+  }
+}
