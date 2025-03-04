@@ -10,7 +10,11 @@ import {
   setModalityOnNextFocus,
 } from '../../core/a11y.js';
 import { SbbOpenCloseBaseElement } from '../../core/base-elements.js';
-import { SbbLanguageController, SbbMediaQueryPointerCoarse } from '../../core/controllers.js';
+import {
+  SbbLanguageController,
+  SbbMediaQueryPointerCoarse,
+  SbbOverlayController,
+} from '../../core/controllers.js';
 import { forceType, hostAttributes } from '../../core/decorators.js';
 import { findReferencedElement, isZeroAnimationDuration } from '../../core/dom.js';
 import { composedPathHasAttribute, EventEmitter } from '../../core/eventing.js';
@@ -109,6 +113,7 @@ class SbbPopoverElement extends SbbHydrationMixin(SbbOpenCloseBaseElement) {
   private _isPointerDownEventOnPopover?: boolean;
   private _popoverController!: AbortController;
   private _openStateController!: AbortController;
+  private _sbbOverlayController = new SbbOverlayController(this);
   private _focusHandler = new SbbFocusHandler();
   private _hoverTrigger = false;
   private _openTimeout?: ReturnType<typeof setTimeout>;
@@ -189,6 +194,7 @@ class SbbPopoverElement extends SbbHydrationMixin(SbbOpenCloseBaseElement) {
       elementToFocus?.focus();
     }
 
+    this._sbbOverlayController.disconnect();
     this.didClose.emit({ closeTarget: this._popoverCloseElement });
     this._openStateController?.abort();
     this._focusHandler.disconnect();
@@ -202,19 +208,8 @@ class SbbPopoverElement extends SbbHydrationMixin(SbbOpenCloseBaseElement) {
     this._focusHandler.trap(this, {
       postFilter: (el) => el !== this._overlay,
     });
+    this._sbbOverlayController.connect();
     this.didOpen.emit();
-  }
-
-  // Closes the popover on "Esc" key pressed and traps focus within the popover.
-  private _onKeydownEvent(event: KeyboardEvent): void {
-    if (this.state !== 'opened') {
-      return;
-    }
-
-    if (event.key === 'Escape') {
-      this.close();
-      return;
-    }
   }
 
   public override connectedCallback(): void {
@@ -329,10 +324,6 @@ class SbbPopoverElement extends SbbHydrationMixin(SbbOpenCloseBaseElement) {
       passive: true,
       signal: this._openStateController.signal,
     });
-    window.addEventListener('keydown', (event: KeyboardEvent) => this._onKeydownEvent(event), {
-      signal: this._openStateController.signal,
-    });
-
     // Close popover on backdrop click
     window.addEventListener('pointerdown', this._pointerDownListener, {
       signal: this._openStateController.signal,

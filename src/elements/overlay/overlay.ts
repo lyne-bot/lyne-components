@@ -119,6 +119,7 @@ class SbbOverlayElement extends SbbOverlayBaseElement {
     // Use timeout to read label after focused element
     setTimeout(() => this.setAriaLiveRefContent(this.accessibilityLabel));
     this.focusHandler.trap(this);
+    this.sbbOverlayController.connect();
     this.didOpen.emit();
   }
 
@@ -137,6 +138,7 @@ class SbbOverlayElement extends SbbOverlayBaseElement {
     if (!overlayRefs.length) {
       this.scrollHandler.enableScroll();
     }
+    this.sbbOverlayController.disconnect();
     this.didClose.emit({
       returnValue: this.returnValue,
       closeTarget: this.overlayCloseElement,

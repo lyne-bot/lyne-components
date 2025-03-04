@@ -14,6 +14,8 @@ import { SbbDialogTitleElement } from '../dialog-title.js';
 import { SbbDialogElement } from './dialog.js';
 import readme from './readme.md?raw';
 
+import '../../autocomplete.js';
+import '../../option.js';
 import '../../button.js';
 import '../../link.js';
 import '../../form-field.js';
@@ -368,14 +370,25 @@ const NestedTemplate = ({
         accessibilityCloseLabel,
         accessibilityBackLabel,
       )}
-      <sbb-dialog-content
-        >Nested dialog content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-        anim id est laborum.</sbb-dialog-content
-      >
+      <sbb-dialog-content>
+        <p>
+          Nested dialog content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+          deserunt mollit anim id est laborum.
+        </p>
+        <sbb-form-field>
+          <label>Pressing 'Escape' keydown with multiple overlay</label>
+          <input />
+          <sbb-autocomplete>
+            <sbb-option value="1">1</sbb-option>
+            <sbb-option value="2">2</sbb-option>
+            <sbb-option value="3">3</sbb-option>
+          </sbb-autocomplete>
+        </sbb-form-field>
+      </sbb-dialog-content>
     </sbb-dialog>
   </sbb-dialog>
 `;

@@ -77,7 +77,6 @@ class SbbAutocompleteGridElement extends SbbAutocompleteBaseElement {
     }
 
     switch (event.key) {
-      case 'Escape':
       case 'Tab':
         this.close();
         break;

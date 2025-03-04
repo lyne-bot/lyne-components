@@ -128,6 +128,7 @@ class SbbDialogElement extends SbbOverlayBaseElement {
     if (!overlayRefs.length) {
       this.scrollHandler.enableScroll();
     }
+    this.sbbOverlayController.disconnect();
     this.didClose.emit({
       returnValue: this.returnValue,
       closeTarget: this.overlayCloseElement,
@@ -146,6 +147,7 @@ class SbbDialogElement extends SbbOverlayBaseElement {
       ),
     );
     this.focusHandler.trap(this);
+    this.sbbOverlayController.connect();
     this.didOpen.emit();
   }
 
