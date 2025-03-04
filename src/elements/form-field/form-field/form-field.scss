@@ -405,7 +405,7 @@
 
 // Input
 
-.sbb-form-field__input ::slotted(:where(input, select, textarea, sbb-select)) {
+.sbb-form-field__input ::slotted(:where(input, select, textarea, sbb-select, sbb-date-input)) {
   @include sbb.text-m--regular;
   @include sbb.ellipsis;
   @include sbb.input-reset;

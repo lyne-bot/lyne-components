@@ -7,6 +7,7 @@ import type { SbbDatepickerToggleElement } from '../datepicker-toggle.js';
 
 import { SbbDatepickerElement } from './datepicker.js';
 
+import '../../date-input.js';
 import '../../form-field.js';
 import '../datepicker-next-day.js';
 import '../datepicker-previous-day.js';
@@ -28,7 +29,7 @@ describe(`sbb-datepicker ssr`, () => {
         <sbb-form-field>
           <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
           <sbb-datepicker-toggle></sbb-datepicker-toggle>
-          <input value="01.01.2023" />
+          <sbb-date-input value="01.01.2023"></sbb-date-input>
           <sbb-datepicker></sbb-datepicker>
           <sbb-datepicker-next-day></sbb-datepicker-next-day>
         </sbb-form-field>

@@ -15,6 +15,7 @@ import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import readme from './readme.md?raw';
 
+import '../../date-input.js';
 import '../../form-field.js';
 import '../datepicker.js';
 import './datepicker-toggle.js';
@@ -53,13 +54,13 @@ const PickerAndButtonTemplate = (args: Args): TemplateResult => html`
   <div style="display: flex; gap: 1em;">
     ${StandaloneTemplate(args, 'datepicker')}
     <sbb-datepicker id="datepicker" input="datepicker-input"></sbb-datepicker>
-    <input id="datepicker-input" />
+    <sbb-date-input id="datepicker-input"></sbb-date-input>
   </div>
 `;
 
 const FormFieldTemplate = ({ negative, ...args }: Args): TemplateResult => html`
   <sbb-form-field ?negative=${negative}>
-    <input />
+    <sbb-date-input></sbb-date-input>
     <sbb-datepicker></sbb-datepicker>
     ${StandaloneTemplate(args)}
   </sbb-form-field>

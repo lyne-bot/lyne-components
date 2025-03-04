@@ -7,6 +7,7 @@ import { SbbLanguageController } from '../../core/controllers.js';
 import { type DateAdapter, defaultDateAdapter } from '../../core/datetime.js';
 import { i18nToday } from '../../core/i18n.js';
 import { SbbNegativeMixin } from '../../core/mixins.js';
+import type { SbbDateInputElement } from '../../date-input.js';
 import type { SbbDatepickerElement } from '../datepicker.js';
 
 import {
@@ -15,6 +16,10 @@ import {
 } from './datepicker-association-controllers.js';
 
 import '../../icon.js';
+
+const isDateInput = <T>(
+  element: HTMLInputElement | SbbDateInputElement<T> | null,
+): element is SbbDateInputElement<T> => element?.localName === 'sbb-date-input';
 
 export abstract class SbbDatepickerButton<T = Date>
   extends SbbNegativeMixin(SbbButtonBaseElement)
@@ -125,7 +130,17 @@ export abstract class SbbDatepickerButton<T = Date>
     const startingDate: T = this.datepicker.valueAsDate ?? this.datepicker.now;
     const date: T = this.findAvailableDate(startingDate);
     if (this._dateAdapter.compareDate(date, startingDate) !== 0) {
-      this.datepicker.valueAsDate = date;
+      const input = this.datepicker.inputElement;
+      if (isDateInput(input)) {
+        input.valueAsDate = date;
+        input.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+        // Emit blur event when value is changed programmatically to notify
+        // frameworks that rely on that event to update form status.
+        input.dispatchEvent(new Event('blur', { composed: true }));
+      } else {
+        this.datepicker.valueAsDate = date;
+      }
     }
   }
 

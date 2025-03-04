@@ -8,6 +8,7 @@ import type { SbbDatepickerToggleElement } from './datepicker-toggle.js';
 
 import './datepicker-toggle.js';
 import '../datepicker.js';
+import '../../date-input.js';
 import '../../form-field.js';
 
 describe(`sbb-datepicker-toggle`, () => {
@@ -37,7 +38,7 @@ describe(`sbb-datepicker-toggle`, () => {
           <sbb-form-field>
             <sbb-datepicker-toggle></sbb-datepicker-toggle>
             <sbb-datepicker></sbb-datepicker>
-            <input />
+            <sbb-date-input></sbb-date-input>
           </sbb-form-field>
         `);
         element = page.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;
@@ -61,7 +62,7 @@ describe(`sbb-datepicker-toggle`, () => {
           <sbb-form-field>
             <sbb-datepicker-toggle></sbb-datepicker-toggle>
             <sbb-datepicker></sbb-datepicker>
-            <input disabled />
+            <sbb-date-input disabled></sbb-date-input>
           </sbb-form-field>
         `);
         element = page.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;
@@ -85,7 +86,7 @@ describe(`sbb-datepicker-toggle`, () => {
           <sbb-form-field>
             <sbb-datepicker-toggle></sbb-datepicker-toggle>
             <sbb-datepicker wide></sbb-datepicker>
-            <input min="1600000000" max="1700000000" />
+            <sbb-date-input min="2020-09-13" max="2023-11-14"></sbb-date-input>
           </sbb-form-field>
         `);
         element = page.querySelector<SbbDatepickerToggleElement>('sbb-datepicker-toggle')!;

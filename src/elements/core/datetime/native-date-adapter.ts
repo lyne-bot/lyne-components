@@ -1,7 +1,7 @@
 import { SbbLanguageController } from '../controllers.js';
 import type { SbbDateLike } from '../interfaces.js';
 
-import { DateAdapter, FORMAT_DATE } from './date-adapter.js';
+import { DateAdapter, FORMAT_DATE, ISO8601_FORMAT_DATE } from './date-adapter.js';
 
 /**
  * Matches strings that have the form of a valid RFC 3339 string
@@ -173,9 +173,15 @@ export class NativeDateAdapter extends DateAdapter<Date> {
   }
 
   /** Returns the right format for the `valueAsDate` property. */
-  public parse(value: string | null | undefined, now: Date): Date | null {
+  public parse(value: string | null | undefined, now: Date = this.today()): Date | null {
     if (!value) {
       return null;
+    }
+
+    const isoMatch = value.match(ISO8601_FORMAT_DATE);
+    const date = isoMatch ? this.createDate(+isoMatch[1], +isoMatch[2], +isoMatch[3]) : null;
+    if (this.isValid(date)) {
+      return date;
     }
 
     const strippedValue = value.replace(/\D/g, ' ').trim();

@@ -120,7 +120,7 @@ snapshots["sbb-datepicker-previous-day renders with connected datepicker A11y tr
   "children": [
     {
       "role": "textbox",
-      "name": "DD.MM.YYYY",
+      "name": "",
       "value": "Sa, 31.12.2022"
     },
     {

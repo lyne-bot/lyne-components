@@ -1,4 +1,4 @@
-The `sbb-datepicker` is a component which can be used together with a native `<input>` element
+The `sbb-datepicker` is a component which can be used together with an `<sbb-date-input>` element
 to display the typed value as a formatted date (default: `dd.MM.yyyy`).
 
 The component allows the insertion of up to 10 numbers, possibly with separators like `.`, `-`, ` `, `,` or `/`,
@@ -9,7 +9,7 @@ The component and the native `<input>` can be connected using the `input` proper
 which accepts the id of the native input, or directly its reference.
 
 ```html
-<input id="datepicker-input" />
+<sbb-date-input id="datepicker-input"></sbb-date-input>
 <sbb-datepicker input="datepicker-input" id="datepicker"></sbb-datepicker>
 ```
 
@@ -26,7 +26,7 @@ It's also possible to display a two-months view using the `wide` property.
 
 ```html
 <sbb-form-field>
-  <input />
+  <sbb-date-input></sbb-date-input>
   <sbb-datepicker></sbb-datepicker>
 </sbb-form-field>
 ```
@@ -36,7 +36,7 @@ It's also possible to display a two-months view using the `wide` property.
 <sbb-form-field>
   <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
   <sbb-datepicker-toggle></sbb-datepicker-toggle>
-  <input value="01.01.2023" min="1600000000" max="1700000000" />
+  <sbb-date-input value="01.01.2023" min="2022-01-01" max="24-12-31"></sbb-date-input>
   <sbb-datepicker></sbb-datepicker>
   <sbb-datepicker-next-day></sbb-datepicker-next-day>
 </sbb-form-field>
@@ -72,14 +72,14 @@ Whenever the validation state changes (e.g., a valid value becomes invalid or vi
 
 ## Properties
 
-| Name           | Attribute | Privacy | Type                            | Default | Description                                                                                                                                                                                                                                             |
-| -------------- | --------- | ------- | ------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dateFilter`   | -         | public  | `(date: T \| null) => boolean`  |         | A function used to filter out dates.                                                                                                                                                                                                                    |
-| `input`        | `input`   | public  | `string \| HTMLElement \| null` | `null`  | Reference of the native input connected to the datepicker. If given a string, it will be treated as an id reference and an attempt is made to be resolved for the containing document fragment. If given a HTMLElement instance, it will be used as is. |
-| `inputElement` | -         | public  | `HTMLInputElement \| null`      | `null`  | The resolved associated input element, as defined by `input`.                                                                                                                                                                                           |
-| `now`          | `now`     | public  | `T`                             |         | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes.                                                                                                                                    |
-| `valueAsDate`  | -         | public  | `T \| null`                     |         | The currently selected date as a Date or custom date provider instance.                                                                                                                                                                                 |
-| `wide`         | `wide`    | public  | `boolean`                       | `false` | If set to true, two months are displayed.                                                                                                                                                                                                               |
+| Name           | Attribute | Privacy | Type                                                 | Default | Description                                                                                                                                                                                                                                                                            |
+| -------------- | --------- | ------- | ---------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dateFilter`   | -         | public  | `(date: T \| null) => boolean`                       |         | A function used to filter out dates.<br><strong>Deprecated</strong>: Use dateFilter from SbbDateInputElement.                                                                                                                                                                          |
+| `input`        | `input`   | public  | `string \| HTMLElement \| null`                      | `null`  | Reference of the sbb-date-input instance or the native input connected to the datepicker. If given a string, it will be treated as an id reference and an attempt is made to be resolved for the containing document fragment. If given a HTMLElement instance, it will be used as is. |
+| `inputElement` | -         | public  | `HTMLInputElement \| SbbDateInputElement<T> \| null` | `null`  | The resolved associated input element, as defined by `input`.                                                                                                                                                                                                                          |
+| `now`          | `now`     | public  | `T`                                                  |         | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes.                                                                                                                                                                   |
+| `valueAsDate`  | -         | public  | `T \| null`                                          |         | The currently selected date as a Date or custom date provider instance.<br><strong>Deprecated</strong>: Use valueAsDate from SbbDateInputElement.                                                                                                                                      |
+| `wide`         | `wide`    | public  | `boolean`                                            | `false` | If set to true, two months are displayed.                                                                                                                                                                                                                                              |
 
 ## Methods
 

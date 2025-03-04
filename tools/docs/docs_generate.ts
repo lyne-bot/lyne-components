@@ -153,13 +153,21 @@ for (const manifestPath of manifestFilePaths) {
       ?.filter(
         (declaration): declaration is ExtendedClassDeclaration => declaration.kind === 'class',
       )
-      .forEach((declaration) =>
+      .forEach((declaration) => {
         ['members', 'slots', 'cssProperties', 'events'].forEach((type) =>
           (declaration[type as keyof ExtendedClassDeclaration] as { name: string }[])?.sort(
             (a, b) => a.name.localeCompare(b.name),
           ),
-        ),
-      );
+        );
+        declaration.members.forEach((member) => {
+          if (member.deprecated) {
+            member.description += '<br><strong>Deprecated</strong>';
+            if (typeof member.deprecated === 'string') {
+              member.description += `: ${member.deprecated}`;
+            }
+          }
+        });
+      });
   });
 
   const markdown: string = customElementsManifestToMarkdown(manifest, {

@@ -9,6 +9,7 @@ import { sbbInputModalityDetector } from '../../core/a11y.js';
 import { SbbLanguageController } from '../../core/controllers.js';
 import { i18nShowCalendar } from '../../core/i18n.js';
 import { SbbHydrationMixin, SbbNegativeMixin } from '../../core/mixins.js';
+import type { SbbDateInputElement } from '../../date-input.js';
 import type { SbbPopoverElement } from '../../popover/popover.js';
 import { SbbDatepickerAssociationControlController, type SbbDatepickerControl } from '../common.js';
 import type { SbbDatepickerElement } from '../datepicker.js';
@@ -18,6 +19,10 @@ import style from './datepicker-toggle.scss?lit&inline';
 import '../../calendar.js';
 import '../../popover/popover.js';
 import '../../button/mini-button.js';
+
+const isDateInput = <T>(
+  element: HTMLInputElement | SbbDateInputElement<T> | null,
+): element is SbbDateInputElement<T> => element?.localName === 'sbb-date-input';
 
 /**
  * Combined with a `sbb-datepicker`, it can be used to select a date from a `sbb-calendar`.
@@ -67,9 +72,9 @@ class SbbDatepickerToggleElement<T = Date>
 
   @state() private accessor _disabled = false;
 
-  @state() private accessor _min: string | number | null | undefined = null;
+  @state() private accessor _min: T | string | number | null | undefined = null;
 
-  @state() private accessor _max: string | number | null | undefined = null;
+  @state() private accessor _max: T | string | number | null | undefined = null;
 
   @state() private accessor _renderCalendar = false;
 
@@ -189,11 +194,21 @@ class SbbDatepickerToggleElement<T = Date>
               .max=${this._max}
               .now=${this._nowOrNull()}
               ?wide=${this.datepicker?.wide}
-              .dateFilter=${this.datepicker?.dateFilter}
+              .dateFilter=${this.datepicker?.dateFilter ?? null}
               @dateSelected=${(d: CustomEvent<T>) => {
                 this._calendarElement.selected = d.detail;
                 if (this.datepicker) {
-                  this.datepicker.valueAsDate = d.detail;
+                  const input = this.datepicker.inputElement;
+                  if (isDateInput(input)) {
+                    input.valueAsDate = d.detail;
+                    input.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+                    // Emit blur event when value is changed programmatically to notify
+                    // frameworks that rely on that event to update form status.
+                    input.dispatchEvent(new Event('blur', { composed: true }));
+                  } else {
+                    this.datepicker.valueAsDate = d.detail;
+                  }
                 }
               }}
               ${ref((calendar?: Element) =>

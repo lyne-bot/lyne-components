@@ -45,7 +45,11 @@ const incrementalInputTypes = new Set([
  */
 export function isTextInput(element: Element): element is HTMLInputElement | HTMLTextAreaElement {
   const nodeName = element.nodeName.toLowerCase();
-  return nodeName === 'input' || nodeName === 'textarea';
+  return (
+    nodeName === 'input' ||
+    nodeName === 'textarea' ||
+    (nodeName.startsWith('sbb-') && nodeName.endsWith('-input'))
+  );
 }
 
 /**
@@ -149,7 +153,8 @@ export function typeInElement(element: HTMLElement, ...modifiersAndKeys: any[]):
     dispatchFakeEvent(element, 'input');
   }
 
-  if (isInput && element.value !== lastChangeValue) {
+  // Our input implementations already dispatch change on blur.
+  if (isInput && !element.localName.startsWith('sbb') && element.value !== lastChangeValue) {
     element.addEventListener('blur', () => dispatchFakeEvent(element, 'change'), { once: true });
   }
 }

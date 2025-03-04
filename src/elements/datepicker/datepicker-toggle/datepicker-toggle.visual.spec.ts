@@ -11,6 +11,7 @@ import type { SbbDatepickerToggleElement } from './datepicker-toggle.js';
 
 import './datepicker-toggle.js';
 import '../datepicker.js';
+import '../../date-input.js';
 import '../../form-field.js';
 
 describe(`sbb-datepicker-toggle`, () => {
@@ -20,7 +21,7 @@ describe(`sbb-datepicker-toggle`, () => {
         <sbb-form-field ?negative=${negative}>
           <sbb-datepicker-toggle id="toggle"></sbb-datepicker-toggle>
           <sbb-datepicker now="2023-01-12T00:00:00Z"></sbb-datepicker>
-          <input />
+          <sbb-date-input></sbb-date-input>
         </sbb-form-field>
       `;
 

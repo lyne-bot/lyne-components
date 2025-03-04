@@ -7,7 +7,7 @@ or directly its reference.
 
 ```html
 <sbb-datepicker-previous-day date-picker="datepicker"></sbb-datepicker-previous-day>
-<input id="datepicker-input" />
+<sbb-date-input id="datepicker-input"></sbb-date-input>
 <sbb-datepicker input="datepicker-input" id="datepicker"></sbb-datepicker>
 ```
 
@@ -23,7 +23,7 @@ if it is disabled, or if the selected date is equal to the input's `min` attribu
 ```html
 <sbb-form-field>
   <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
-  <input />
+  <sbb-date-input></sbb-date-input>
   <sbb-datepicker></sbb-datepicker>
 </sbb-form-field>
 ```

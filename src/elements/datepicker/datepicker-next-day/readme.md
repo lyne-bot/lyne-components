@@ -6,7 +6,7 @@ The components can be connected using the `datePicker` property, which accepts t
 or directly its reference.
 
 ```html
-<input id="datepicker-input" />
+<sbb-date-input id="datepicker-input"></sbb-date-input>
 <sbb-datepicker input="datepicker-input" id="datepicker"></sbb-datepicker>
 <sbb-datepicker-next-day date-picker="datepicker"></sbb-datepicker-next-day>
 ```
@@ -22,7 +22,7 @@ if it is disabled, or if the selected date is equal to the input's `max` attribu
 
 ```html
 <sbb-form-field>
-  <input />
+  <sbb-date-input></sbb-date-input>
   <sbb-datepicker></sbb-datepicker>
   <sbb-datepicker-next-day></sbb-datepicker-next-day>
 </sbb-form-field>
