@@ -53,10 +53,10 @@ The components allows to slot any number of `sbb-pearl-chain-leg` in the `unname
 
 ## Properties
 
-| Name     | Attribute | Privacy | Type                    | Default      | Description                                                                                                          |
-| -------- | --------- | ------- | ----------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `marker` | `marker`  | public  | `'static' \| 'pulsing'` | `'static'`   | Whether the marker should be pulsing or static.                                                                      |
-| `now`    | `now`     | public  | `Date`                  | `new Date()` | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
+| Name     | Attribute | Privacy | Type                    | Default     | Description                                                                                                          |
+| -------- | --------- | ------- | ----------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `marker` | `marker`  | public  | `'static' \| 'pulsing'` | `'static'`  | Whether the marker should be pulsing or static.                                                                      |
+| `now`    | `now`     | public  | `Date`                  | `undefined` | A configured date which acts as the current date instead of the real current date. Recommended for testing purposes. |
 
 ## Slots
 

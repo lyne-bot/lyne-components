@@ -5,6 +5,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { TimeAdapter } from '../../core/datetime.js';
 import { forceType } from '../../core/decorators.js';
 import { EventEmitter } from '../../core/eventing.js';
+import type { SbbPearlChainElement } from '../pearl-chain.js';
 
 import style from './pearl-chain-leg.scss?lit&inline';
 
@@ -86,6 +87,16 @@ class SbbPearlChainLegElement extends LitElement {
   );
 
   private _timeAdapter: TimeAdapter = new TimeAdapter();
+  private _interval: ReturnType<typeof setInterval> | null = null;
+
+  private get _pearlChain(): SbbPearlChainElement {
+    return this.closest('sbb-pearl-chain')!;
+  }
+
+  public override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._cancelInterval();
+  }
 
   protected override willUpdate(changedProperties: PropertyValues): void {
     super.willUpdate(changedProperties);
@@ -97,6 +108,63 @@ class SbbPearlChainLegElement extends LitElement {
         changedProperties.has('departure'))
     ) {
       this._legUpdated.emit();
+    }
+  }
+
+  /**@internal */
+  public updateStatus(now: Date): void {
+    const start = this._timeAdapter.addMinutes(this.departure, this.departureDelay);
+    const end = this._timeAdapter.addMinutes(this.arrival, this.arrivalDelay);
+    this.toggleAttribute('data-progress', false);
+    if (
+      start &&
+      !this._timeAdapter.isBefore(now, start) &&
+      end &&
+      this._timeAdapter.isAfter(end, now)
+    ) {
+      this.toggleAttribute('data-progress', true);
+      this._renderPosition();
+      if (!this._interval && !this._pearlChain.hasAttribute('now')) {
+        this._interval = setInterval(() => {
+          this._renderPosition();
+        }, 1000);
+      }
+    } else if (end && !this._timeAdapter.isBefore(now, end)) {
+      this.past = true;
+    }
+  }
+
+  private _renderPosition(): void {
+    const currentPosition = this._getProgress(
+      this._timeAdapter.addMinutes(this.departure, this.departureDelay),
+      this._timeAdapter.addMinutes(this.arrival, this.arrivalDelay),
+    );
+
+    if (currentPosition < 0 || currentPosition >= 1) {
+      this._cancelInterval(true);
+      return;
+    }
+
+    this?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}`);
+  }
+
+  private _getProgress(start: Date, end: Date): number {
+    if (!start || !end) {
+      return 0;
+    }
+
+    const total = this._timeAdapter.differenceInMinutes(end, start);
+    const progress = this._timeAdapter.differenceInMinutes(this._pearlChain.now, start);
+
+    return total && progress / total;
+  }
+
+  private _cancelInterval(updateParent: boolean = false): void {
+    if (this._interval) {
+      clearInterval(this._interval);
+      if (updateParent) {
+        this._legUpdated.emit();
+      }
     }
   }
 

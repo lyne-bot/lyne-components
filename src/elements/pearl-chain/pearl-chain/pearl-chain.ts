@@ -8,8 +8,6 @@ import type { SbbPearlChainLegElement } from '../pearl-chain-leg.js';
 
 import style from './pearl-chain.scss?lit&inline';
 
-type Status = 'progress' | 'future' | 'past';
-
 /**
  * It visually displays journey information.
  *
@@ -32,10 +30,10 @@ class SbbPearlChainElement extends LitElement {
   }
 
   public get now(): Date {
-    return this._now;
+    return this._now ?? new Date();
   }
 
-  private _now: Date = new Date();
+  private _now: Date | undefined = undefined;
 
   private _timeAdapter: TimeAdapter = new TimeAdapter();
 
@@ -78,49 +76,6 @@ class SbbPearlChainElement extends LitElement {
     return 0;
   }
 
-  private _getProgress(start: Date, end: Date): number {
-    if (!start || !end) {
-      return 0;
-    }
-
-    const total = this._timeAdapter.differenceInMinutes(end, start);
-    const progress = this._timeAdapter.differenceInMinutes(this.now, start);
-
-    return total && progress / total;
-  }
-
-  private _getLegStatus(leg: SbbPearlChainLegElement): Status {
-    const start = this._timeAdapter.addMinutes(leg.departure, leg.departureDelay);
-    const end = this._timeAdapter.addMinutes(leg.arrival, leg.arrivalDelay);
-    return this._getStatus(start, end);
-  }
-
-  private _getStatus(start?: Date, end?: Date): Status {
-    if (
-      start &&
-      !this._timeAdapter.isBefore(this.now, start) &&
-      end &&
-      this._timeAdapter.isAfter(end, this.now)
-    ) {
-      return 'progress';
-    } else if (end && !this._timeAdapter.isBefore(this.now, end)) {
-      return 'past';
-    }
-    return 'future';
-  }
-
-  private _renderPosition(progressLeg: SbbPearlChainLegElement): void {
-    const currentPosition = this._getProgress(
-      this._timeAdapter.addMinutes(progressLeg.departure, progressLeg.departureDelay),
-      this._timeAdapter.addMinutes(progressLeg.arrival, progressLeg.arrivalDelay),
-    );
-    if (currentPosition < 0 && currentPosition > 100) {
-      return;
-    }
-
-    progressLeg?.style.setProperty('--sbb-pearl-chain-status-position', `${currentPosition}`);
-  }
-
   private _getFirstBullet(): Element {
     return Array.from(this.shadowRoot!.querySelectorAll('.sbb-pearl-chain__bullet'))[0];
   }
@@ -136,11 +91,11 @@ class SbbPearlChainElement extends LitElement {
   }
 
   private _configureBullet(bullet: Element, leg: SbbPearlChainLegElement, first: boolean): void {
-    const status = this._getLegStatus(leg);
+    leg.updateStatus(this.now);
 
     bullet.toggleAttribute('data-disrupted', leg.disruption);
     bullet.toggleAttribute('data-skipped', first ? leg.departureSkipped : leg.arrivalSkipped);
-    bullet.toggleAttribute('data-past', status === 'past' || (status === 'progress' && first));
+    bullet.toggleAttribute('data-past', leg.past || (leg.hasAttribute('data-progress') && first));
   }
 
   private _setUpComponent(): void {
@@ -150,18 +105,12 @@ class SbbPearlChainElement extends LitElement {
     this._configureBullet(this._getLastBullet(), legs[legs.length - 1], false);
 
     legs.map((leg, index) => {
-      const status = this._getLegStatus(leg);
+      leg.updateStatus(this.now);
 
       leg.style.setProperty(
         '--sbb-pearl-chain-leg-weight',
         `${this._getRelativeDuration(this._totalDuration(legs), leg)}`,
       );
-      leg.past = status === 'past';
-      leg.toggleAttribute('data-progress', status === 'progress');
-
-      if (status === 'progress') {
-        this._renderPosition(leg);
-      }
 
       // If previous leg has arrival-skipped an attribute is set to style the stop
       if (index > 0 && legs[index - 1]) {

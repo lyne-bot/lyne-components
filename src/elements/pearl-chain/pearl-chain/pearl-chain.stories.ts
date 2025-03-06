@@ -4,6 +4,7 @@ import { nothing, type TemplateResult } from 'lit';
 import { html } from 'lit';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
+import { TimeAdapter } from '../../core/datetime.js';
 
 import './pearl-chain.js';
 import '../pearl-chain-leg.js';
@@ -16,6 +17,8 @@ import {
   progressLegTemplate,
 } from './pearl-chain.sample-data.js';
 import readme from './readme.md?raw';
+
+const _timeAdapter: TimeAdapter = new TimeAdapter();
 
 const now: InputType = {
   control: {
@@ -115,6 +118,27 @@ const TemplateWithPosition = (args: Args): TemplateResult => {
   return TemplateSlotted([progressLegTemplate], args);
 };
 
+const TemplateInMotion = (args: Args): TemplateResult => {
+  const d = new Date();
+  return TemplateSlotted(
+    [
+      html`<sbb-pearl-chain-leg
+        departure=${_timeAdapter.addMilliseconds(d, -100000).toISOString()}
+        arrival=${_timeAdapter.addMilliseconds(d, 20000).toISOString()}
+      ></sbb-pearl-chain-leg>`,
+      html`<sbb-pearl-chain-leg
+        departure=${_timeAdapter.addMilliseconds(d, 20000).toISOString()}
+        arrival=${_timeAdapter.addMilliseconds(d, 200000).toISOString()}
+      ></sbb-pearl-chain-leg>`,
+      html`<sbb-pearl-chain-leg
+        departure=${_timeAdapter.addMilliseconds(d, 200000).toISOString()}
+        arrival=${_timeAdapter.addMilliseconds(d, 320000).toISOString()}
+      ></sbb-pearl-chain-leg>`,
+    ],
+    args,
+  );
+};
+
 const TemplatePast = (args: Args): TemplateResult => {
   return TemplateSlotted([pastLegTemplate, pastLegTemplate], args);
 };
@@ -157,6 +181,15 @@ export const WithPosition: StoryObj = {
   args: {
     ...defaultArgs,
     now: new Date('2024-12-05T12:11:00'),
+  },
+};
+
+export const InMotion: StoryObj = {
+  render: TemplateInMotion,
+  argTypes: defaultArgTypes,
+  args: {
+    ...defaultArgs,
+    now: undefined,
   },
 };
 

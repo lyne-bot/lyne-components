@@ -55,7 +55,7 @@
   display: flex;
   align-items: center;
 
-  &::after {
+  &::before {
     inset-inline-end: var(--sbb-pearl-chain-last-leg-inset-inline-end, 0);
   }
 
@@ -66,7 +66,7 @@
   :host([disruption]) & {
     --sbb-pearl-chain-leg-color: transparent;
 
-    &::after {
+    &::before {
       @include sbb-pearl-chain-leg-dotted;
     }
   }
@@ -74,7 +74,7 @@
   :host(:is([arrival-skipped], [departure-skipped])) & {
     --sbb-pearl-chain-leg-color: transparent;
 
-    &::after {
+    &::before {
       @include sbb-pearl-chain-leg-dotted;
     }
   }
@@ -82,11 +82,11 @@
   :host([data-progress]:not([arrival-skipped], [departure-skipped], [disruption])) & {
     // --sbb-pearl-chain-status-position: defined in .ts file
     --sbb-pearl-chain-status-position-normalized: calc(
-      (100% - (var(--sbb-pearl-chain-bullet-size-start-end) - var(--sbb-pearl-chain-leg-offset))) *
+      (100% - (var(--sbb-pearl-chain-bullet-size-stop) - var(--sbb-pearl-chain-leg-offset))) *
         var(--sbb-pearl-chain-status-position)
     );
 
-    &::before {
+    &::after {
       --sbb-pearl-chain-bullet-animation-name: var(--sbb-pearl-chain-leg-animation, none);
 
       @include sbb.pearl-chain-bullet-position;
@@ -96,13 +96,12 @@
         content: '';
         position: absolute;
         inset-block-start: -200%;
-        z-index: 4;
         inset-inline-start: var(--sbb-pearl-chain-status-position-normalized);
         translate: calc(-1 * var(--sbb-pearl-chain-leg-offset));
       }
     }
 
-    &::after {
+    &::before {
       @include sbb.if-forced-colors {
         background-color: GrayText !important;
       }
@@ -118,13 +117,12 @@
 }
 
 // line on leg
-.sbb-pearl-chain__leg::after {
+.sbb-pearl-chain__leg::before {
   content: '';
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
   background-color: var(--sbb-pearl-chain-bullet-color);
-  z-index: 1;
 
   @include sbb.if-forced-colors {
     background-color: CanvasText;
@@ -138,7 +136,6 @@
 .sbb-pearl-chain__stop {
   display: var(--sbb-pearl-chain-leg-stop-display, unset);
   position: relative;
-  z-index: 2;
   left: calc(-1 * var(--sbb-pearl-chain-leg-offset));
 
   .sbb-pearl-chain__stop-inner {
