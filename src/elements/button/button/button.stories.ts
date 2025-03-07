@@ -3,6 +3,8 @@ import type { Args, ArgTypes, Meta, StoryContext, StoryObj } from '@storybook/we
 import {
   buttonDefaultArgs,
   buttonDefaultArgTypes,
+  loading,
+  loading2,
   requestSubmit,
 } from '../common/button-common-stories.js';
 import {
@@ -47,6 +49,8 @@ export const FixedWidth: StoryObj = fixedWidth;
 export const WithSlottedIcon: StoryObj = withSlottedIcon;
 export const LoadingIndicator: StoryObj = loadingIndicator;
 export const RequestSubmit: StoryObj = requestSubmit;
+export const Loading: StoryObj = loading;
+export const Loading2: StoryObj = loading2;
 export const WithHiddenSlottedIcon: StoryObj = withHiddenSlottedIcon;
 
 const meta: Meta = {

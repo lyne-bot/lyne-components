@@ -9,6 +9,7 @@ import { commonDefaultArgs, commonDefaultArgTypes } from './common-stories.js';
 
 import '../../action-group.js';
 import '../../form-field.js';
+import '../../loading-indicator-circle.js';
 
 /* eslint-disable lit/binding-positions, @typescript-eslint/naming-convention */
 const FormTemplate = ({
@@ -43,6 +44,77 @@ const FormTemplate = ({
   </fieldset>
   <div id="form-data"></div>
 </form>`;
+
+/* eslint-disable lit/binding-positions, @typescript-eslint/naming-convention */
+const LoadingTemplate = ({
+  tag,
+  type: _type,
+  reset: _reset,
+  'icon-name': _iconName,
+  ...args
+}: Args): TemplateResult => html`
+    <${unsafeStatic(tag)} ${sbbSpread(args)} aria-busy="false"
+                          @click=${(e: PointerEvent) => {
+                            const button = (e.target as HTMLElement)!;
+                            const loadingIndicator = button.parentElement!.querySelector(
+                              'sbb-loading-indicator-circle',
+                            )!;
+
+                            if (button.getAttribute('aria-busy') === 'false') {
+                              button.setAttribute('aria-busy', 'true');
+                              button.setAttribute('aria-disabled', 'true');
+                              button.style.setProperty(
+                                '--sbb-button-color-default-text',
+                                'transparent',
+                              );
+                              button.style.setProperty('pointer-events', 'none');
+                              loadingIndicator.style.removeProperty('display');
+
+                              setTimeout(() => {
+                                button.setAttribute('aria-busy', 'false');
+                                button.setAttribute('aria-disabled', 'false');
+                                button.style.removeProperty('--sbb-button-color-default-text');
+                                button.style.removeProperty('pointer-events');
+                                loadingIndicator.style.setProperty('display', 'none');
+                              }, 5000);
+                            }
+                          }}>
+      Click to submit
+      <sbb-loading-indicator-circle aria-hidden style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display:none"></sbb-loading-indicator-circle>
+    </${unsafeStatic(tag)}>
+   `;
+
+/* eslint-disable lit/binding-positions, @typescript-eslint/naming-convention */
+const LoadingTemplate2 = ({
+  tag,
+  type: _type,
+  reset: _reset,
+  'icon-name': _iconName,
+  ...args
+}: Args): TemplateResult => html`
+    <${unsafeStatic(tag)} ${sbbSpread(args)} aria-busy="false"
+                          @click=${(e: PointerEvent) => {
+                            const button = (e.target as HTMLElement)!;
+                            const loadingIndicator = button.parentElement!.querySelector(
+                              'sbb-loading-indicator-circle',
+                            )!;
+
+                            if (button.getAttribute('aria-busy') === 'false') {
+                              button.setAttribute('aria-busy', 'true');
+                              button.setAttribute('aria-disabled', 'true');
+                              loadingIndicator.style.setProperty('width', '20px');
+
+                              setTimeout(() => {
+                                button.setAttribute('aria-busy', 'false');
+                                button.setAttribute('aria-disabled', 'false');
+                                loadingIndicator.style.setProperty('width', '0px');
+                              }, 5000);
+                            }
+                          }}>
+      <sbb-loading-indicator-circle aria-hidden style="width:0; overflow-x: clip; transition: width var(--sbb-animation-duration-2x) var(--sbb-animation-easing)"></sbb-loading-indicator-circle>
+      Click to submit
+    </${unsafeStatic(tag)}>
+   `;
 
 /* eslint-enable lit/binding-positions, @typescript-eslint/naming-convention */
 
@@ -132,4 +204,12 @@ export const buttonDefaultArgs: Args = {
 export const requestSubmit: StoryObj = {
   render: FormTemplate,
   args: { text: undefined, type: undefined, value: 'submit button' },
+};
+
+export const loading: StoryObj = {
+  render: LoadingTemplate,
+};
+
+export const loading2: StoryObj = {
+  render: LoadingTemplate2,
 };
