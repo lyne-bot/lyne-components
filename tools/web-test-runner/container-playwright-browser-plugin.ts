@@ -35,7 +35,7 @@ export const startPlaywrightServerCommand = [
   containerImage,
   `-c`,
   `npx -y playwright@${playwrightVersion} run-server --port ${port} --host 0.0.0.0`,
-].filter(Boolean);
+].filter(Boolean) as string[];
 
 // Reference: https://github.com/remcovaes/web-test-runner-vite-plugin
 export function containerPlaywrightBrowserPlugin(): TestRunnerPlugin {

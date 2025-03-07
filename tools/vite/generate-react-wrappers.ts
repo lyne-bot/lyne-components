@@ -120,6 +120,11 @@ function renderTemplate(
     ? `${!dirDepth ? './' : '../'.repeat(dirDepth)}core.js`
     : `@sbb-esta/lyne-react/core.js`;
   const componentsImports = new Map<string, string[]>().set(module.path, [declaration.name]);
+
+  if (declaration.events?.some((e) => !e.type)) {
+    console.error('(Inherited) events need jsdocs on class level!');
+  }
+
   const customEventTypes =
     declaration.events
       ?.filter(

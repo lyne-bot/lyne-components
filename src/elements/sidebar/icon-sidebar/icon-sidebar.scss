@@ -1,0 +1,23 @@
+@use '../../core/styles/index' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: var(--sbb-size-element-m);
+  overflow-y: auto;
+  background-color: var(--sbb-color-white);
+  margin-block-start: var(--sbb-spacing-fixed-3x);
+  padding-block-start: var(--sbb-spacing-fixed-1x);
+  border-start-end-radius: var(--sbb-icon-sidebar-border-radius);
+  border-start-start-radius: 0;
+
+  --sbb-icon-sidebar-border-radius: var(--sbb-border-radius-8x);
+}
+
+:host([color='milk']) {
+  background-color: var(--sbb-color-milk);
+}

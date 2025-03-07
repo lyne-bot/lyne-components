@@ -18,11 +18,11 @@ export type SbbButtonCommonElement = SbbButtonCommonElementMixinType & SbbAction
 export type SbbButtonSize = 'l' | 'm' | 's';
 
 export declare class SbbButtonCommonElementMixinType
-  implements SbbNegativeMixinType, Partial<SbbDisabledMixinType>, Partial<SbbIconNameMixinType>
+  extends SbbIconNameMixinType
+  implements SbbNegativeMixinType, Partial<SbbDisabledMixinType>
 {
   public accessor size: SbbButtonSize;
   public accessor disabled: boolean;
-  public accessor iconName: string;
   public accessor negative: boolean;
 }
 

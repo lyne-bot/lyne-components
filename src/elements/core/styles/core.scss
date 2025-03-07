@@ -325,3 +325,84 @@ sbb-train-formation[view='top'] sbb-train-wagon {
   --sbb-train-wagon-locomotive-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M20,0.5 h40 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-40 a19.5,19.5 0 0 1 -19.5,-19.5 v0 a19.5,19.5 0 0 1 19.5,-19.5 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E%0A");
   --sbb-train-wagon-wagon-end-right-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40' fill='none'%3E%3Cpath d='M8.5,0.5 h51.5 a19.5,19.5 0 0 1 19.5,19.5 v0 a19.5,19.5 0 0 1 -19.5,19.5 h-51.5 a8,8 0 0 1 -8,-8 v-23 a8,8 0 0 1 8,-8 z' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E");
 }
+
+// Skip animation for the container, content and sidebars when a sidebar requests it
+// (during initialization or if animation is disabled, but only during transition)
+sbb-sidebar-container:has(> sbb-sidebar[data-skip-animation]) {
+  --sbb-sidebar-container-animation-duration: 0s;
+}
+
+// Controls the start margin of the sbb-sidebar-content.
+// Whenever the sidebar with position start is in a closed state in over mode (or forced over mode),
+// or if there is no sidebar with position start, then override the margin with 0.
+// Direct child selector is mandatory to enable nested sidebars.
+sbb-sidebar-container:is(
+    :has(
+      > sbb-sidebar:not([position='end']):is(
+          [data-state='closing'],
+          [data-state='closed'],
+          [mode='over'],
+          [data-minimum-space]
+        )
+    ),
+    :not(:has(> sbb-sidebar:not([position='end'])))
+  )
+  > sbb-sidebar-content {
+  --sbb-sidebar-content__margin-inline-start: 0;
+}
+
+// Controls the end margin of the sbb-sidebar-content.
+// Whenever the sidebar with position end is in a closed state in over mode (or forced over mode),
+// or if there is no sidebar with position end, then override the margin with 0.
+// Direct child selector is mandatory to enable nested sidebars.
+sbb-sidebar-container:is(
+    :has(
+      > sbb-sidebar[position='end']:is(
+          [data-state='closing'],
+          [data-state='closed'],
+          [mode='over'],
+          [data-minimum-space]
+        )
+    ),
+    :not(:has(> sbb-sidebar[position='end']))
+  )
+  > sbb-sidebar-content {
+  --sbb-sidebar-content__margin-inline-end: 0;
+}
+
+// Toggles visibility of backdrop if there is an affected sidebar inside the container.
+sbb-sidebar-container:has(
+    > sbb-sidebar:is([mode='over'], [data-minimum-space]):is(
+        [data-state='opening'],
+        [data-state='opened']
+      )
+  ) {
+  --sbb-sidebar-container__backdrop-visibility: visible;
+  --sbb-sidebar-container-backdrop-opacity: 0.4;
+}
+
+// Move the current-page-border to the right side if the sidebar is right positioned
+sbb-icon-sidebar-content + sbb-icon-sidebar :is(sbb-icon-sidebar-link, sbb-icon-sidebar-button) {
+  --sbb-icon-sidebar-button__current-border-inset-inline-start: auto;
+}
+
+// Set the border radius at the left top side if the sidebar is right positioned
+sbb-icon-sidebar-content + sbb-icon-sidebar {
+  border-start-end-radius: 0;
+  border-start-start-radius: var(--sbb-icon-sidebar-border-radius);
+}
+
+// If there is no close button, avoid reserving any space for the button in the sidebar title
+sbb-sidebar:not(:has(sbb-sidebar-close-button)) sbb-sidebar-title {
+  --sbb-sidebar-title__close-button-placeholder: 0;
+}
+
+// If there is a title, remove top spacing for the content
+sbb-sidebar:has(sbb-sidebar-title) {
+  --sbb-sidebar__padding-block-start: 0;
+}
+
+// Move container below header
+sbb-header + :where(sbb-sidebar-container, sbb-icon-sidebar-container) {
+  margin-block-start: var(--sbb-header-height);
+}

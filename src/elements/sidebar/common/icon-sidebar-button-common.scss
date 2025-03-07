@@ -1,0 +1,94 @@
+@use '../../core/styles' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  display: block;
+
+  // Use !important here to not interfere with Firefox focus ring definition
+  // which appears in normalize CSS of several frameworks.
+  outline: none !important;
+
+  --sbb-icon-sidebar-button-transition-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-2x)
+  );
+  --sbb-icon-sidebar-button-transition-easing-function: var(--sbb-animation-easing);
+  --sbb-icon-sidebar-button-dimension: var(--sbb-size-element-m);
+  --sbb-icon-sidebar-button-border-radius: var(--sbb-border-radius-4x);
+  --sbb-icon-sidebar-button-color: var(--sbb-color-granite);
+  --sbb-icon-sidebar-button-current-color: var(--sbb-color-charcoal);
+  --sbb-icon-sidebar-button-current-border-width: var(--sbb-border-width-3x);
+  --sbb-icon-sidebar-button-current-border-inset-block: var(--sbb-spacing-fixed-2x);
+  --sbb-icon-sidebar-button__current-border-inset-inline-start: 0;
+  --sbb-icon-sidebar-button__color: var(--sbb-icon-sidebar-button-color);
+  --sbb-icon-sidebar-button__outline-width: 0;
+
+  @include sbb.if-forced-colors {
+    --sbb-icon-sidebar-button-current-color: Highlight !important;
+  }
+}
+
+:host([data-button]) {
+  @include sbb.if-forced-colors {
+    --sbb-icon-sidebar-button-color: ButtonText !important;
+  }
+}
+
+:host([data-link]) {
+  @include sbb.if-forced-colors {
+    --sbb-icon-sidebar-button-color: LinkText !important;
+  }
+}
+
+:host(:not(:active, [data-active]):hover) {
+  @include sbb.hover-mq($hover: true) {
+    --sbb-icon-sidebar-button__hover-shift: #{sbb.px-to-rem-build(1)};
+    --sbb-icon-sidebar-button__cursor: pointer;
+  }
+}
+
+:host([data-focus-visible]),
+  // Hide focus outline when focus origin is mouse or touch. This is being used as a workaround in various components.
+  // Handle focus on the host (button variant)
+:host(:focus-visible:not([data-focus-origin='mouse'], [data-focus-origin='touch'])),
+  // Handle focus on the action (link variant)
+:host(:not([data-focus-origin='mouse'], [data-focus-origin='touch'])) .sbb-action-base:focus-visible {
+  --sbb-icon-sidebar-button__outline-width: var(--sbb-focus-outline-width);
+}
+
+.sbb-action-base {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--sbb-icon-sidebar-button-dimension);
+  padding-block: 0 calc(2 * var(--sbb-icon-sidebar-button__hover-shift, 0rem));
+  color: var(--sbb-icon-sidebar-button__color);
+  border-radius: var(--sbb-icon-sidebar-button-border-radius);
+  outline: var(--sbb-focus-outline-color) solid var(--sbb-icon-sidebar-button__outline-width);
+  outline-offset: calc(
+    -1 * var(--sbb-icon-sidebar-button__outline-width) - #{sbb.px-to-rem-build(5)}
+  );
+  cursor: var(--sbb-icon-sidebar-button__cursor);
+  user-select: none;
+  transition-duration: var(--sbb-icon-sidebar-button-transition-duration);
+  transition-timing-function: var(--sbb-icon-sidebar-button-transition-easing-function);
+  transition-property: color, padding;
+
+  :host(.sbb-active) & {
+    color: var(--sbb-icon-sidebar-button-current-color);
+
+    // Visual border which shows the current active entry, displayed at the start or end of the button.
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      inset-block: var(--sbb-icon-sidebar-button-current-border-inset-block);
+      inset-inline: var(--sbb-icon-sidebar-button__current-border-inset-inline-start) 0;
+      border-inline-start: var(--sbb-icon-sidebar-button-current-border-width) solid currentcolor;
+    }
+  }
+}

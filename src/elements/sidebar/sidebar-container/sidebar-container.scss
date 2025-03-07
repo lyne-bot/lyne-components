@@ -1,0 +1,47 @@
+@use '../../core/styles/index' as sbb;
+
+:host {
+  display: block;
+
+  // Hide the sidebars when they're closed.
+  overflow: hidden;
+
+  --sbb-sidebar-container-animation-duration: var(
+    --sbb-disable-animation-duration,
+    var(--sbb-animation-duration-4x)
+  );
+  --sbb-sidebar-container-animation-easing: var(--sbb-animation-easing);
+
+  // We use 'visibility: hidden | visible' because 'display: none' will not animate any
+  // transitions, while visibility will interpolate transitions properly.
+  // see https://developer.mozilla.org/en-US/docs/Web/CSS/visibility, the Interpolation
+  // section.
+  // TODO: naming
+  --sbb-sidebar-container-backdrop-opacity: 0;
+  --sbb-sidebar-container__backdrop-visibility: hidden;
+
+  // We need to duplicate animation duration definition for the backdrop in order to prevent passing
+  // down the value to other sbb-sidebar-containers when override it from core.scss
+  --sbb-sidebar-container-backdrop-animation-duration: var(
+    --sbb-sidebar-container-animation-duration
+  );
+
+  @include sbb.if-forced-colors {
+    --sbb-sidebar-container-backdrop-opacity: 0.5;
+  }
+}
+
+.sbb-sidebar-container-backdrop {
+  position: absolute;
+  inset: 0;
+  visibility: var(--sbb-sidebar-container__backdrop-visibility);
+  opacity: var(--sbb-sidebar-container-backdrop-opacity);
+  background-color: var(--sbb-color-black);
+  z-index: 3;
+
+  transition: {
+    duration: var(--sbb-sidebar-container-backdrop-animation-duration);
+    timing-function: var(--sbb-sidebar-container-animation-easing);
+    property: opacity, visibility;
+  }
+}

@@ -4,7 +4,6 @@ import { property } from 'lit/decorators.js';
 import { html } from 'lit/static-html.js';
 
 import { forceType, hostAttributes } from '../core/decorators.js';
-import { SbbNegativeMixin } from '../core/mixins.js';
 
 import style from './title-common.scss?lit&inline';
 
@@ -13,13 +12,13 @@ export type SbbTitleLevel = '1' | '2' | '3' | '4' | '5' | '6';
 /**
  * It displays a title with a heading role.
  *
- * @slot - Use the unnamed slot to display the title.
+ * @slot - Use the unnamed slot to place the content of the title.
  */
 export
 @hostAttributes({
   role: 'heading',
 })
-abstract class SbbTitleBase extends SbbNegativeMixin(LitElement) {
+abstract class SbbTitleBase extends LitElement {
   public static override styles: CSSResultGroup = style;
 
   /** Title level */

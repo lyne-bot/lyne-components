@@ -12,6 +12,14 @@
   @include sbb.block-link-variables--negative;
 }
 
+:host(.sbb-active) {
+  @include sbb.block-link-variables--active;
+}
+
+:host(.sbb-active[negative]) {
+  @include sbb.block-link-variables--active-negative;
+}
+
 .sbb-action-base {
   gap: var(--sbb-link-gap);
 

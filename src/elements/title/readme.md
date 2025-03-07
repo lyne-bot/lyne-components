@@ -51,6 +51,6 @@ If the title is needed, but it must to not be displayed, it's possible to use th
 
 ## Slots
 
-| Name | Description                                |
-| ---- | ------------------------------------------ |
-|      | Use the unnamed slot to display the title. |
+| Name | Description                                             |
+| ---- | ------------------------------------------------------- |
+|      | Use the unnamed slot to place the content of the title. |

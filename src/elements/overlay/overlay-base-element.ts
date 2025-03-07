@@ -80,6 +80,9 @@ abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenCloseBaseEl
 
   public override connectedCallback(): void {
     super.connectedCallback();
+    if (this.isOpen) {
+      this.inertController.activate();
+    }
     this.overlayController?.abort();
     this.overlayController = new AbortController();
   }
