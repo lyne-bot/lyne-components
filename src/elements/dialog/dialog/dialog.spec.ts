@@ -1,7 +1,8 @@
-import { assert, expect, fixture } from '@open-wc/testing';
+import { assert, aTimeout, expect, fixture } from '@open-wc/testing';
 import { sendKeys, setViewport } from '@web/test-runner-commands';
 import { html } from 'lit/static-html.js';
 
+import { isSafari } from '../../core/dom.js';
 import { i18nDialog } from '../../core/i18n.js';
 import { tabKey } from '../../core/testing/private.js';
 import { EventSpy, waitForCondition, waitForLitRender } from '../../core/testing.js';
@@ -10,6 +11,7 @@ import { SbbDialogElement } from './dialog.js';
 
 import '../../button.js';
 import '../../icon.js';
+import '../../stepper.js';
 import '../dialog-title.js';
 import '../dialog-content.js';
 import '../dialog-actions.js';
@@ -493,6 +495,58 @@ describe('sbb-dialog', () => {
       await scrollSpy.calledTimes(2);
 
       expect(element).not.to.have.attribute('data-hide-header');
+    });
+  });
+
+  describe('with stepper', () => {
+    let root: SbbDialogElement;
+
+    beforeEach(async () => {
+      await setViewport({ width: 900, height: 600 });
+      root = await fixture(html`
+        <sbb-dialog id="ktm">
+          <sbb-dialog-title>Title</sbb-dialog-title>
+          <sbb-dialog-content>
+            <sbb-stepper linear orientation="horizontal" size="m">
+              <sbb-step-label>First step</sbb-step-label>
+              <sbb-step>
+                First content
+                <sbb-button size="m" sbb-stepper-next>Next</sbb-button>
+              </sbb-step>
+              <sbb-step-label>Second step</sbb-step-label>
+              <sbb-step>
+                Second content
+                <sbb-secondary-button size="m" sbb-stepper-previous>Back</sbb-secondary-button>
+                <sbb-button size="m" sbb-stepper-next>Next</sbb-button>
+              </sbb-step>
+            </sbb-stepper>
+          </sbb-dialog-content>
+          <sbb-dialog-actions>Action group</sbb-dialog-actions>
+        </sbb-dialog>
+      `);
+    });
+
+    it('should open the dialog and the stepper should appear with the correct style', async () => {
+      const stepper = root.querySelector('sbb-stepper')!;
+      expect(getComputedStyle(stepper).getPropertyValue('--sbb-stepper-marker-size')).to.be.equal(
+        '0',
+      );
+      expect(
+        getComputedStyle(stepper).getPropertyValue('--sbb-stepper-content-height'),
+      ).to.be.equal(isSafari ? '' : 'fit-content');
+
+      await openDialog(root);
+      await waitForLitRender(root);
+      expect(root).to.have.attribute('data-state', 'opened');
+
+      // Need to wait for the intersector to kick in
+      await aTimeout(500);
+      expect(
+        getComputedStyle(stepper).getPropertyValue('--sbb-stepper-marker-size'),
+      ).not.to.be.equal('0');
+      expect(
+        getComputedStyle(stepper).getPropertyValue('--sbb-stepper-content-height'),
+      ).not.to.be.equal(isSafari ? '' : 'fit-content');
     });
   });
 });

@@ -1,4 +1,3 @@
-import { ResizeController } from '@lit-labs/observers/resize-controller.js';
 import {
   type CSSResultGroup,
   html,
@@ -51,11 +50,6 @@ class SbbStepElement extends LitElement {
   private _loaded: boolean = false;
   private _stepper: SbbStepperElement | null = null;
   private _label: SbbStepLabelElement | null = null;
-  private _stepResizeObserver = new ResizeController(this, {
-    target: null,
-    skipInitial: true,
-    callback: (entries) => this._onStepElementResize(entries),
-  });
 
   /** The label of the step. */
   public get label(): SbbStepLabelElement | null {
@@ -132,14 +126,6 @@ class SbbStepElement extends LitElement {
     return element.hasAttribute('sbb-stepper-previous') && !element.hasAttribute('disabled');
   }
 
-  private _onStepElementResize(entries: ResizeObserverEntry[]): void {
-    if (!this.hasAttribute('data-selected')) {
-      return;
-    }
-    const contentHeight = Math.floor(entries[0].contentRect.height);
-    this._stepper?.style?.setProperty('--sbb-stepper-content-height', `${contentHeight}px`);
-  }
-
   private _getStepLabel(): SbbStepLabelElement | null {
     let previousSibling = this.previousElementSibling;
     while (previousSibling && previousSibling.localName !== 'sbb-step-label') {
@@ -158,7 +144,6 @@ class SbbStepElement extends LitElement {
   protected override firstUpdated(changedProperties: PropertyValues<this>): void {
     super.firstUpdated(changedProperties);
     this._loaded = true;
-    this._stepResizeObserver.observe(this.shadowRoot!.querySelector('.sbb-step') as HTMLElement);
   }
 
   protected override render(): TemplateResult {
