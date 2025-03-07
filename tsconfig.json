@@ -68,7 +68,8 @@
           "sbb-popover-close",
           "sbb-toast-close",
           "sbb-stepper-next",
-          "sbb-stepper-previous"
+          "sbb-stepper-previous",
+          "sbb-tooltip"
         ]
       }
     ]
