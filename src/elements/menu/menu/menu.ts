@@ -15,6 +15,7 @@ import {
   SbbInertController,
   SbbMediaMatcherController,
   SbbMediaQueryBreakpointSmallAndBelow,
+  SbbEscapableOverlayController,
 } from '../../core/controllers.js';
 import { forceType, hostAttributes } from '../../core/decorators.js';
 import {
@@ -101,6 +102,7 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
   private _isPointerDownEventOnMenu: boolean = false;
   private _menuController!: AbortController;
   private _windowEventsController!: AbortController;
+  private _sbbEscapableOverlayController = new SbbEscapableOverlayController(this);
   private _focusHandler = new SbbFocusHandler();
   private _scrollHandler = new SbbScrollHandler();
   private _inertController = new SbbInertController(this);
@@ -127,7 +129,6 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
     if (this.state === 'closing' || !this._menu) {
       return;
     }
-
     if (!this.willOpen.emit()) {
       return;
     }
@@ -178,6 +179,7 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
   private _handleOpening(): void {
     this.state = 'opened';
     this._inertController.activate();
+    this._sbbEscapableOverlayController.connect();
     this._setMenuFocus();
     this._focusHandler.trap(this);
     this._attachWindowEvents();
@@ -198,6 +200,7 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
         this._triggerElement.localName === 'sbb-header-button' ||
         this._triggerElement.localName === 'sbb-header-link',
     });
+    this._sbbEscapableOverlayController.disconnect();
     this.didClose.emit();
     this._windowEventsController?.abort();
     this._focusHandler.disconnect();
@@ -256,18 +259,6 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
     }
 
     (enabledActions[nextIndex] as HTMLElement).focus();
-  }
-
-  // Closes the menu on "Esc" key pressed and traps focus within the menu.
-  private async _onKeydownEvent(event: KeyboardEvent): Promise<void> {
-    if (this.state !== 'opened') {
-      return;
-    }
-
-    if (event.key === 'Escape') {
-      this.close();
-      return;
-    }
   }
 
   // Removes trigger click listener on trigger change.
@@ -361,10 +352,6 @@ class SbbMenuElement extends SbbNamedSlotListMixin<
       passive: true,
       signal: this._windowEventsController.signal,
     });
-    window.addEventListener('keydown', (event: KeyboardEvent) => this._onKeydownEvent(event), {
-      signal: this._windowEventsController.signal,
-    });
-
     // Close menu on backdrop click
     window.addEventListener('pointerdown', this._pointerDownListener, {
       signal: this._windowEventsController.signal,

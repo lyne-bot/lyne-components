@@ -3,7 +3,11 @@ import { property } from 'lit/decorators.js';
 
 import { SbbFocusHandler } from '../core/a11y.js';
 import { type SbbButtonBaseElement, SbbOpenCloseBaseElement } from '../core/base-elements.js';
-import { SbbInertController, SbbLanguageController } from '../core/controllers.js';
+import {
+  SbbInertController,
+  SbbLanguageController,
+  SbbEscapableOverlayController,
+} from '../core/controllers.js';
 import { forceType, hostAttributes } from '../core/decorators.js';
 import { SbbScrollHandler } from '../core/dom.js';
 import { EventEmitter } from '../core/eventing.js';
@@ -45,6 +49,7 @@ abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenCloseBaseEl
   protected ariaLiveRef!: SbbScreenReaderOnlyElement;
   protected language = new SbbLanguageController(this);
   protected inertController = new SbbInertController(this);
+  protected sbbEscapableOverlayController = new SbbEscapableOverlayController(this);
 
   protected abstract closeAttribute: string;
   protected abstract onOverlayAnimationEnd(event: AnimationEvent): void;
@@ -105,9 +110,8 @@ abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenCloseBaseEl
     // Remove overlay label as soon as it is not needed any more to prevent accessing it with browse mode.
     window.addEventListener(
       'keydown',
-      (event: KeyboardEvent) => {
+      () => {
         this.removeAriaLiveRefContent();
-        this.onKeydownEvent(event);
       },
       {
         signal: this.openOverlayController.signal,
@@ -116,17 +120,6 @@ abstract class SbbOverlayBaseElement extends SbbNegativeMixin(SbbOpenCloseBaseEl
     window.addEventListener('click', () => this.removeAriaLiveRefContent(), {
       signal: this.openOverlayController.signal,
     });
-  }
-
-  protected onKeydownEvent(event: KeyboardEvent): void {
-    if (this.state !== 'opened') {
-      return;
-    }
-
-    if (event.key === 'Escape') {
-      overlayRefs[overlayRefs.length - 1].close();
-      return;
-    }
   }
 
   protected removeInstanceFromGlobalCollection(): void {
