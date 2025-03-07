@@ -13,7 +13,7 @@ import {
   progressLeg,
   redirectedOnArrivalLeg,
   redirectedOnDepartureLeg,
-} from '../pearl-chain/pearl-chain.sample-data.js';
+} from '../pearl-chain-legacy/pearl-chain-legacy.sample-data.js';
 
 export type DeepPartial<T> = T extends object
   ? {

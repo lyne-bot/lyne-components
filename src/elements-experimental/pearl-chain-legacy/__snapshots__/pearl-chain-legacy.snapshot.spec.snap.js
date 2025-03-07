@@ -1,13 +1,13 @@
 /* @web/test-runner snapshot v1 */
 export const snapshots = {};
 
-snapshots["sbb-pearl-chain renders with one leg DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with one leg DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with one leg DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with one leg DOM */
 
-snapshots["sbb-pearl-chain renders with one leg Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with one leg Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet--past">
   </span>
@@ -20,15 +20,15 @@ snapshots["sbb-pearl-chain renders with one leg Shadow DOM"] =
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with one leg Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with one leg Shadow DOM */
 
-snapshots["sbb-pearl-chain renders with two legs DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with two legs DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with two legs DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with two legs DOM */
 
-snapshots["sbb-pearl-chain renders with two legs Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with two legs Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet--past">
   </span>
@@ -48,15 +48,15 @@ snapshots["sbb-pearl-chain renders with two legs Shadow DOM"] =
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with two legs Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with two legs Shadow DOM */
 
-snapshots["sbb-pearl-chain renders with departure stop skipped DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with departure stop skipped DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with departure stop skipped DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with departure stop skipped DOM */
 
-snapshots["sbb-pearl-chain renders with departure stop skipped Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with departure stop skipped Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet--past">
   </span>
@@ -76,15 +76,15 @@ snapshots["sbb-pearl-chain renders with departure stop skipped Shadow DOM"] =
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with departure stop skipped Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with departure stop skipped Shadow DOM */
 
-snapshots["sbb-pearl-chain renders with arrival stop skipped DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with arrival stop skipped DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with arrival stop skipped DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with arrival stop skipped DOM */
 
-snapshots["sbb-pearl-chain renders with arrival stop skipped Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with arrival stop skipped Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet--past">
   </span>
@@ -104,15 +104,15 @@ snapshots["sbb-pearl-chain renders with arrival stop skipped Shadow DOM"] =
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with arrival stop skipped Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with arrival stop skipped Shadow DOM */
 
-snapshots["sbb-pearl-chain renders with progress leg DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with progress leg DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with progress leg DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with progress leg DOM */
 
-snapshots["sbb-pearl-chain renders with progress leg Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with progress leg Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain__bullet sbb-pearl-chain__bullet--progress">
   </span>
@@ -137,15 +137,15 @@ snapshots["sbb-pearl-chain renders with progress leg Shadow DOM"] =
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with progress leg Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with progress leg Shadow DOM */
 
-snapshots["sbb-pearl-chain renders with cancelled instead of progress leg DOM"] = 
-`<sbb-pearl-chain>
-</sbb-pearl-chain>
+snapshots["sbb-pearl-chain-legacy renders with cancelled instead of progress leg DOM"] = 
+`<sbb-pearl-chain-legacy>
+</sbb-pearl-chain-legacy>
 `;
-/* end snapshot sbb-pearl-chain renders with cancelled instead of progress leg DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with cancelled instead of progress leg DOM */
 
-snapshots["sbb-pearl-chain renders with cancelled instead of progress leg Shadow DOM"] = 
+snapshots["sbb-pearl-chain-legacy renders with cancelled instead of progress leg Shadow DOM"] = 
 `<div class="sbb-pearl-chain">
   <span class="sbb-pearl-chain--departure-skipped sbb-pearl-chain__bullet sbb-pearl-chain__bullet--progress">
   </span>
@@ -165,5 +165,5 @@ snapshots["sbb-pearl-chain renders with cancelled instead of progress leg Shadow
   </span>
 </div>
 `;
-/* end snapshot sbb-pearl-chain renders with cancelled instead of progress leg Shadow DOM */
+/* end snapshot sbb-pearl-chain-legacy renders with cancelled instead of progress leg Shadow DOM */
 
