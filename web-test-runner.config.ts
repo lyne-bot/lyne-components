@@ -156,6 +156,8 @@ const suppressedLogs = [
   'Lit is in dev mode. Not recommended for production! See https://lit.dev/msg/dev-mode for more information.',
   '[vite] connecting...',
   '[vite] connected.',
+  // TODO(major): Verify if still needed
+  'Using <sbb-datepicker> with a native <input> is deprecated. Use a <sbb-date-input> instead of <input>.',
 ];
 
 const testFile = typeof cliArgs.file === 'string' && cliArgs.file ? cliArgs.file : undefined;

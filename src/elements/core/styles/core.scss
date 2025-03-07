@@ -75,7 +75,9 @@ sbb-form-field {
     -webkit-text-fill-color: var(--sbb-color-granite);
   }
 
-  &[floating-label] :where(input, textarea)::placeholder {
+  &[floating-label] :where(input, textarea)::placeholder,
+  // This covers the plateholder of the sbb-date-input
+  &[floating-label] sbb-date-input::after {
     color: transparent;
     -webkit-text-fill-color: transparent;
 

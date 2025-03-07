@@ -15,6 +15,7 @@ import { sbbSpread } from '../../../storybook/helpers/spread.js';
 
 import readme from './readme.md?raw';
 import './datepicker-next-day.js';
+import '../../date-input.js';
 import '../../form-field.js';
 import '../datepicker.js';
 
@@ -40,19 +41,19 @@ const StandaloneTemplate = (args: Args): TemplateResult => html` ${BaseTemplate(
 
 const PickerAndButtonTemplate = (args: Args): TemplateResult => html`
   <div style="display: flex; gap: 1em;">
+    <sbb-date-input value="2023-02-15" id="datepicker-input"></sbb-date-input>
     <sbb-datepicker
       id="datepicker"
       input="datepicker-input"
       now="2023-01-12T00:00:00Z"
     ></sbb-datepicker>
-    <input value="15.02.2023" id="datepicker-input" />
     ${BaseTemplate(args, 'datepicker')}
   </div>
 `;
 
 const FormFieldTemplate = (args: Args): TemplateResult => html`
   <sbb-form-field ${sbbSpread(args)}>
-    <input value="15.02.2023" />
+    <sbb-date-input value="2023-02-15"></sbb-date-input>
     <sbb-datepicker></sbb-datepicker>
     ${BaseTemplate(args)}
   </sbb-form-field>
@@ -60,7 +61,7 @@ const FormFieldTemplate = (args: Args): TemplateResult => html`
 
 const EmptyFormFieldTemplate = (args: Args): TemplateResult => html`
   <sbb-form-field ${sbbSpread(args)}>
-    <input />
+    <sbb-date-input></sbb-date-input>
     <sbb-datepicker></sbb-datepicker>
     ${BaseTemplate(args)}
   </sbb-form-field>

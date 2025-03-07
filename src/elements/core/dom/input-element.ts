@@ -11,10 +11,11 @@ import { findReferencedElement } from './find-referenced-element.js';
 export function findInput(
   element: HTMLElement,
   trigger?: string | HTMLElement | null,
+  inputSelector = 'input',
 ): HTMLInputElement | null {
   if (!trigger) {
     const parent = element.closest?.('sbb-form-field');
-    return parent?.querySelector('input') as HTMLInputElement | null;
+    return parent?.querySelector(inputSelector) as HTMLInputElement | null;
   }
 
   return findReferencedElement<HTMLInputElement>(trigger);

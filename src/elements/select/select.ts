@@ -375,7 +375,6 @@ class SbbSelectElement extends SbbUpdateSchedulerMixin(
 
   protected override firstUpdated(changedProperties: PropertyValues<this>): void {
     super.firstUpdated(changedProperties);
-    this._setValidity();
 
     // Override the default focus behavior
     this.focus = () => this._triggerElement.focus();
@@ -439,10 +438,6 @@ class SbbSelectElement extends SbbUpdateSchedulerMixin(
     super.requestUpdate(name, oldValue, options);
     if (!name && this.hasUpdated) {
       setTimeout(() => this._syncAriaLabels());
-    }
-
-    if (this.hasUpdated && (name === 'value' || name === 'required' || !name)) {
-      this._setValidity();
     }
   }
 
@@ -517,7 +512,12 @@ class SbbSelectElement extends SbbUpdateSchedulerMixin(
     ).forEach((e) => e.requestUpdate?.());
   }
 
-  private _setValidity(): void {
+  protected override shouldValidate(name: PropertyKey | undefined): boolean {
+    return super.shouldValidate(name) || name === 'value' || name === 'required';
+  }
+
+  protected override validate(): void {
+    super.validate();
     if (this.required && this._options.every((o) => o.value !== this.value)) {
       this.setValidityFlag('valueMissing', i18nSelectionRequired[this._languageController.current]);
     } else {

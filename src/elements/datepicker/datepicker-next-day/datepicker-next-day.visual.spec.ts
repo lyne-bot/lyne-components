@@ -9,12 +9,13 @@ import {
 
 import './datepicker-next-day.js';
 import '../datepicker.js';
+import '../../date-input.js';
 import '../../form-field.js';
 
 describe(`sbb-datepicker-next-day`, () => {
   const cases = {
     negative: [true, false],
-    value: [null, '15.02.2023'],
+    value: [null, '2023-02-15'],
   };
 
   describeViewports({ viewports: ['zero', 'medium'] }, () => {
@@ -33,7 +34,7 @@ describe(`sbb-datepicker-next-day`, () => {
             await setup.withFixture(
               html`
                 <sbb-form-field ?negative=${negative}>
-                  <input value=${value || nothing} />
+                  <sbb-date-input value=${value || nothing}></sbb-date-input>
                   <sbb-datepicker></sbb-datepicker>
                   <sbb-datepicker-next-day></sbb-datepicker-next-day>
                 </sbb-form-field>

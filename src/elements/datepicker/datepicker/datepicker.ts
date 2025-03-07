@@ -3,6 +3,7 @@ import {
   html,
   isServer,
   LitElement,
+  type PropertyDeclaration,
   type PropertyValues,
   type TemplateResult,
 } from 'lit';
@@ -16,6 +17,7 @@ import { findInput, findReferencedElement } from '../../core/dom.js';
 import { EventEmitter, forwardEvent } from '../../core/eventing.js';
 import { i18nDateChangedTo, i18nDatePickerPlaceholder } from '../../core/i18n.js';
 import type { SbbDateLike, SbbValidationChangeEvent } from '../../core/interfaces.js';
+import type { SbbDateInputElement } from '../../date-input.js';
 import { SbbDatepickerAssociationHostController, type SbbDatepickerButton } from '../common.js';
 import type { SbbDatepickerToggleElement } from '../datepicker-toggle.js';
 
@@ -58,6 +60,10 @@ export const datepickerControlRegisteredEventFactory = (): CustomEvent =>
   });
 
 let nextId = 0;
+let warningLogged = false;
+const isDateInput = <T>(
+  element: HTMLInputElement | SbbDateInputElement<T> | null,
+): element is SbbDateInputElement<T> => element?.localName === 'sbb-date-input';
 
 /**
  * Combined with a native input, it displays the input's value as a formatted date.
@@ -84,12 +90,25 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   @property({ type: Boolean })
   public accessor wide: boolean = false;
 
-  /** A function used to filter out dates. */
-  @property({ attribute: false }) public accessor dateFilter: (date: T | null) => boolean = () =>
-    true;
+  /**
+   * A function used to filter out dates.
+   * @deprecated Use dateFilter from SbbDateInputElement.
+   */
+  @property({ attribute: false })
+  public set dateFilter(value: (date: T | null) => boolean) {
+    this._dateFilter = value;
+  }
+  public get dateFilter(): (date: T | null) => boolean {
+    return (
+      this._dateFilter ??
+      (isDateInput(this.inputElement) ? this.inputElement.dateFilter : null) ??
+      (() => true)
+    );
+  }
+  private _dateFilter?: (date: T | null) => boolean;
 
   /**
-   * Reference of the native input connected to the datepicker.
+   * Reference of the sbb-date-input instance or the native input connected to the datepicker.
    * If given a string, it will be treated as an id reference and an attempt is
    * made to be resolved for the containing document fragment.
    * If given a HTMLElement instance, it will be used as is.
@@ -109,26 +128,40 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   }
   private _now?: T | null;
 
-  /** The currently selected date as a Date or custom date provider instance. */
+  /**
+   * The currently selected date as a Date or custom date provider instance.
+   * @deprecated Use valueAsDate from SbbDateInputElement.
+   */
   @property({ attribute: false })
   public set valueAsDate(value: SbbDateLike<T> | null) {
+    if (isDateInput(this.inputElement)) {
+      this.inputElement.valueAsDate = this._dateAdapter.getValidDateOrNull(
+        this._dateAdapter.deserialize(value),
+      );
+      return;
+    }
+
     this._valueAsDate = this._dateAdapter.getValidDateOrNull(this._dateAdapter.deserialize(value));
     if (this._tryApplyFormatToInput()) {
-      /* Emit blur event when value is changed programmatically to notify
-      frameworks that rely on that event to update form status. */
+      // Emit blur event when value is changed programmatically to notify
+      // frameworks that rely on that event to update form status.
       this.inputElement!.dispatchEvent(new Event('blur', { composed: true }));
     }
   }
   public get valueAsDate(): T | null {
+    if (isDateInput(this.inputElement)) {
+      return this.inputElement.valueAsDate;
+    }
+
     return this._valueAsDate ?? null;
   }
   private _valueAsDate?: T | null;
 
   /** The resolved associated input element, as defined by `input`. */
-  public get inputElement(): HTMLInputElement | null {
+  public get inputElement(): HTMLInputElement | SbbDateInputElement<T> | null {
     return this._inputElement;
   }
-  @state() private accessor _inputElement: HTMLInputElement | null = null;
+  @state() private accessor _inputElement: HTMLInputElement | SbbDateInputElement<T> | null = null;
 
   /** Notifies that the connected input has changes. */
   private _change: EventEmitter = new EventEmitter(this, SbbDatepickerElement.events.change, {
@@ -167,7 +200,11 @@ class SbbDatepickerElement<T = Date> extends LitElement {
         this._emitInputUpdated();
         this._associationController?.updateControls();
         // TODO: Decide whether to remove this logic by adding a value property to the datepicker.
-        if (this.inputElement && mutationsList?.some((e) => e.attributeName === 'value')) {
+        if (
+          this.inputElement &&
+          !isDateInput(this.inputElement) &&
+          mutationsList?.some((e) => e.attributeName === 'value')
+        ) {
           const value = this.inputElement.getAttribute('value');
           this.valueAsDate = this._dateAdapter.parse(value, this.now) ?? value;
         }
@@ -176,16 +213,7 @@ class SbbDatepickerElement<T = Date> extends LitElement {
 
   private _dateAdapter: DateAdapter<T> = readConfig().datetime?.dateAdapter ?? defaultDateAdapter;
 
-  private _language = new SbbLanguageController(this).withHandler(() => {
-    if (this.inputElement) {
-      if (this._inputElementPlaceholderMutable) {
-        this.inputElement.placeholder = i18nDatePickerPlaceholder[this._language.current];
-      }
-      if (this.valueAsDate) {
-        this.inputElement.value = this._dateAdapter.format(this.valueAsDate);
-      }
-    }
-  });
+  private _language = new SbbLanguageController(this);
   private _associationController = new SbbDatepickerAssociationHostController(this);
 
   public constructor() {
@@ -196,6 +224,22 @@ class SbbDatepickerElement<T = Date> extends LitElement {
     this.id ||= `sbb-datepicker-${++nextId}`;
     super.connectedCallback();
     this._attachInput();
+  }
+
+  public override requestUpdate(
+    name?: PropertyKey,
+    oldValue?: unknown,
+    options?: PropertyDeclaration,
+  ): void {
+    super.requestUpdate(name, oldValue, options);
+    if (this.hasUpdated && !name && this.inputElement) {
+      if (this._inputElementPlaceholderMutable) {
+        this.inputElement.placeholder = i18nDatePickerPlaceholder[this._language.current];
+      }
+      if (this.valueAsDate) {
+        this.inputElement.value = this._dateAdapter.format(this.valueAsDate);
+      }
+    }
   }
 
   protected override willUpdate(changedProperties: PropertyValues<this>): void {
@@ -236,12 +280,19 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   }
 
   private _attachInput(): void {
-    const input = findInput(this, this.input);
+    const input = findInput(this, this.input, 'input,sbb-date-input');
     if (this.inputElement === input) {
       return;
     } else if (this.inputElement) {
       this._datePickerController?.abort();
       this._inputObserver?.disconnect();
+    }
+    const isNativeInput = !isDateInput(input);
+    if (isNativeInput && import.meta.env.DEV && !warningLogged) {
+      warningLogged = true;
+      console.warn(
+        'Using <sbb-datepicker> with a native <input> is deprecated. Use a <sbb-date-input> instead of <input>.',
+      );
     }
 
     this._inputElement = input;
@@ -251,10 +302,12 @@ class SbbDatepickerElement<T = Date> extends LitElement {
         attributeFilter: ['disabled', 'readonly', 'min', 'max', 'value'],
       });
 
-      this._inputElementPlaceholderMutable = !input.placeholder;
-      input.type = 'text';
-      if (this._inputElementPlaceholderMutable) {
-        input.placeholder = i18nDatePickerPlaceholder[this._language.current];
+      if (isNativeInput) {
+        this._inputElementPlaceholderMutable = !input.placeholder;
+        input.type = 'text';
+        if (this._inputElementPlaceholderMutable) {
+          input.placeholder = i18nDatePickerPlaceholder[this._language.current];
+        }
       }
 
       const options: AddEventListenerOptions = { signal: this._datePickerController.signal };
@@ -276,7 +329,13 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   }
 
   private _emitInputUpdated(): void {
-    const { disabled, readOnly: readonly, min, max } = this.inputElement ?? {};
+    const { disabled, readOnly: readonly, min: minValue, max: maxValue } = this.inputElement ?? {};
+    const min = (
+      minValue && typeof minValue !== 'string' ? this._dateAdapter.toIso8601(minValue) : minValue
+    ) as string | undefined;
+    const max = (
+      maxValue && typeof maxValue !== 'string' ? this._dateAdapter.toIso8601(maxValue) : maxValue
+    ) as string | undefined;
     this._inputUpdated.emit({ disabled, readonly, min, max });
   }
 
@@ -291,7 +350,7 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   }
 
   private _tryApplyFormatToInput(): boolean {
-    if (!this.inputElement) {
+    if (!this.inputElement || isDateInput(this.inputElement)) {
       return false;
     }
 
@@ -324,6 +383,10 @@ class SbbDatepickerElement<T = Date> extends LitElement {
   }
 
   private _parseInput(deserializeAsFallback = false): void {
+    if (isDateInput(this.inputElement)) {
+      return;
+    }
+
     const value = this.inputElement!.value;
     // We are assigning directly to the private backing property of valueAsDate
     // as we don't want to trigger a blur event during this time.
@@ -430,7 +493,7 @@ class SbbDatepickerElement<T = Date> extends LitElement {
       return false;
     }
 
-    return this.dateFilter ? this.dateFilter(this.valueAsDate) : true;
+    return this.dateFilter?.(this.valueAsDate) ?? true;
   }
 }
 

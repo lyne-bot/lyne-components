@@ -1,11 +1,21 @@
-import type { LitElement } from 'lit';
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { LitElement, PropertyDeclaration, PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 
 import { isWebkit } from '../dom.js';
 
 import type { AbstractConstructor } from './constructor.js';
 
-const validityKeys: Required<ValidityStateFlags> = {
+declare global {
+  /**
+   * Defines custom valididty state properties.
+   */
+  interface CustomValidityState {}
+  interface ValidityState extends CustomValidityState {}
+  interface ValidityStateFlags extends Partial<CustomValidityState> {}
+}
+
+const validityKeys: Required<Omit<ValidityStateFlags, keyof CustomValidityState>> = {
   badInput: false,
   customError: false,
   patternMismatch: false,
@@ -17,6 +27,27 @@ const validityKeys: Required<ValidityStateFlags> = {
   typeMismatch: false,
   valueMissing: false,
 };
+// We need ValidityState in the global context, as we check the prototype for
+// extensions. In environments where that is not the case (e.g. Node.js) we
+// patch it with a minimal shim.
+if (typeof ValidityState === 'undefined') {
+  const validityClass = class ValidityState {
+    public get valid(): boolean {
+      return true;
+    }
+    private constructor() {
+      throw new TypeError('Illegal constructor');
+    }
+  };
+  Object.entries(validityKeys).forEach(([key, value]) =>
+    Object.assign(validityClass.prototype, {
+      get [key](): boolean {
+        return value;
+      },
+    }),
+  );
+  globalThis.ValidityState = validityClass as unknown as typeof ValidityState;
+}
 
 export declare abstract class SbbFormAssociatedMixinType<V = string> {
   public get form(): HTMLFormElement | null;
@@ -50,6 +81,8 @@ export declare abstract class SbbFormAssociatedMixinType<V = string> {
     flagValue?: ValidityStateFlags[T],
   ): void;
   protected removeValidityFlag<T extends keyof ValidityStateFlags>(flag: T): void;
+  protected validate(): void;
+  protected shouldValidate(name: PropertyKey | undefined): boolean;
 }
 
 /**
@@ -223,9 +256,9 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
 
     /**
      *  Called when the browser is trying to restore element’s state to state in which case
-     *  reason is “restore”, or when the browser is trying to fulfill autofill on behalf of
-     *  user in which case reason is “autocomplete”.
-     *  In the case of “restore”, state is a string, File, or FormData object
+     *  reason is "restore", or when the browser is trying to fulfill autofill on behalf of
+     *  user in which case reason is "autocomplete".
+     *  In the case of "restore", state is a string, File, or FormData object
      *  previously set as the second argument to setFormValue.
      *
      * @internal
@@ -234,6 +267,22 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
       state: FormRestoreState | null,
       reason: FormRestoreReason,
     ): void;
+
+    public override requestUpdate(
+      name?: PropertyKey,
+      oldValue?: unknown,
+      options?: PropertyDeclaration,
+    ): void {
+      super.requestUpdate(name, oldValue, options);
+      if (this.hasUpdated && this.shouldValidate(name)) {
+        this.validate();
+      }
+    }
+
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+      super.firstUpdated(changedProperties);
+      this.validate();
+    }
 
     /**
      * Should be called when form value is changed.
@@ -249,8 +298,7 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
      * consumers are always displayed before internal messages and internal
      * messages are displayed in the order they were added.
      * To set/define custom validity state flags, you need to extend the
-     * ValidityState prototype and both the ValidityState and the
-     * ValidityStateFlags interface.
+     * ValidityState prototype (and the CustomValidityState interface).
      *
      * @example
      *
@@ -262,11 +310,8 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
      *   });
      *
      *   declare global {
-     *     interface ValidityState {
+     *     interface CustomValidityState {
      *       myError: boolean;
-     *     }
-     *     interface ValidityState {
-     *       myError?: boolean;
      *     }
      *   }
      */
@@ -276,49 +321,63 @@ export const SbbFormAssociatedMixin = <T extends AbstractConstructor<LitElement>
       flagValue?: ValidityStateFlags[T],
     ): void {
       flagValue ??= true;
-      this._validityStates.set(flag, { flagValue, message });
-      this._setInternalValidity();
+      const validityState = this._validityStates.get(flag);
+      if (
+        !validityState ||
+        validityState.message !== message ||
+        validityState.flagValue !== flagValue
+      ) {
+        this._validityStates.set(flag, { flagValue, message });
+        this._setInternalValidity();
+      }
     }
 
+    /** Removes the validity state flag entry and updates validity state. */
     protected removeValidityFlag<T extends keyof ValidityStateFlags>(flag: T): void {
-      this._validityStates.delete(flag);
-      this._setInternalValidity();
+      if (this._validityStates.has(flag)) {
+        this._validityStates.delete(flag);
+        this._setInternalValidity();
+      }
+    }
+
+    /** To be called whenever the current element needs to be validated. */
+    protected validate(): void {}
+
+    /** Whether validation should be run on a property change with the given name. */
+    protected shouldValidate(name: PropertyKey | undefined): boolean {
+      return !name;
     }
 
     private _setInternalValidity(): void {
-      if (this._validityStates.size) {
-        let outputMessage = this._validityStates.get('customError')?.message;
-        const flags: ValidityStateFlags = {};
-        this._validityStates.forEach(({ flagValue, message }, flag) => {
-          flags[flag] = flagValue as any;
-          outputMessage ||= message;
+      let outputMessage = this._validityStates.get('customError')?.message;
+      const flags: ValidityStateFlags = {};
+      this._validityStates.forEach(({ flagValue, message }, flag) => {
+        flags[flag] = flagValue as any;
+        outputMessage ||= message;
+      });
+
+      const customFlags = Object.keys(ValidityState.prototype).filter(
+        (f) => !(f in validityKeys) && f !== 'valid',
+      );
+      for (const flag of customFlags) {
+        const value = flag in flags ? flags[flag as keyof ValidityStateFlags] : false;
+        Object.defineProperty(this.internals.validity, flag, { value, configurable: true });
+        if (value) {
+          // If any custom errors are provided, we need to set customError to true,
+          // as this is the only custom error property browsers accept.
+          flags.customError = true;
+        }
+      }
+
+      this.internals.setValidity(flags, outputMessage);
+
+      // WebKit seems to always set customError to true, if any error is active.
+      // Due to this we patch the customError value manually.
+      if (isWebkit) {
+        Object.defineProperty(this.internals.validity, 'customError', {
+          value: this._validityStates.has('customError') || !!flags.customError,
+          configurable: true,
         });
-
-        const customFlags = Object.keys(ValidityState.prototype).filter(
-          (f) => !(f in validityKeys) && f !== 'valid',
-        );
-        for (const flag of customFlags) {
-          const value = flag in flags ? flags[flag as keyof ValidityStateFlags] : false;
-          Object.defineProperty(this.internals.validity, flag, { value, configurable: true });
-          if (value) {
-            // If any custom errors are provided, we need to set customError to true,
-            // as this is the only custom error property browsers accept.
-            flags.customError = true;
-          }
-        }
-
-        this.internals.setValidity(flags, outputMessage);
-
-        // WebKit seems to always set customError to true, if any error is active.
-        // Due to this we patch the customError value manually.
-        if (isWebkit) {
-          Object.defineProperty(this.internals.validity, 'customError', {
-            value: this._validityStates.has('customError') || !!flags.customError,
-            configurable: true,
-          });
-        }
-      } else {
-        this.internals.setValidity({});
       }
     }
   }

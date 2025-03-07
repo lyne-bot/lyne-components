@@ -11,6 +11,7 @@ import type {
 import { html, nothing, type TemplateResult } from 'lit';
 
 import { sbbSpread } from '../../../storybook/helpers/spread.js';
+import { defaultDateAdapter } from '../../core/datetime.js';
 
 import { SbbDatepickerElement } from './datepicker.js';
 import readme from './readme.md?raw';
@@ -18,6 +19,7 @@ import readme from './readme.md?raw';
 import '../datepicker-next-day.js';
 import '../datepicker-previous-day.js';
 import '../datepicker-toggle.js';
+import '../../date-input.js';
 import '../../form-field.js';
 
 const value: InputType = {
@@ -227,8 +229,8 @@ const formFieldBasicArgs = {
   borderless: false,
 };
 
-const convertMillisecondsToSeconds = (milliseconds: number): number | typeof nothing => {
-  return milliseconds ? milliseconds / 1000 : nothing;
+const convertMillisecondsToIso8601 = (milliseconds: number): string | typeof nothing => {
+  return milliseconds ? defaultDateAdapter.toIso8601(new Date(milliseconds)) : nothing;
 };
 
 const changeEventHandler = async (event: Event): Promise<void> => {
@@ -242,19 +244,19 @@ const Template = ({ min, max, wide, dateFilter, now, ...args }: Args): TemplateR
     <div style="display: flex; gap: 0.25rem;">
       <sbb-datepicker-previous-day date-picker="datepicker"></sbb-datepicker-previous-day>
       <sbb-datepicker-toggle date-picker="datepicker"></sbb-datepicker-toggle>
-      <input
+      <sbb-date-input
         ${sbbSpread(args)}
         id="datepicker-input"
-        min=${convertMillisecondsToSeconds(min)}
-        max=${convertMillisecondsToSeconds(max)}
-      />
+        min=${convertMillisecondsToIso8601(min)}
+        max=${convertMillisecondsToIso8601(max)}
+      ></sbb-date-input>
       <sbb-datepicker
         id="datepicker"
         input="datepicker-input"
         .dateFilter=${dateFilter}
         ?wide=${wide}
         @change=${(event: Event) => changeEventHandler(event)}
-        now=${convertMillisecondsToSeconds(now)}
+        now=${convertMillisecondsToIso8601(now)}
       ></sbb-datepicker>
       <sbb-datepicker-next-day date-picker="datepicker"></sbb-datepicker-next-day>
     </div>
@@ -283,22 +285,21 @@ const TemplateFormField = ({
       ?negative=${negative}
       ?optional=${optional}
       ?borderless=${borderless}
-      width="collapse"
     >
       ${label ? html`<label>${label}</label>` : nothing}
       <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
       <sbb-datepicker-next-day></sbb-datepicker-next-day>
       <sbb-datepicker-toggle></sbb-datepicker-toggle>
-      <input
+      <sbb-date-input
         ${sbbSpread(args)}
-        min=${convertMillisecondsToSeconds(min)}
-        max=${convertMillisecondsToSeconds(max)}
-      />
+        min=${convertMillisecondsToIso8601(min)}
+        max=${convertMillisecondsToIso8601(max)}
+      ></sbb-date-input>
       <sbb-datepicker
         .dateFilter=${dateFilter}
         ?wide=${wide}
         @change=${(event: Event) => changeEventHandler(event)}
-        now=${convertMillisecondsToSeconds(now)}
+        now=${convertMillisecondsToIso8601(now)}
       ></sbb-datepicker>
     </sbb-form-field>
     <div id="container-value" style="margin-block-start: 1rem; color: var(--sbb-color-smoke);">

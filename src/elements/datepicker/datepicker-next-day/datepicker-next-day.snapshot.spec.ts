@@ -7,6 +7,7 @@ import type { SbbDatepickerNextDayElement } from './datepicker-next-day.js';
 
 import './datepicker-next-day.js';
 import '../datepicker.js';
+import '../../date-input.js';
 import '../../form-field.js';
 
 describe(`sbb-datepicker-next-day`, () => {
@@ -32,7 +33,7 @@ describe(`sbb-datepicker-next-day`, () => {
     beforeEach(async () => {
       const page = await fixture(html`
         <div>
-          <input id="datepicker-input" value="31-12-2022" />
+          <sbb-date-input id="datepicker-input" value="2022-12-31"></sbb-date-input>
           <sbb-datepicker id="datepicker" input="datepicker-input"></sbb-datepicker>
           <sbb-datepicker-next-day date-picker="datepicker"></sbb-datepicker-next-day>
         </div>

@@ -170,7 +170,8 @@ snapshots["sbb-datepicker-toggle in form-field with calendar parameters A11y tre
     },
     {
       "role": "textbox",
-      "name": "DD.MM.YYYY"
+      "name": "",
+      "value": "DD.MM.YYYY"
     }
   ]
 }

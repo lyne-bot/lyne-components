@@ -31,7 +31,7 @@ describe(`sbb-datepicker`, () => {
     describeEach(cases, ({ negative, states }) => {
       beforeEach(async function () {
         root = await visualRegressionFixture(html`
-          <sbb-form-field ?negative=${negative} width="collapse">
+          <sbb-form-field ?negative=${negative}>
             <label>Label</label>
             <sbb-datepicker-previous-day></sbb-datepicker-previous-day>
             <sbb-datepicker-next-day></sbb-datepicker-next-day>

@@ -1,0 +1,32 @@
+@use '../core/styles' as sbb;
+
+:host {
+  display: inline-block;
+
+  // With sbb-form-field[width="collapsed"], the default min width of a
+  // an inline element is basically nothing (except potentially the placeholder).
+  // Due to this, we set a minimum width of the date input element.
+  min-width: #{sbb.px-to-rem-build(150)};
+  max-width: 100%;
+  cursor: text;
+
+  @include sbb.if-forced-colors {
+    color: FieldText;
+  }
+}
+
+:host(:disabled) {
+  cursor: default;
+}
+
+:host(:focus) {
+  text-overflow: initial !important;
+}
+
+:host(:empty)::after {
+  content: attr(placeholder);
+  @include sbb.placeholder;
+  @include sbb.if-forced-colors {
+    color: GrayText;
+  }
+}

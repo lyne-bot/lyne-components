@@ -42,7 +42,12 @@ export
 class SbbFormFieldElement extends SbbNegativeMixin(SbbHydrationMixin(LitElement)) {
   public static override styles: CSSResultGroup = style;
 
-  private readonly _supportedNativeInputElements = ['input', 'select', 'textarea'];
+  private readonly _supportedNativeInputElements = [
+    'input',
+    'select',
+    'textarea',
+    'sbb-date-input',
+  ];
   // List of supported element selectors in unnamed slot
   private readonly _supportedInputElements = [
     ...this._supportedNativeInputElements,
@@ -55,6 +60,7 @@ class SbbFormFieldElement extends SbbNegativeMixin(SbbHydrationMixin(LitElement)
   private readonly _floatingLabelSupportedInputElements = [
     'input',
     'select',
+    'sbb-date-input',
     'sbb-select',
     'textarea',
   ];
@@ -164,7 +170,7 @@ class SbbFormFieldElement extends SbbNegativeMixin(SbbHydrationMixin(LitElement)
   }
 
   private _handleWrapperClick(event: Event): void {
-    if (this._isButtonOrPopup(event)) {
+    if (this._isElementFocusExcluded(event)) {
       return;
     }
 
@@ -179,12 +185,13 @@ class SbbFormFieldElement extends SbbNegativeMixin(SbbHydrationMixin(LitElement)
     }
   }
 
-  private _isButtonOrPopup(event: Event): boolean {
+  private _isElementFocusExcluded(event: Event): boolean {
     return event
       .composedPath()
       .some(
         (el) =>
-          (el instanceof window.HTMLElement && el.getAttribute('tabindex') === '0') ||
+          (el instanceof window.HTMLElement &&
+            (el.getAttribute('tabindex') === '0' || el.hasAttribute('contenteditable'))) ||
           this._excludedFocusElements.includes((el as HTMLElement).localName),
       );
   }

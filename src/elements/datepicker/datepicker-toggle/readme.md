@@ -11,7 +11,7 @@ or directly its reference.
 
 ```html
 <sbb-datepicker-toggle date-picker="datepicker"></sbb-datepicker-toggle>
-<input id="datepicker-input" />
+<sbb-date-input id="datepicker-input"></sbb-date-input>
 <sbb-datepicker input="datepicker-input" id="datepicker"></sbb-datepicker>
 ```
 
@@ -24,7 +24,7 @@ otherwise, they can be connected using the `datePicker` property as described ab
 ```html
 <sbb-form-field>
   <sbb-datepicker-toggle></sbb-datepicker-toggle>
-  <input />
+  <sbb-date-input></sbb-date-input>
   <sbb-datepicker></sbb-datepicker>
 </sbb-form-field>
 ```

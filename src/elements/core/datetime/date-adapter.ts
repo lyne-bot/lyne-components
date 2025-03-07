@@ -5,6 +5,7 @@ export const MONTHS_PER_PAGE: number = 12;
 export const YEARS_PER_PAGE: number = 24;
 export const FORMAT_DATE =
   /(^0?[1-9]?|[12]?[0-9]?|3?[01]?)[.,\\/\-\s](0?[1-9]?|1?[0-2]?)?[.,\\/\-\s](\d{1,4}$)?/;
+export const ISO8601_FORMAT_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /**
  * Abstract date functionality.
@@ -138,7 +139,7 @@ export abstract class DateAdapter<T = any> {
    * @param value The date in the format DD.MM.YYYY.
    * @param now The current date as Date.
    */
-  public abstract parse(value: string | null | undefined, now: T): T | null;
+  public abstract parse(value: string | null | undefined, now?: T): T | null;
 
   /**
    * Format the given date as string.
@@ -147,7 +148,7 @@ export abstract class DateAdapter<T = any> {
    */
   public format(
     date: T | null | undefined,
-    options?: { weekdayStyle?: 'long' | 'short' | 'narrow' },
+    options?: { weekdayStyle?: 'long' | 'short' | 'narrow' | 'none' },
   ): string {
     if (!this.isValid(date)) {
       return '';
@@ -159,6 +160,10 @@ export abstract class DateAdapter<T = any> {
       month: '2-digit',
       year: 'numeric',
     });
+
+    if (options?.weekdayStyle === 'none') {
+      return dateFormatter.format(value);
+    }
 
     const weekdayStyle = options?.weekdayStyle ?? 'short';
     let weekday = this.getDayOfWeekNames(weekdayStyle)[this.getDayOfWeek(date!)];

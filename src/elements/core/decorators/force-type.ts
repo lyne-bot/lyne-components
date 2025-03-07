@@ -38,7 +38,7 @@ export const forceType = <C extends Interface<ReactiveElement>, V>(): PropertyDe
       } satisfies ClassAccessorDecoratorResult<C, V>;
     } else if (kind === 'setter') {
       return function (value: unknown) {
-        (target as (value: unknown) => void)(convert(value));
+        (target as (value: unknown) => void).call(this, convert(value));
       } satisfies (this: C, value: V) => void;
     }
 
