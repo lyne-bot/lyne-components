@@ -179,7 +179,7 @@ snapshots["sbb-pearl-chain renders with progress leg DOM"] =
     arrival="2022-08-17T16:00:00"
     data-progress=""
     departure="2022-08-14T14:00:00"
-    style="--sbb-pearl-chain-leg-weight: 0.9736842105263158; --sbb-pearl-chain-status-position: 0.6621621621621622;"
+    style="--sbb-pearl-chain-status-position: 0.6621621621621622; --sbb-pearl-chain-leg-weight: 0.9736842105263158;"
   >
   </sbb-pearl-chain-leg>
   <sbb-pearl-chain-leg
@@ -221,7 +221,7 @@ snapshots["sbb-pearl-chain renders with cancelled instead of progress leg DOM"] 
     data-progress=""
     departure="2022-08-14T14:00:00"
     disruption=""
-    style="--sbb-pearl-chain-leg-weight: 0.9736842105263158; --sbb-pearl-chain-status-position: 0.6621621621621622;"
+    style="--sbb-pearl-chain-status-position: 0.6621621621621622; --sbb-pearl-chain-leg-weight: 0.9736842105263158;"
   >
   </sbb-pearl-chain-leg>
   <sbb-pearl-chain-leg
