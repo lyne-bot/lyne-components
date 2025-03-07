@@ -84,6 +84,7 @@ class SbbActionGroupElement extends LitElement {
   }
 
   protected override render(): TemplateResult {
+    // TODO(css-refactoring): Consider removing div
     return html`
       <div class="sbb-action-group">
         <slot></slot>

@@ -11,3 +11,9 @@
 @use './lists';
 @use './scrollbar';
 @use './table';
+
+@use './mixins/theme' as theme;
+
+:root {
+  @include theme.theme;
+}

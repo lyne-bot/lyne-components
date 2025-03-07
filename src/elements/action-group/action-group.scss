@@ -7,77 +7,10 @@
   display: block;
 }
 
-$breakpoints: 'zero', 'micro', 'small', 'medium', 'large', 'wide', 'ultra';
-$vertical-orientations: (
-  start: flex-start,
-  center: center,
-  stretch: stretch,
-  end: flex-end,
-);
-$horizontal-orientations: (
-  start: flex-start,
-  center: center,
-  stretch: space-between,
-  end: flex-end,
-);
-
-:host([orientation='horizontal']) {
-  --sbb-action-group-orientation: row;
-  --sbb-action-group-align-items: center;
-  --sbb-action-group-gap: var(--sbb-spacing-fixed-4x);
-}
-
-@each $key, $value in $horizontal-orientations {
-  :host([orientation='horizontal'][align-group='#{$key}']) {
-    --sbb-action-group-justify-content: #{$value};
-  }
-}
-
-:host([orientation='vertical']) {
-  --sbb-action-group-orientation: column;
-  --sbb-action-group-gap: var(--sbb-spacing-fixed-2x);
-}
-
-@each $key, $value in $vertical-orientations {
-  :host([orientation='vertical'][align-group='#{$key}']) {
-    --sbb-action-group-align-items: #{$value};
-  }
-}
-
-@each $breakpoint in $breakpoints {
-  @include sbb.mq($from: #{$breakpoint}) {
-    @each $key, $value in $horizontal-orientations {
-      // horizontal-from overrides orientation vertical
-      :host([orientation='vertical'][horizontal-from='#{$breakpoint}'][align-group='#{$key}']) {
-        --sbb-action-group-orientation: row;
-        --sbb-action-group-align-items: center;
-        --sbb-action-group-justify-content: #{$value};
-        --sbb-action-group-gap: var(--sbb-spacing-fixed-4x);
-      }
-    }
-  }
-}
-
 .sbb-action-group {
   display: flex;
-  flex-direction: var(--sbb-action-group-orientation);
-  gap: var(--sbb-action-group-gap);
-  justify-content: var(--sbb-action-group-justify-content);
-  align-items: var(--sbb-action-group-align-items);
-
-  ::slotted([align-self='start']) {
-    margin-inline-end: auto;
-  }
-
-  ::slotted([align-self='center']) {
-    margin-inline: auto;
-  }
-
-  ::slotted([align-self='end']) {
-    margin-inline-start: auto;
-  }
-}
-
-::slotted(:is(sbb-block-link, sbb-block-link-button, sbb-block-link-static)) {
-  white-space: nowrap;
+  flex-direction: var(--sbb-action-group__orientation);
+  gap: var(--sbb-action-group__gap);
+  justify-content: var(--sbb-action-group__justify-content);
+  align-items: var(--sbb-action-group__align-items);
 }

@@ -1,0 +1,6 @@
+@forward '../../../action-group/action-group.global' as action-group-* show action-group-theme;
+@use '../../../action-group/action-group.global' as action-group;
+
+@mixin theme($theme: ()) {
+  @include action-group.theme($theme);
+}
