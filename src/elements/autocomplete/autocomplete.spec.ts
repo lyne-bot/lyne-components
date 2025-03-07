@@ -8,6 +8,7 @@ import { describeIf, EventSpy, waitForLitRender } from '../core/testing.js';
 import { SbbFormFieldElement } from '../form-field.js';
 import { SbbOptionElement } from '../option.js';
 
+import { inputAutocompleteEvent } from './autocomplete-base-element.js';
 import { SbbAutocompleteElement } from './autocomplete.js';
 
 describe(`sbb-autocomplete`, () => {
@@ -147,6 +148,7 @@ describe(`sbb-autocomplete`, () => {
     const optionSelectedEventSpy = new EventSpy(SbbOptionElement.events.optionSelected);
     const inputEventSpy = new EventSpy('input', input);
     const changeEventSpy = new EventSpy('change', input);
+    const inputAutocompleteEventSpy = new EventSpy(inputAutocompleteEvent, input);
     const optTwo = element.querySelector<SbbOptionElement>('#option-2')!;
 
     input.focus();
@@ -165,6 +167,7 @@ describe(`sbb-autocomplete`, () => {
 
     expect(inputEventSpy.count).to.be.equal(1);
     expect(changeEventSpy.count).to.be.equal(1);
+    expect(inputAutocompleteEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.firstEvent!.target).to.have.property('id', 'option-2');
     expect(document.activeElement).to.be.equal(input);
@@ -176,12 +179,12 @@ describe(`sbb-autocomplete`, () => {
     const optionSelectedEventSpy = new EventSpy(SbbOptionElement.events.optionSelected);
     const inputEventSpy = new EventSpy('input', input);
     const changeEventSpy = new EventSpy('change', input);
+    const inputAutocompleteEventSpy = new EventSpy(inputAutocompleteEvent, input);
     const optOne = element.querySelector<SbbOptionElement>('#option-1');
     const optTwo = element.querySelector<SbbOptionElement>('#option-2');
     const keydownSpy = new EventSpy('keydown', input);
 
     input.focus();
-
     await didOpenEventSpy.calledOnce();
     expect(didOpenEventSpy.count).to.be.equal(1);
 
@@ -203,6 +206,7 @@ describe(`sbb-autocomplete`, () => {
     expect(optTwo).to.have.attribute('selected');
     expect(inputEventSpy.count).to.be.equal(1);
     expect(changeEventSpy.count).to.be.equal(1);
+    expect(inputAutocompleteEventSpy.count).to.be.equal(1);
     expect(optionSelectedEventSpy.count).to.be.equal(1);
     expect(input).to.have.attribute('aria-expanded', 'false');
     expect(input).not.to.have.attribute('aria-activedescendant');

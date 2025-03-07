@@ -33,7 +33,7 @@ describe(`sbb-option ssr`, () => {
         html`
           <div>
             <input id="autocomplete-input" />
-            <sbb-autocomplete trigger="autocomplete-input">
+            <sbb-autocomplete trigger="autocomplete-input" origin="autocomplete-input">
               <sbb-option value="Option A">Option A</sbb-option>
               <sbb-option value="Option B">Option B</sbb-option>
               <sbb-option value="Option C">Option C</sbb-option>

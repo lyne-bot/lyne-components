@@ -1,3 +1,4 @@
+import { ResizeController } from '@lit-labs/observers/resize-controller.js';
 import {
   type CSSResultGroup,
   html,
@@ -29,6 +30,11 @@ import style from './autocomplete-base-element.scss?lit&inline';
  * On the other hand, JAWS and NVDA need the role to be "closer" to the options, or else optgroups won't work.
  */
 const ariaRoleOnHost = isSafari;
+
+/**
+ * Custom event emitted on the input when an option is selected
+ */
+export const inputAutocompleteEvent = 'inputAutocomplete';
 
 export
 @hostAttributes({
@@ -76,6 +82,15 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
   protected abstract panelRole: string;
   /** @deprecated No longer used internally. */
   protected abort = new SbbConnectedAbortController(this);
+  private _originResizeObserver = new ResizeController(this, {
+    target: null,
+    skipInitial: true,
+    callback: () => {
+      if (this.state === 'opened') {
+        this._setOverlayPosition();
+      }
+    },
+  });
   private _overlay!: HTMLElement;
   private _optionContainer!: HTMLElement;
   private _triggerEventsController!: AbortController;
@@ -129,6 +144,7 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     this.state = 'closing';
     this._triggerElement?.toggleAttribute('data-expanded', false);
     this._openPanelEventsController.abort();
+    this._originResizeObserver.unobserve(this.originElement);
 
     // If the animation duration is zero, the animationend event is not always fired reliably.
     // In this case we directly set the `closed` state.
@@ -207,6 +223,9 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
       // Manually trigger the change events
       this.triggerElement.dispatchEvent(new Event('change', { bubbles: true }));
       this.triggerElement.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
+
+      // Custom input event emitted when input value changes after an option is selected
+      this.triggerElement.dispatchEvent(new Event(inputAutocompleteEvent));
       this.triggerElement.focus();
     }
 
@@ -329,7 +348,12 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
     this.triggerElement?.addEventListener(
       'keydown',
       (event: KeyboardEvent) => this._closedPanelKeyboardInteraction(event),
-      { signal: this._triggerEventsController.signal },
+      {
+        signal: this._triggerEventsController.signal,
+        // We need key event to run before any other subscription to guarantee a correct
+        // interaction with other components (necessary for the 'sbb-chip-group' use case).
+        capture: true,
+      },
     );
   }
 
@@ -360,6 +384,7 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
   private _handleOpening(): void {
     this.state = 'opened';
     this._attachOpenPanelEvents();
+    this._originResizeObserver.observe(this.originElement);
     this.triggerElement?.setAttribute('aria-expanded', 'true');
     this.didOpen.emit();
   }
@@ -403,6 +428,9 @@ abstract class SbbAutocompleteBaseElement extends SbbNegativeMixin(
       (event: KeyboardEvent) => this.openedPanelKeyboardInteraction(event),
       {
         signal: this._openPanelEventsController.signal,
+        // We need key event to run before any other subscription to guarantee a correct
+        // interaction with other components (necessary for the 'sbb-chip-group' use case).
+        capture: true,
       },
     );
   }

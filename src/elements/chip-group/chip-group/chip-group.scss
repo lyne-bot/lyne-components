@@ -1,0 +1,35 @@
+@use '../../core/styles/index' as sbb;
+
+// Box-sizing rules contained in typography are not traversing Shadow DOM boundaries. We need to include box-sizing mixin in every component.
+@include sbb.box-sizing;
+
+:host {
+  --sbb-chip-group-input-min-width: #{sbb.px-to-rem-build(150)};
+
+  max-width: 100%; // Needed for the ellipsis on chips to work
+}
+
+:host([data-size='s']:not([data-empty])) {
+  --sbb-chip-group-margin-block: #{sbb.px-to-rem-build(6)} #{sbb.px-to-rem-build(5)};
+
+  @include sbb.mq($from: medium) {
+    --sbb-chip-group-margin-block: #{sbb.px-to-rem-build(5)} #{sbb.px-to-rem-build(3)};
+  }
+}
+
+::slotted(input) {
+  flex: 1 1 var(--sbb-chip-group-input-min-width);
+}
+
+::slotted(sbb-chip) {
+  max-width: 100%;
+}
+
+.sbb-chip-group {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sbb-spacing-fixed-1x);
+  align-items: center;
+  margin-block: var(--sbb-chip-group-margin-block);
+}

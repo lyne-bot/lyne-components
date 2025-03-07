@@ -733,3 +733,11 @@ export const i18nSelectionRequired: Record<string, string> = {
   fr: 'Sélection requise.',
   it: 'Selezione necessaria.',
 };
+
+// Usage example is "Remove ${chip label}“
+export const i18nChipDelete: Record<string, string> = {
+  de: 'Lösche',
+  en: 'Remove',
+  fr: 'Retire',
+  it: 'Rimuovi',
+};
