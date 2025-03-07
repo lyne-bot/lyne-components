@@ -95,7 +95,6 @@ class SbbSeatReservationElement extends LitElement {
         <div class="sbb-seat-reservation__wrapper ${classAlignVertical}">
           <sbb-seat-reservation-navigation
             .seatReservation=${this.seatReservation}
-            .alignVertical=${this.alignVertical}
             .selectedCoachIndex=${this._selectedCoachIndex}
             @selectCoach=${(event: CustomEvent) => this._onSelectNavCoach(event)}
           ></sbb-seat-reservation-navigation>

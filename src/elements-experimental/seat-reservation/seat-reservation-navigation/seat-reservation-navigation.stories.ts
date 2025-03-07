@@ -11,28 +11,26 @@ import readme from './readme.md?raw';
 import { SbbSeatReservationNavigationElement } from './seat-reservation-navigation.js';
 
 const seatReservationType: InputType = {
-  control: 'object',
+  control: { type: 'object' },
+  description: 'Seat reservation Object',
   table: {
-    disable: true,
+    disable: false,
   },
 };
 
-const alignVerticalType: InputType = {
-  control: 'boolean',
-  table: {
-    disable: true,
-  },
+const selectedCoachIndex: InputType = {
+  control: 'number',
+  description: 'pre-selected coach index',
 };
 
 const defaultArgTypes: ArgTypes = {
   seatReservation: seatReservationType,
-  'align-vertical': alignVerticalType,
+  selectedCoachIndex: selectedCoachIndex,
 };
 
 const mapedSeatReservation = mapRawDataToSeatReservation('TRAIN');
 const defaultArgs: Args = {
   seatReservation: mapedSeatReservation,
-  'align-vertical': false,
 };
 
 const Template = ({ seatReservation, ...args }: Args): TemplateResult =>

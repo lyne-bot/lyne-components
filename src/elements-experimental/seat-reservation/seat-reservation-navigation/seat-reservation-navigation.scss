@@ -1,40 +1,152 @@
 @use '@sbb-esta/lyne-elements/core/styles' as sbb;
 
-.sbb-seat-reservation-navigation__wrapper.sbb-seat-reservation-navigation__wrapper--vertical
-  .sbb-seat-reservation-navigation__list-coaches {
-  justify-content: initial;
+:host {
+  --sbb-seat-reservation-navigation-travelclass-spacing: #{sbb.px-to-rem-build(12)};
+  --sbb-seat-reservation-navigation-btn-border-color: var(--sbb-color-granite);
+  --sbb-seat-reservation-navigation-btn-border-width: var(--sbb-border-width-1x);
+  --sbb-seat-reservation-navigation-btn-background-color: var(--sbb-color-white);
+  --sbb-seat-reservation-navigation-btn-border-color-hover: var(--sbb-color-charcoal);
+  --sbb-seat-reservation-navigation-btn-border-width-hover: var(--sbb-border-width-2x);
+  --sbb-seat-reservation-navigation-btn-background-color-hover: var(--sbb-color-cloud);
 }
 
 .sbb-seat-reservation-navigation__list-coaches {
+  @include sbb.list-reset;
+
   display: flex;
   justify-content: center;
-  gap: #{sbb.px-to-rem-build(8)};
-  padding: 0;
-  margin: 0;
-  list-style: none;
+  flex-wrap: wrap;
+  gap: var(--sbb-spacing-fixed-1x);
+  min-height: #{sbb.px-to-rem-build(60)};
 }
 
-.sbb-seat-reservation-navigation__item-coache {
-  position: relative;
-  padding: #{sbb.px-to-rem-build(12)} #{sbb.px-to-rem-build(48)};
-  border: #{sbb.px-to-rem-build(1)} solid #888;
-  border-radius: #{sbb.px-to-rem-build(4)};
-  background-color: #fff;
+// <li>
+.sbb-seat-reservation-navigation__item-coach {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sbb-spacing-fixed-2x);
+  width: #{sbb.px-to-rem-build(80)};
+
+  &:first-of-type,
+  &:last-of-type {
+    .sbb-seat-reservation-navigation--first-class {
+      width: calc(100% - #{sbb.px-to-rem-build(16)});
+    }
+  }
+
+  &:first-of-type {
+    .sbb-seat-reservation-navigation-control__button {
+      border-radius: var(--sbb-border-radius-8x) var(--sbb-border-radius-2x)
+        var(--sbb-border-radius-2x) var(--sbb-border-radius-8x);
+    }
+
+    .sbb-seat-reservation-navigation--first-class {
+      margin-inline-start: var(--sbb-seat-reservation-navigation-travelclass-spacing);
+    }
+  }
+
+  &:last-of-type {
+    .sbb-seat-reservation-navigation-control__button {
+      border-radius: var(--sbb-border-radius-2x) var(--sbb-border-radius-8x)
+        var(--sbb-border-radius-8x) var(--sbb-border-radius-2x);
+    }
+
+    .sbb-seat-reservation-navigation__additional-information {
+      padding-inline-end: var(--sbb-seat-reservation-navigation-travelclass-spacing);
+    }
+
+    .sbb-seat-reservation-navigation--first-class {
+      margin-inline-end: var(--sbb-seat-reservation-navigation-travelclass-spacing);
+    }
+  }
 }
 
-.sbb-seat-reservation-navigation__item-coache--selected {
-  color: #fff;
-  background-color: #999;
-}
+.sbb-seat-reservation-navigation-control__button {
+  @include sbb.button-reset;
 
-.sbb-seat-reservation-navigation__item-coache button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  color: inherit;
-  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: #{sbb.px-to-rem-build(36)};
+  border: var(--sbb-seat-reservation-navigation-btn-border-width) solid
+    var(--sbb-seat-reservation-navigation-btn-border-color);
+  border-radius: var(--sbb-border-radius-2x);
+  background-color: var(--sbb-seat-reservation-navigation-btn-background-color);
   cursor: pointer;
+}
+
+.sbb-seat-reservation-navigation__item-coach--selected
+  .sbb-seat-reservation-navigation-control__button,
+.sbb-seat-reservation-navigation__item-coach:focus-visible
+  .sbb-seat-reservation-navigation-control__button,
+.sbb-seat-reservation-navigation-control__button:hover,
+.sbb-seat-reservation-navigation-control__button:focus-visible {
+  --sbb-seat-reservation-navigation-btn-border-width: var(
+    --sbb-seat-reservation-navigation-btn-border-width-hover
+  );
+  --sbb-seat-reservation-navigation-btn-border-color: var(
+    --sbb-seat-reservation-navigation-btn-border-color-hover
+  );
+  --sbb-seat-reservation-navigation-btn-background-color: var(
+    --sbb-seat-reservation-navigation-btn-background-color-hover
+  );
+
+  .sbb-seat-reservation-navigation__item-coach-number {
+    color: var(--sbb-color-charcoal);
+  }
+
+  .sbb-seat-reservation-navigation__item-coach-travelclass {
+    background-color: var(--sbb-color-charcoal);
+  }
+}
+
+.sbb-seat-reservation-navigation__additional-information {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex: 1;
+  padding-inline-start: var(--sbb-seat-reservation-navigation-travelclass-spacing);
+  font-family: var(--sbb-typo-font-family), sans-serif;
+  font-weight: 700;
+  color: var(--sbb-color-granite);
+}
+
+// todo remove complete block
+.sbb-seat-reservation-navigation__item-coach-number {
+  @include sbb.ellipsis;
+
+  max-width: var(--sbb-spacing-fixed-5x);
+}
+
+// graphical orientation of FIRST class
+.sbb-seat-reservation-navigation--first-class {
+  width: calc(100% - #{sbb.px-to-rem-build(4)});
+
+  // use border instead of height to support force-color modes
+  border: var(--sbb-border-width-1x) solid transparent;
+  border-radius: var(--sbb-border-radius-1x);
+  margin: auto;
+  background-color: var(--sbb-color-lemon);
+  transform: translateY(#{sbb.px-to-rem-build(1)});
+}
+
+// textual orientation of travel class
+.sbb-seat-reservation-navigation__item-coach-travelclass {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: #{sbb.px-to-rem-build(20)};
+  width: #{sbb.px-to-rem-build(20)};
+  border-radius: var(--sbb-border-radius-1x);
+  text-align: center;
+  background-color: var(--sbb-color-granite);
+  color: var(--sbb-color-white);
+}
+
+.sbb-seat-reservation-navigation__signs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sbb-spacing-fixed-1x);
+  color: var(--sbb-color-granite);
 }

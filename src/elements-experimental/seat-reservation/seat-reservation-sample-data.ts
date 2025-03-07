@@ -14,8 +14,8 @@ export const MOCK_COACHES_RAW_0 = [
       deckLevel: 'LOWER_DECK',
       placeGroups: [
         {
-          travelClass: 'SECOND',
-          accommodationSubType: 'BICYCLE',
+          travelClass: 'FIRST',
+          accommodationSubType: 'SILENCE',
           places: [
             {
               number: '153',
@@ -74,8 +74,8 @@ export const MOCK_COACHES_RAW_0 = [
           ],
         },
         {
-          travelClass: 'SECOND',
-          accommodationSubType: 'BICYCLE',
+          travelClass: 'FIRST',
+          accommodationSubType: 'BUSINESS',
           places: [
             {
               number: '152',
@@ -2745,8 +2745,8 @@ export const MOCK_COACHES_RAW_0 = [
           ],
         },
         {
-          travelClass: 'SECOND',
-          accommodationSubType: 'ANY_SEAT',
+          travelClass: 'FIRST',
+          accommodationSubType: 'PRAM',
           places: [
             {
               number: '48',
@@ -2787,7 +2787,7 @@ export const MOCK_COACHES_RAW_0 = [
           ],
         },
         {
-          travelClass: 'SECOND',
+          travelClass: 'FIRST',
           accommodationSubType: 'ANY_SEAT',
           places: [
             {
