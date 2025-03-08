@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/sbb-design-systems/lyne-components/compare/v2.3.0...v2.4.0) (2025-03-08)
+
+
+### Features
+
+* **sbb-calendar:** vertical orientation ([#3378](https://github.com/sbb-design-systems/lyne-components/issues/3378)) ([71e6100](https://github.com/sbb-design-systems/lyne-components/commit/71e6100c5e3766c71f660fea9e7f095f75897789))
+* **sbb-tag, sbb-tag-group:** implement native form support ([#3379](https://github.com/sbb-design-systems/lyne-components/issues/3379)) ([b51ba18](https://github.com/sbb-design-systems/lyne-components/commit/b51ba181791d98d95eecb7b335a71f4d9a702f1b))
+
+
+### Bug Fixes
+
+* **panels:** reflect colors ([#3423](https://github.com/sbb-design-systems/lyne-components/issues/3423)) ([943c2e6](https://github.com/sbb-design-systems/lyne-components/commit/943c2e6b61121b0440d9a5446c7c51abfda05cd2)), closes [#3418](https://github.com/sbb-design-systems/lyne-components/issues/3418)
+* regex for generic type substitution ([#3422](https://github.com/sbb-design-systems/lyne-components/issues/3422)) ([18c6c8d](https://github.com/sbb-design-systems/lyne-components/commit/18c6c8d9fee81fb68e016feb47c2edd8d5f4db43))
+* **sbb-autocomplete:** fix floating label flickering ([#3430](https://github.com/sbb-design-systems/lyne-components/issues/3430)) ([654788f](https://github.com/sbb-design-systems/lyne-components/commit/654788fe41b88fe632435c6ac4a36c1872fc8889))
+* **sbb-checkbox-group, sbb-radio-button-group:** fix panel detection and styling ([#3427](https://github.com/sbb-design-systems/lyne-components/issues/3427)) ([8240168](https://github.com/sbb-design-systems/lyne-components/commit/82401685ab4346ab78fddd0d35d58fc3fe725d14)), closes [#3426](https://github.com/sbb-design-systems/lyne-components/issues/3426)
+
+
+### Documentation
+
+* link to Angular wrapper ([#3433](https://github.com/sbb-design-systems/lyne-components/issues/3433)) ([49760ee](https://github.com/sbb-design-systems/lyne-components/commit/49760ee39ec33ca9b6b15b2e11536471c5bc116c))
+
 ## [2.3.0](https://github.com/sbb-design-systems/lyne-components/compare/v2.2.0...v2.3.0) (2025-02-24)
 
 
